@@ -17,7 +17,7 @@ from src.config import BEHAVIOUR_FIGS, BEHAVIOUR_SPEC_VERSION, M2_NAME, M3_NAME,
 from src.emotion_spec import load_spec
 from src.stats import paired_test
 
-MODELS = {M2_NAME: "M2 content only", M3_NAME: "M3 + emotion", M3BP_NAME: "M3b+ adaptive emotion", M4_NAME: "M4 LightGBM", M5B_NAME: "M5b LightGBM + emotion"}
+MODELS = {M2_NAME: "M2 content only", M3_NAME: "M3 + emotion", M3BP_NAME: "M3b+ emotion", M4_NAME: "M4 LightGBM", M5B_NAME: "M5b LightGBM + emotion"}
 
 
 def main():

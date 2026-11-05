@@ -25,8 +25,8 @@ from src.subgroups import group_gains, paired_family, shuffled_labels
 from src.where_it_helps import HISTORY_BINS, clicked_category, history_bin, top_categories
 from src.run_registry import load_rows
 
-LABELS = {M2_NAME: "M2 Sentence-BERT", M3_NAME: "M3 = M2 + emotion", M3BP_NAME: "M3b+ (adaptive emotion)", M4_NAME: "M4 LightGBM",
-          M5_NAME: "M5 = M4 + emotion", M5B_NAME: "M5b (LightGBM + stable emotion)"}
+LABELS = {M2_NAME: "M2 Sentence-BERT", M3_NAME: "M3 = M2 + emotion", M3BP_NAME: "M3b+ (emotion, 50 items, no decay)", M4_NAME: "M4 LightGBM",
+          M5_NAME: "M5 = M4 + emotion", M5B_NAME: "M5b (LightGBM + emotion, V3)"}
 PAIRS = [(a, b) for b in (M3BP_NAME, M5B_NAME) for a in (M2_NAME, M3_NAME, M4_NAME, M5_NAME)]
 
 
