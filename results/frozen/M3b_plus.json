@@ -1,0 +1,51 @@
+{
+  "model": "M3b_plus",
+  "config": {
+    "window": {
+      "size": 50,
+      "decay": 1.0
+    },
+    "blend_a": 1.0,
+    "consistency_cuts": [
+      0.7662195998923497,
+      0.8009699394107191
+    ],
+    "alpha_default": 0.8,
+    "alpha_by_tertile": {},
+    "m2_config_hash": "b104934253",
+    "adaptive_kept": false
+  },
+  "config_hash": "879ce8d778",
+  "chosen_on": "valid",
+  "evidence": {
+    "selection": "plan v5 E7: window (E2), same-day blend (E2 value rule), alpha per tertile if p < 0.05 on valid",
+    "adaptive_test": {
+      "n": 30270,
+      "mean_a": 0.6502917703396343,
+      "mean_b": 0.6504340778548143,
+      "mean_diff": 0.00014230751518016523,
+      "ci_low": -0.00019073594928633556,
+      "ci_high": 0.000475350979646666,
+      "dz": 0.004813779209552414,
+      "t_stat": 0.8375145821564649,
+      "p": 0.40230999639433607,
+      "p_wilcoxon": 0.5380447073518031,
+      "pct_b_better": 8.25569871159564
+    }
+  },
+  "frozen_utc": "2026-11-05T14:45:40+00:00",
+  "run_info": {
+    "timestamp_utc": "2026-11-05T14:45:40+00:00",
+    "python": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "git_commit": "a741a17",
+    "git_dirty": true,
+    "pandas": "3.0.6",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "scikit-learn": "1.9.1",
+    "pyarrow": "25.0.1",
+    "torch": "2.11.0+cu128",
+    "transformers": "5.18.0"
+  }
+}
