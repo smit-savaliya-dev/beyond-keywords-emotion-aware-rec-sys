@@ -1,0 +1,5 @@
+model,valid_auc
+M2 content only,0.6468213172798101
+M2 + topic (alpha 0.9),0.6496614058973786
+M2 + topic + residual emotion (beta 0.8),0.6528252311534345
+M3 = M2 + emotion,0.6498876098423105
