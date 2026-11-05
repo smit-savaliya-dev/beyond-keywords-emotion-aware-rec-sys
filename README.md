@@ -63,7 +63,7 @@ A step id is the script name without `.py`; a stage (`04`) or a step number (`04
 | 03_05 | `03_05_context_windows.py` | fit + valid | short-term vs long-term context, history column |
 | 03_06 | `03_06_true_recency.py` | fit + valid | true recency from earlier log clicks, analysis only |
 | 03_07 | `03_07_percentile_robustness.py` | fit + valid | train-only percentile check |
-| 03_08 | `03_08_story_charts.py` | saved tables | the 8 charts in `results/figures/story/` |
+| 03_08 | `03_08_story_charts.py` | saved tables | the 8 charts in `results/figures/basic/` |
 | 03_09 | `03_09_semeval_validation.py` | SemEval | trial selects the rule, test reports correlations, kappa, spec verdict |
 | 04_01 | `04_01_m0_popularity.py --tune` | valid | M0 grid, frozen settings |
 | 04_02 | `04_02_m1_tfidf.py --tune` | valid | M1 grid, frozen settings |

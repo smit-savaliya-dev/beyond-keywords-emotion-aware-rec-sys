@@ -2,7 +2,7 @@
 Dev is never read.
 
 Reads:  data/processed/ltr_features_valid.parquet and the frozen M5 booster.
-Writes: results/tables/m5_feature_importance.csv, m5_feature_importance_meta.json, results/figures/diagnostics/m5_feature_importance.png.
+Writes: results/tables/m5_feature_importance.csv, m5_feature_importance_meta.json, results/figures/EDA/m5_feature_importance.png.
 Run:    python scripts/05_03_feature_importance.py
 """
 import json

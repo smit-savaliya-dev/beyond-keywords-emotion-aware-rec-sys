@@ -37,8 +37,8 @@ Step `01_05_download_semeval` downloads SemEval-2007 into `data/external/semeval
 | `config/` | frozen emotion specifications (hash-locked by a test) |
 | `results/tables/` | every result table; `summary.csv` holds model metrics, `runs_log.csv` every run |
 | `results/figures/results/` | the 6 results charts for the supervisor |
-| `results/figures/story/` | the 8 key charts on the data and emotion layer |
-| `results/figures/diagnostics/` | EDA and diagnostic figures |
+| `results/figures/basic/` | the 8 key charts on the data and emotion layer |
+| `results/figures/EDA/` | EDA and diagnostic figures |
 | `results/frozen/` | frozen model settings |
 | `results/archive/` | superseded results and proof records; `annotation/` holds the cancelled hand-label sheet and tool |
 | `data/processed/` | parquet tables (git-ignored) |

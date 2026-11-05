@@ -264,3 +264,7 @@ M0 to M5 are complete. M4 is the best model on dev. Next, when asked: M6, M7. Sp
 
 ## 2026-11-04 tidy-for-review step 4: reviewer guide
 - `docs/CODE_WALKTHROUGH.md` written; README rewritten with the new step ids and the commands to show; START_HERE and CLAUDE.md point to the new names and the guide.
+
+## 2026-11-05 tidy-for-review step 5: proof (D73)
+- Rebuild resumed from its stamps after the 14:15 stop: 04_10 to 05_05 and the three chart steps whose folders the student renamed (story -> basic, diagnostics -> EDA). GPU held, no dev run.
+- Proof: 70 of 70 byte-compared files identical (renames mapped), including 16 of 16 dev score and per-impression files and the 5 boosters; 122 of 123 tables identical, `m4m5_tuning_valid.csv` differs only in its `seconds` timing column; summary.csv identical as a set of rows. 226 tests pass.

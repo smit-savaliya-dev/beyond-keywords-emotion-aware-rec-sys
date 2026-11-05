@@ -1,6 +1,6 @@
 # Guide to the charts
 
-The eight story charts are in `results/figures/story/` and use one style. The six results charts for the supervisor are at the end. On charts 6, 7 and 8, the blue circle is fit (9-13 Nov) and
+The eight story charts are in `results/figures/basic/` and use one style. The six results charts for the supervisor are at the end. On charts 6, 7 and 8, the blue circle is fit (9-13 Nov) and
 the orange square is valid (14 Nov, the next day). "dz" is an effect size: how far clicked items differ from unclicked
 items in the same list, in standard deviations. 0 means no difference, 0.1-0.2 is small but real. A hollow marker means the
 result was not significant at both the impression level and the user level. Dev data was never used.
@@ -96,7 +96,7 @@ dot are 95% confidence intervals: if a bar stays clear of zero, the difference i
 
 # Diagnostics
 
-## What M5 uses (`results/figures/diagnostics/m5_feature_importance.png`)
+## What M5 uses (`results/figures/EDA/m5_feature_importance.png`)
 - **Shows:** how much each feature moves the M5 score on valid, coloured by family. It is in diagnostics because the results folder is limited to 6 charts.
 - **Why it matters:** content and popularity carry most of the model.
 - **Read with care:** a high bar for an item-level emotion feature does not mean emotion drives clicks. Those features can act as an item ID (see `docs/methodology_notes.md`, section 9), so this chart

@@ -16,7 +16,7 @@
 | `config/` | Frozen emotion specifications `emotion_spec_v1.json` to `v4.json` (hash-locked by a test). |
 | `docs/` | `decisions.md` (every choice and its evidence), `open_questions.md`, `progress.md`, `methodology_notes.md`, `figures_guide.md`, `reports/`. |
 | `results/tables/` | Every result table. `summary.csv`: model metrics per part. `runs_log.csv`: every run. |
-| `results/figures/` | `results/` (the 6 charts below), `story/` (8 data and emotion charts), `diagnostics/` (EDA and feature importance). |
+| `results/figures/` | `results/` (the 6 charts below), `basic/` (8 data and emotion charts), `EDA/` (EDA and feature importance). |
 | `results/frozen/` | Settings of each model, frozen on valid before its dev run. |
 | `results/archive/` | Superseded or cancelled material and the proof records of the clean-ups. |
 | `data/` | Raw data, processed tables and caches. Git-ignored. |
@@ -70,7 +70,7 @@ Step ids are the script names without `.py`. Scripts marked "by hand" are not pi
 | Where emotion helps M3: by category and by history length (descriptive) | `4_m3_gain_by_category.png`, `5_m3_gain_by_history.png`, `m3_where_it_helps_dev.csv` |
 | Emotion scores against human ratings (SemEval-2007) | `6_emotion_validation.png`, `semeval2007_validation.csv` |
 | Item-identity controls and the fresh-item split behind the M5 result | `m5_controls_valid.csv`, `m5_fresh_items.csv`, `docs/decisions.md` D69 to D71 |
-| Click signal and congruence analyses | `emotion_signal_v2.csv`, `congruence_signal_fit.csv`, `context_windows_signal.csv`, `results/figures/story/` |
+| Click signal and congruence analyses | `emotion_signal_v2.csv`, `congruence_signal_fit.csv`, `context_windows_signal.csv`, `results/figures/basic/` |
 | All model metrics, every part | `results/tables/summary.csv` (`runs_log.csv` for every run) |
 | Every chart explained | `docs/figures_guide.md` |
 

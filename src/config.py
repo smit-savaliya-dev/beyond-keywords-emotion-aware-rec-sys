@@ -11,7 +11,7 @@ PROCESSED = ROOT / "data" / "processed"
 RESULTS = ROOT / "results"
 FIGURES = RESULTS / "figures"
 TABLES = RESULTS / "tables"
-DIAGNOSTICS = FIGURES / "diagnostics"
+DIAGNOSTICS = FIGURES / "EDA"
 
 MIND_URLS = {
     "train": "https://mind201910small.blob.core.windows.net/release/MINDsmall_train.zip",
@@ -203,7 +203,7 @@ CONTEXT_CONTROL = {"older_5": {"skip": 5, "size": 5, "decay": 1.0}}  # same size
 CONTEXT_CONTROL_MIN_HISTORY = 10
 
 # Story charts.
-STORY_DIR = FIGURES / "story"
+STORY_DIR = FIGURES / "basic"
 RESULTS_FIGS = FIGURES / "results"
 RESULT_CHARTS = ["1_model_ladder", "2_m3_gain_by_metric", "3_alpha_ablation", "4_m3_gain_by_category", "5_m3_gain_by_history",
                  "6_emotion_validation"]
@@ -239,3 +239,4 @@ SEMEVAL_NEUTRAL_LIMIT = 40.0                    # eligible rules: MIND neutral %
 SEMEVAL_REFERENCE_RULE = ("v2b", 0.05)          # kept when CIs overlap (D47)
 SEMEVAL_MIN_RHO = 0.2                           # spec confirmation (D48)
 SEMEVAL_MIN_MAIN_EMOTIONS = 3
+
