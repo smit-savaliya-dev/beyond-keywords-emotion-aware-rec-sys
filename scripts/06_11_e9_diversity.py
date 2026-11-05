@@ -47,8 +47,8 @@ def main():
     bc.grouped(BEHAVIOUR_FIGS / "e9_diversity.png", "Does emotion matching narrow what people see?",
                f"Distinct emotions and distinct categories among each model's top {k} per impression (final test). M3b+ vs M2: emotion diversity "
                f"{e3['diff_vs_m2']:+.3f}. Ethics note: a ranking that narrows emotional variety can reinforce mood loops; we only measure it here.",
-               list(MODELS.values()), [(kind, [d.loc[(m, kind), "mean"] for m in MODELS], None, None, col)
-                                       for kind, col in (("emotions in top 10", bc.ORANGE), ("categories in top 10", bc.BLUE))],
+               list(MODELS.values()), [(name, [d.loc[(m, kind), "mean"] for m in MODELS], None, None, col)
+                                       for kind, name, col in (("emotion", "emotions in top 10", bc.ORANGE), ("category", "categories in top 10", bc.BLUE))],
                "Distinct values in the top 10 (final test)", fmt="{:.2f}")
 
 
