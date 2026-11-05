@@ -180,7 +180,7 @@ SPEC_ITEM_CANDIDATES = ([f"go_pct_{e}" for e in GO_FEATURES] + ["go_emotionality
 SPEC_CONGRUENCE_CANDIDATES = ["cong_pct_cos", "cong_pct_cos_personal", "cong_six_negkl", "cong_six_negkl_personal",
                               "cong_valence_absdist", "cong_valence_absdist_personal"]
 EMOTION_SPEC_DIR = ROOT / "config"
-EMOTION_SPEC_VERSION = 4  # bump (new file emotion_spec_v<N>.json) for any change to the hashed content
+EMOTION_SPEC_VERSION = 5  # bump (new file emotion_spec_v<N>.json) for any change to the hashed content
 
 # Emotion layer v2 (D30): grid on saved raw scores; selection rule constants.
 V2_TITLE_SHARES = [1.0, 0.7, 0.6, 0.5, 1 / 3]  # title share; abstract share = 1 - share; 1/3 = current v1 weighting
@@ -240,3 +240,9 @@ SEMEVAL_REFERENCE_RULE = ("v2b", 0.05)          # kept when CIs overlap (D47)
 SEMEVAL_MIN_RHO = 0.2                           # spec confirmation (D48)
 SEMEVAL_MIN_MAIN_EMOTIONS = 3
 
+# Week-7 behaviour experiments (docs/experiments_plan_v5.md, D73-D76). Definitions live in the behaviour section of spec v5.
+BEHAVIOUR_SPEC_VERSION = 5
+BEHAVIOUR_FIGS = FIGURES / "v5_behaviour"
+M3B_NAME = "M3b_adaptive_alpha"        # valid only (E1)
+M3BP_NAME = "M3b_plus"                 # final, dev once (E7)
+M5B_NAME = "M5b_lightgbm_emotion"      # final, dev once (E7): mean of 3 seeds

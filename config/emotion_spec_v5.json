@@ -1,0 +1,289 @@
+{
+  "version": 5,
+  "status": "current; every model input of v4 unchanged; adds the behaviour definitions of docs/experiments_plan_v5.md (D74)",
+  "frozen_date": "2026-11-05",
+  "replaces": "v4, kept in config/emotion_spec_v4.json; v5 only adds the behaviour section",
+  "reason": "new user-level and time-causal features for the week-7 behaviour experiments must be fixed before any result (D74)",
+  "evidence": {
+    "grid": "results/tables/emotion_v2_grid.csv",
+    "choice": "results/tables/emotion_v2_choice.json",
+    "selection": "results/tables/emotion_spec_v2_selection.csv",
+    "selection_sha256": "72ba323bdafd7d881ae8556586753954afe52345666680b8bb467e13a782210b",
+    "rule": "D30 (weight, t), D32 (features) in docs/decisions.md; D46, D47, D48, D49 (SemEval validation); D53, D58, D62 (fusion score)",
+    "dev": "never used",
+    "semeval": "results/tables/semeval2007_validation.csv",
+    "semeval_selection": "results/tables/semeval2007_selection_trial.csv",
+    "fusion_selection": "results/tables/m3_fusion_grid_valid.csv"
+  },
+  "text_variant": {
+    "primary": "title share 0.5, abstract share 0.5",
+    "title_share": 0.5,
+    "pre_declared_variant": "title-only",
+    "variant_columns": "title-only go_pct_* for congruence",
+    "compare_on": "valid, in M3 only"
+  },
+  "labelling": {
+    "rule": "6-class group of the max raw score over the 25 non-neutral labels without approval and disapproval if >= t, else neutral (v2b, D38)",
+    "t": 0.05,
+    "use": "reporting and validation only; never a model feature",
+    "feature_table": "data/processed/news_emotion_features_v2.parquet",
+    "label_table": "data/processed/news_emotion_labels_variants.parquet, column label_v2b",
+    "caution": "Chosen on 250 trial headlines; kappa is fair and the confidence intervals of v2, v2b and v2c overlap, so the data do not separate these rules. Validated on headlines only."
+  },
+  "item_features_m5": [
+    "go_pct_excitement",
+    "go_pct_joy",
+    "go_pct_optimism",
+    "go_pct_nervousness",
+    "go_pct_annoyance",
+    "go_pct_fear",
+    "go_vad_valence",
+    "go_vad_dominance",
+    "vad_valence",
+    "nrc_trust",
+    "go_dist_optimism",
+    "go_dist_nervousness",
+    "go_dist_fear"
+  ],
+  "congruence_features": [
+    "cong_pct_cos",
+    "cong_pct_cos_personal",
+    "cong_six_negkl_personal",
+    "cong_valence_absdist_personal"
+  ],
+  "congruence_profile": {
+    "source": "behaviors.history only",
+    "decay": 0.9,
+    "newest_weight": 1.0,
+    "max_history": 50,
+    "cold_start": "corpus mean",
+    "code": "src.congruence.congruence_features"
+  },
+  "fusion": {
+    "applies_to": [
+      "M3",
+      "M7"
+    ],
+    "formula": "final = alpha * base + (1 - alpha) * emotion",
+    "normalisation": "per-impression min-max of base and emotion scores",
+    "alpha_grid": [
+      0.0,
+      0.1,
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9,
+      1.0
+    ],
+    "choose_on": "valid",
+    "selection_metric": "auc",
+    "emotion_score": "cong_pct_cos_personal",
+    "pre_declared_variants": [
+      "mood_repair: emotion = 1 - congruence",
+      "text: title-only congruence"
+    ],
+    "emotion_score_for_fusion": "personal"
+  },
+  "excluded": {
+    "go_pct_curiosity": "sign flips on valid (fit dz +0.016, valid dz -0.054)",
+    "go_pct_desire": "sign flips on valid (fit dz +0.022, valid dz -0.069)",
+    "go_emotionality": "sign flips on valid (fit dz +0.109, valid dz -0.047)",
+    "go_vad_arousal": "sign flips on valid (fit dz -0.147, valid dz +0.053)",
+    "nrc_anticipation": "sign flips on valid (fit dz +0.017, valid dz -0.024)",
+    "vad_dominance": "sign flips on valid (fit dz -0.139, valid dz +0.009)",
+    "go_intensity": "sign flips on valid (fit dz +0.149, valid dz -0.036); kept as a column in news_emotion_features_v2.parquet (Q05)",
+    "cong_six_negkl": "sign flips on valid (fit dz -0.025, valid dz +0.115)",
+    "cong_valence_absdist": "sign flips on valid (fit dz -0.026, valid dz +0.037)",
+    "go_neutral": "deterministic: 1 - go_emotionality (D27)",
+    "vad_arousal": "not significant at both levels on fit",
+    "cong_*_otheruser / cong_*_userspecific": "analysis controls (random other user), not model features",
+    "cong_pct_negkl*": "exploratory, not pre-declared"
+  },
+  "confirmation_rule": {
+    "run": "python scripts/38_analysis_semeval_validation.py",
+    "rule": "D48 in docs/decisions.md; replaces the hand-label rule D29",
+    "any_change": "new file config/emotion_spec_v5.json + decision log entry + test hash entry"
+  },
+  "behaviour": {
+    "vector": "go_pct_* (8 emotions), title share 0.5, news_emotion_features_v2.parquet",
+    "consistency": {
+      "items": "last 50 known history items",
+      "min_items": 2,
+      "primary": "mean pairwise cosine",
+      "secondary": "mean cosine to the centroid (1 - dispersion)",
+      "groups": "tertiles of fit impressions with 2+ items; else no_history"
+    },
+    "adaptive_alpha_grid": [
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9,
+      1.0
+    ],
+    "windows": {
+      "sizes": [
+        5,
+        10,
+        20,
+        50
+      ],
+      "decays": [
+        0.9,
+        1.0
+      ],
+      "current": {
+        "size": 50,
+        "decay": 0.9
+      },
+      "tie_tolerance": 0.0001,
+      "alpha": 0.8
+    },
+    "same_day": {
+      "source": "the user's clicks in strictly earlier impressions of the same calendar day",
+      "decay": 0.9,
+      "blend_grid": [
+        1.0,
+        0.8,
+        0.6,
+        0.4,
+        0.2,
+        0.0
+      ],
+      "value_rule": "chosen a < 1 must beat a = 1 on covered valid impressions, p < 0.05"
+    },
+    "drift": {
+      "min_items": 10,
+      "recent": 5,
+      "older_max": 45,
+      "score": "mean pairwise cosine of the last 5 minus cosine(mean of last 5, mean of older)",
+      "short_window": {
+        "size": 5,
+        "decay": 1.0
+      },
+      "long_window": {
+        "size": 50,
+        "decay": 0.9
+      }
+    },
+    "exposure": {
+      "definition": "strictly earlier impressions (any part, by timestamp) that showed the item",
+      "buckets": [
+        "new",
+        "few",
+        "many"
+      ],
+      "cut": "new = 0; few = 1 to Q; many > Q; Q = median exposure of fit rows with exposure > 0"
+    },
+    "residual": {
+      "definition": "item vector minus its category mean over items shown in fit impressions",
+      "profile": "last 50, decay 0.9 of residual vectors",
+      "fusion_grid": [
+        0.0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1.0
+      ]
+    },
+    "time_slots": {
+      "night": [
+        0,
+        5
+      ],
+      "morning": [
+        6,
+        11
+      ],
+      "afternoon": [
+        12,
+        17
+      ],
+      "evening": [
+        18,
+        23
+      ]
+    },
+    "personas": {
+      "min_items": 5,
+      "k": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "n_init": 10,
+      "silhouette_sample": 20000
+    },
+    "diversity_top_k": 10,
+    "m5b_variants": {
+      "V1": {
+        "add": [
+          "cong_pct_cos_personal",
+          "cong_six_negkl_personal",
+          "cong_valence_absdist_personal"
+        ],
+        "params": "M4 frozen"
+      },
+      "V2": {
+        "base": "V1",
+        "add": [
+          "consistency",
+          "cong_short_personal",
+          "exposure_bucket"
+        ],
+        "params": "M4 frozen"
+      },
+      "V3": {
+        "base": "V2",
+        "add": [
+          "go_vad_valence",
+          "go_vad_dominance"
+        ],
+        "params": "M4 frozen"
+      },
+      "V4": {
+        "base": "V2",
+        "params": {
+          "num_leaves": 15,
+          "learning_rate": 0.05,
+          "min_child_samples": 500,
+          "colsample_bytree": 0.7,
+          "reg_lambda": 1.0
+        }
+      },
+      "V5": {
+        "base": "V4",
+        "monotone_increasing": [
+          "cong_pct_cos_personal",
+          "cong_six_negkl_personal",
+          "cong_valence_absdist_personal",
+          "cong_short_personal"
+        ]
+      },
+      "simplicity_order": [
+        "V1",
+        "V2",
+        "V4",
+        "V5",
+        "V3"
+      ],
+      "tie_tolerance": 0.0005,
+      "seeds": [
+        42,
+        43,
+        44
+      ]
+    }
+  }
+}

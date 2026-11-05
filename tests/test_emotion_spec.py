@@ -12,7 +12,8 @@ from src.emotion_spec import load_spec, replication_selection, spec_hash, spec_p
 KNOWN_SPEC_HASHES = {1: "b2a9ca38e355c6efa858a4f1ed0ab7bb4500bcc50d54bff23711ae8c897bf7f0",
                      2: "82c7ff4b76a3eb6562e13dcfb06969a8273a5ba7f58322bb5735b7b0373b7967",
                      3: "d2462a72b7cab15fecc5b16c962b628bcd9908738bdb4e134987230096871601",
-                     4: "7bd6aefc13c699a2215f8f5386f48528dcc47f740764832c3a69c70542147629"}
+                     4: "7bd6aefc13c699a2215f8f5386f48528dcc47f740764832c3a69c70542147629",
+                     5: "dca32456c19fac5aca13bf1a15517a047cc36e8e6e6d3078e70e146a2f529384"}
 
 
 def test_released_specs_unchanged_without_version_bump():
@@ -72,3 +73,10 @@ def test_replication_selection_rule():
     assert t["keep"].tolist() == [True, False, False, False]
     assert t["reason"].tolist() == ["replicated on valid", "sign flips on valid", "valid 95% CI includes 0",
                                     "not significant at both levels on fit"]
+
+
+def test_spec_v5_keeps_every_model_input_of_v4_and_only_adds_behaviour():
+    v4, v5 = load_spec(4), load_spec(5)
+    for key in ("item_features_m5", "congruence_features", "congruence_profile", "fusion", "text_variant", "excluded", "labelling"):
+        assert v5[key] == v4[key], key
+    assert set(v5) - set(v4) == {"behaviour"} and "m5b_variants" in v5["behaviour"]

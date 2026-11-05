@@ -268,3 +268,7 @@ M0 to M5 are complete. M4 is the best model on dev. Next, when asked: M6, M7. Sp
 ## 2026-11-05 tidy-for-review step 5: proof (D73)
 - Rebuild resumed from its stamps after the 14:15 stop: 04_10 to 05_05 and the three chart steps whose folders the student renamed (story -> basic, diagnostics -> EDA). GPU held, no dev run.
 - Proof: 70 of 70 byte-compared files identical (renames mapped), including 16 of 16 dev score and per-impression files and the 5 boosters; 122 of 123 tables identical, `m4m5_tuning_valid.csv` differs only in its `seconds` timing column; summary.csv identical as a set of rows. 226 tests pass.
+
+## 2026-11-05 week7-behaviour step 0: plan pre-declared
+- Branch `week7-behaviour` from main (main fast-forwarded to tidy-for-review). Plan v5 and spec v5 committed before any result (D74-D76).
+- Shared code: `src/behaviour.py` (features), `src/subgroups.py` (group metrics, user bootstrap, trend tests, shuffled labels), `src/behaviour_runs.py` (context, fusion), `src/behaviour_charts.py`. 250 tests pass.
