@@ -15,9 +15,9 @@
   "stability": {
     "ari_fit_centroids_vs_valid_refit": 0.9360905957821372,
     "centroid_distance_after_matching": [
-      0.06933996116754158,
-      0.13382197585576677,
-      0.11319864733061949
+      0.06933996116754146,
+      0.1338219758557666,
+      0.11319864733061955
     ]
   },
   "standardisation": "fit mean and SD"

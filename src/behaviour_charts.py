@@ -87,14 +87,14 @@ def bars(path, title, caption, labels, values, ylabel, low=None, high=None, colo
         ax.set_ylabel(ylabel)
         top = np.asarray(high if high is not None else values, dtype=float)
         bottom = np.asarray(low if low is not None else values, dtype=float)
-        span = float(np.nanmax(np.abs(np.r_[top, bottom]))) or 1.0
+        span = float(np.nanmax(np.abs(np.r_[top, bottom] - base))) or 1.0
         for x, v, t, b in zip(pos, values, top, bottom):
             up = v >= 0
             ax.text(x, (t if up else b) + (0.03 if up else -0.03) * span, fmt.format(v), ha="center", va="bottom" if up else "top",
                     fontsize=13, fontweight="bold")
         if zero:
             ax.axhline(0, color=INK, linewidth=1.5)
-        lo_lim = min(0, float(np.nanmin(bottom))) if zero else float(np.nanmin(bottom))
+        lo_lim = min(base, float(np.nanmin(bottom))) if zero else float(np.nanmin(bottom))
         ax.set_ylim(*(lim or (lo_lim - 0.18 * span, float(np.nanmax(top)) + 0.2 * span)))
     if xlabel and not horizontal:
         ax.set_xlabel(xlabel)

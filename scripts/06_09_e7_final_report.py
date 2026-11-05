@@ -105,7 +105,7 @@ def main():
                "Valid chose it, so it is optimistic.",
                var, [("reference (no emotion)", [agg.loc[refs[x], "mean"] for x in var], [agg.loc[refs[x], "min"] for x in var], [agg.loc[refs[x], "max"] for x in var], bc.BLUE),
                      ("with emotion", [agg.loc[x, "mean"] for x in var], [agg.loc[x, "min"] for x in var], [agg.loc[x, "max"] for x in var], bc.ORANGE)],
-               "AUC (valid)", fmt="{:.4f}", ylim=(float(agg["min"].min()) - 0.004, float(agg["max"].max()) + 0.003), legend_loc="lower right")
+               "AUC (valid)", fmt="{:.4f}", ylim=(float(agg["min"].min()) - 0.004, float(agg["max"].max()) + 0.003), legend_loc="upper left")
     order = [M2_NAME, M3_NAME, M3BP_NAME, M4_NAME, M5_NAME, M5B_NAME]
     vals, lo, hi = [], [], []
     for m in order:
@@ -117,10 +117,10 @@ def main():
     f = fam[(fam["part"] == "dev")].set_index("comparison")
     s1 = f.loc[f"{LABELS[M3BP_NAME]} - {LABELS[M3_NAME]}"]
     s2 = f.loc[f"{LABELS[M5B_NAME]} - {LABELS[M4_NAME]}"]
-    bc.bars(BEHAVIOUR_FIGS / "e7_final_comparison.png", "Final test: do the improved emotion models beat content-only ranking?",
+    bc.bars(BEHAVIOUR_FIGS / "e7_final_comparison.png", "Final test: emotion models against content-only ranking",
             f"Final-test AUC with 95% CIs. M3b+ - M3 {s1['mean_diff']:+.4f} (Holm p {s1['p_holm']:.3g}); M5b - M4 {s2['mean_diff']:+.4f} "
             f"(Holm p {s2['p_holm']:.3g}). Orange = with emotion.",
-            [LABELS[m].replace(" (", "\n(").replace(" = ", "\n= ") for m in order], vals, "AUC (final test)", low=lo, high=hi, fmt="{:.4f}",
+            ["M2\ncontent only", "M3\n+ emotion", "M3b+\n+ emotion, no decay", "M4\nLightGBM", "M5\n+ emotion", "M5b\n+ emotion (V3)"], vals, "AUC (final test)", low=lo, high=hi, fmt="{:.4f}",
             colors=[bc.ORANGE if m in (M3_NAME, M3BP_NAME, M5_NAME, M5B_NAME) else bc.BLUE for m in order], zero=False, base=0.5,
             lim=(0.5, max(hi) + 0.015))
     imp = pd.read_csv(TABLES / "behaviour_e7_m5b_importance.csv").sort_values("contrib_share", ascending=True).tail(16)

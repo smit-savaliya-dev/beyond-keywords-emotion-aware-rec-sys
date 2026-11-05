@@ -49,7 +49,7 @@ def main():
                f"{e3['diff_vs_m2']:+.3f}. Ethics note: a ranking that narrows emotional variety can reinforce mood loops; we only measure it here.",
                list(MODELS.values()), [(name, [d.loc[(m, kind), "mean"] for m in MODELS], None, None, col)
                                        for kind, name, col in (("emotion", "emotions in top 10", bc.ORANGE), ("category", "categories in top 10", bc.BLUE))],
-               "Distinct values in the top 10 (final test)", fmt="{:.2f}")
+               "Distinct values in the top 10 (final test)", fmt="{:.2f}", ylim=(0, 6.6), legend_loc="upper right")
 
 
 if __name__ == "__main__":

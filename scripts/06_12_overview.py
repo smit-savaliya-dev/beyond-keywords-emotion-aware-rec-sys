@@ -7,7 +7,7 @@ import _bootstrap  # noqa: F401
 from src.behaviour_charts import contact_sheet
 from src.config import BEHAVIOUR_FIGS
 
-BEST = ["e7_final_comparison.png", "e1_gain_by_tertile.png", "e4_m3_gain_by_exposure.png", "e5_topic_vs_residual.png",
+BEST = ["e7_final_comparison.png", "e1_gain_by_tertile.png", "e8_gain_by_persona.png", "e5_topic_vs_residual.png",
         "e7_m5b_variants_valid.png", "e9_diversity.png"]
 
 if __name__ == "__main__":

@@ -96,11 +96,11 @@ def main():
     g = gains[gains["part"] == "dev"].set_index(["model_a", "model_b", "group"])
     groups = [*names, "too little history"]
     bc.grouped(BEHAVIOUR_FIGS / "e8_gain_by_persona.png", "Does emotion help some personas more?",
-               "Final-test AUC gain per persona: M3 over M2 (emotion added to content) and M3b+ over M3 (the adaptive version), 95% user-bootstrap CIs.",
+               "Final-test AUC gain per persona: M3 over M2 (emotion added to content) and M3b+ over M3 (refined profile), 95% user-bootstrap CIs.",
                [n.split(": ")[0] for n in groups],
                [(lab, [g.loc[(a, b, n), "gain"] for n in groups], [g.loc[(a, b, n), "ci_low"] for n in groups], [g.loc[(a, b, n), "ci_high"] for n in groups], col)
                 for a, b, lab, col in (("M2", "M3", "M3 - M2", bc.BLUE), ("M3", "M3b+", "M3b+ - M3", bc.ORANGE))],
-               "AUC gain (final test)", fmt="{:+.4f}", zero=True, notes=[n.split(": ")[1] if ": " in n else n for n in groups])
+               "AUC gain (final test)", fmt="{:+.4f}", zero=True, notes=[n.split(": ")[1] if ": " in n else "" for n in groups])
 
 
 if __name__ == "__main__":
