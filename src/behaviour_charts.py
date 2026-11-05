@@ -39,7 +39,7 @@ def new(title, grid="y", size=(12, 6.75)):
 
 def save(fig, path, caption):
     """Add the one-line caption under the chart and write the PNG (retried: an open preview can lock the file on Windows)."""
-    fig.text(0.012, 0.02, "\n".join(textwrap.wrap(caption, 150)), fontsize=12.5, color="#444444", ha="left", va="bottom")
+    fig.text(0.012, 0.02, "\n".join(textwrap.wrap(caption, 125)), fontsize=12.5, color="#444444", ha="left", va="bottom")
     path.parent.mkdir(parents=True, exist_ok=True)
     for attempt in range(5):
         try:

@@ -126,8 +126,8 @@ def main():
                f"{tr['high_minus_low']:+.4f} (Holm p {tr['p_holm_hl']:.3g}); Spearman rho {tr['rho']:+.3f}.",
                lab, s, "AUC gain (M3 minus M2)", fmt="{:+.4f}", zero=True, notes=notes)
     m = means[(means["metric"] == "auc") & (means["part"] == "dev")].set_index(["model", "group"])
-    s = [(mod, [m.loc[(mod, t), "mean"] for t in ORDER], [m.loc[(mod, t), "ci_low"] for t in ORDER], [m.loc[(mod, t), "ci_high"] for t in ORDER], col)
-         for mod, col in (("M2 (content only)", bc.BLUE), ("M3 (content + emotion)", bc.ORANGE))]
+    s = [(name, [m.loc[(mod, t), "mean"] for t in ORDER], [m.loc[(mod, t), "ci_low"] for t in ORDER], [m.loc[(mod, t), "ci_high"] for t in ORDER], col)
+         for mod, name, col in (("M2", "M2 (content only)", bc.BLUE), ("M3", "M3 (content + emotion)", bc.ORANGE))]
     lo_all = min(min(x[2]) for x in s)
     bc.grouped(BEHAVIOUR_FIGS / "e1_auc_by_tertile.png", "Ranking quality by how consistent a user's emotions are",
                "Final-test AUC of M2 and M3 per consistency tertile (from the saved prediction files); bars show 95% user-bootstrap CIs.",
