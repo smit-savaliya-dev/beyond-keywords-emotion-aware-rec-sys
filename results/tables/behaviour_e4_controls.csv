@@ -1,0 +1,9 @@
+part,pair,control,new_minus_many,p
+valid,M3_sbert_emotion - M2_sbert,buckets shuffled within impressions,-0.06764547109037292,0.036236639887973515
+valid,M3_sbert_emotion - M2_sbert,labels shuffled,0.014420524056907342,0.7317820554282753
+valid,M5_lightgbm_emotion - M4_lightgbm,buckets shuffled within impressions,-0.052497167903892215,0.08813880345364619
+valid,M5_lightgbm_emotion - M4_lightgbm,labels shuffled,0.012425067033155124,0.775328176884203
+dev,M3_sbert_emotion - M2_sbert,buckets shuffled within impressions,0.018067573562992566,0.6540376714023299
+dev,M3_sbert_emotion - M2_sbert,labels shuffled,0.0026410342323510546,0.9519798202630132
+dev,M5_lightgbm_emotion - M4_lightgbm,buckets shuffled within impressions,-0.010322009180656452,0.844294015113433
+dev,M5_lightgbm_emotion - M4_lightgbm,labels shuffled,0.05365357812446331,0.17891011832957662
