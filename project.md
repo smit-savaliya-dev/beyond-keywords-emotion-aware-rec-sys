@@ -76,4 +76,4 @@ from the user's recent reading", never "the user's emotional state".
 
 ## Phases
 Done: base pipeline, emotion layer v1 and v2, click signal, congruence, context windows, true recency, M0-M5, cleanup, SemEval validation.
-Next: M6, M7 when asked.
+Week 7 behaviour experiments done (plan v5, D73-D78: M3b+ and M5b ran on dev once). Next: M6, M7 when asked.

@@ -100,6 +100,11 @@ sentence-transformers package), `04_10_m4m5_lightgbm.py --tune --resume` (reuse 
 boosters and figures byte for byte); `check_logic_unchanged.py --check` proves a presentation-only change left every file's syntax tree
 unchanged. Both were used for the tidy-up of `docs/cleanup_plan_v2.md` (old script names are translated there).
 
+## Week 7: when does emotion help? (plan v5)
+Pre-declared in `docs/experiments_plan_v5.md`; findings in `docs/reports/week7_behaviour_findings.md`; charts in `results/figures/v5_behaviour/`
+(`overview.png`). Scripts `06_01` to `06_12` are run by hand in order; they read saved dev result files, so they are not pipeline steps (D76).
+`06_07_e7_m3b_plus.py` and `06_08_e7_m5b.py` have `--tune` (valid) and `--final-dev` (once).
+
 ## Rules that protect the results
 - `fit` trains, `valid` (last day of train) tunes, `dev` is reported once. Never tune on dev.
 - Every model returns `imp_key, news_id, score` for all candidates and is scored through `src.evaluate`.

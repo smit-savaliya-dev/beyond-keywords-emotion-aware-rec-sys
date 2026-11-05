@@ -272,3 +272,14 @@ M0 to M5 are complete. M4 is the best model on dev. Next, when asked: M6, M7. Sp
 ## 2026-11-05 week7-behaviour step 0: plan pre-declared
 - Branch `week7-behaviour` from main (main fast-forwarded to tidy-for-review). Plan v5 and spec v5 committed before any result (D74-D76).
 - Shared code: `src/behaviour.py` (features), `src/subgroups.py` (group metrics, user bootstrap, trend tests, shuffled labels), `src/behaviour_runs.py` (context, fusion), `src/behaviour_charts.py`. 250 tests pass.
+
+## 2026-11-05 week7-behaviour: E1 to E9 done
+- One commit per experiment; plan v5 committed first (D74). M3b+ and M5b frozen on valid (D77, D78) and run on dev once each.
+- Final test: M3b+ 0.6293 (+0.0011 over M3, +0.0040 over M2); M5b 0.6647 (-0.0092 below M4, as warned in D78). Emotion helps consistent
+  users and "fear + nervousness" readers most, is not topic in disguise, and does not come from recency. Report:
+  `docs/reports/week7_behaviour_findings.md`; charts `results/figures/v5_behaviour/` (overview.png). 250 tests pass.
+- Errors found and fixed in my own work: two chart lookups used display labels instead of table keys; captions ran off the edge; value labels
+  floated above bars that start at 0.5; M3b+ was labelled "adaptive" although its adaptive parts were rejected.
+
+## Resume here
+M0 to M5 plus M3b+ and M5b are complete. Next, when asked: M6, M7. Spec v5 is current; open: Q14, Q15.
