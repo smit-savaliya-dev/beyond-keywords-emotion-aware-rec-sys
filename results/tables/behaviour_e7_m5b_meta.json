@@ -1,0 +1,27 @@
+{
+  "chosen": "V3",
+  "mean_valid_auc_by_variant": {
+    "V1": 0.675794,
+    "V2": 0.676618,
+    "V3": 0.682561,
+    "V4": 0.677107,
+    "V5": 0.678048
+  },
+  "ensemble_valid_auc": 0.6837986808967629,
+  "shuffled_label_valid_auc": 0.5235852800934861,
+  "permuted_emotion_valid_auc": 0.6735353127159944,
+  "run_info": {
+    "timestamp_utc": "2026-11-05T15:07:29+00:00",
+    "python": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "git_commit": "9ac25eb",
+    "git_dirty": true,
+    "pandas": "3.0.6",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "scikit-learn": "1.9.1",
+    "pyarrow": "25.0.1",
+    "torch": "2.11.0+cu128",
+    "transformers": "5.18.0"
+  }
+}
