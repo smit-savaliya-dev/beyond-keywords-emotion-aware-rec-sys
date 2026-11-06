@@ -1,0 +1,88 @@
+{
+  "model": "M5v6",
+  "config": {
+    "source": "M5v6_F2",
+    "features": [
+      "pop_ctr",
+      "m1_score",
+      "m2_score",
+      "category",
+      "subcategory",
+      "user_cat_affinity",
+      "history_len",
+      "title_len",
+      "imp_size",
+      "ctr_1h",
+      "shows_1h",
+      "ctr_6h",
+      "shows_6h",
+      "ctr_24h",
+      "shows_24h",
+      "exposure_log",
+      "age_hours",
+      "user_log_clicks",
+      "user_log_cat_share",
+      "pop_ctr_rank",
+      "pop_ctr_z",
+      "m1_score_rank",
+      "m1_score_z",
+      "m2_score_rank",
+      "m2_score_z",
+      "user_cat_affinity_rank",
+      "user_cat_affinity_z",
+      "ctr_24h_rank",
+      "ctr_24h_z",
+      "cong_pct_cos",
+      "cong_pct_cos_personal",
+      "cong_pct_cos_userspecific",
+      "cong_six_negkl",
+      "cong_six_negkl_personal",
+      "cong_six_negkl_userspecific",
+      "cong_valence_absdist",
+      "cong_valence_absdist_personal",
+      "cong_valence_absdist_userspecific",
+      "consistency",
+      "consistency_x_personal",
+      "persona"
+    ],
+    "params": {
+      "num_leaves": 20,
+      "learning_rate": 0.0224831270535195,
+      "min_child_samples": 324,
+      "colsample_bytree": 0.8005575058716043,
+      "reg_lambda": 0.679657809075816
+    },
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "rounds_by_seed": {
+      "42": 556,
+      "43": 564,
+      "44": 528
+    },
+    "train_days": "9-14 Nov (fit + valid)"
+  },
+  "config_hash": "393db93413",
+  "chosen_on": "valid",
+  "evidence": {
+    "selection": "plan v6 rule 8",
+    "rule8_passed": true
+  },
+  "frozen_utc": "2026-11-06T02:56:38+00:00",
+  "run_info": {
+    "timestamp_utc": "2026-11-06T02:56:38+00:00",
+    "python": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "git_commit": "8ae41a8",
+    "git_dirty": true,
+    "pandas": "3.0.6",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "scikit-learn": "1.9.1",
+    "pyarrow": "25.0.1",
+    "torch": "2.11.0+cu128",
+    "transformers": "5.18.0"
+  }
+}

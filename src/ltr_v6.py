@@ -133,7 +133,7 @@ def emotion_columns(ctx, km, mu, sd, resid, raw28, valence, seed=42, min_items=5
     p28, _ = user_profiles(ctx.hist_rows, raw28, raw28.mean(axis=0), decay=0.9, max_items=50)
     for j in range(raw28.shape[1]):
         out[f"prod_{j:02d}"] = (p28[g, j] * raw28[it, j]).astype(np.float32)
-    return pd.DataFrame(out)
+    return out
 
 
 def train_fixed(train, features, params, seed, rounds, categorical=("category", "subcategory")):

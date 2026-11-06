@@ -57,35 +57,77 @@ def emotion_inputs(processed=PROCESSED):
 
 
 def part_frame(part, base, extra, inputs, processed=PROCESSED):
-    """One part's v6 frame in harness order: M4 features + extra + within-impression norms + emotion columns + M3b+ score."""
+    """One part's v6 frame in harness order: M4 features + extra + within-impression norms + emotion columns + M3b+ score.
+    Columns are collected as arrays and joined once (a frame grown column by column runs out of memory on this laptop)."""
     km, mu, sd, resid, raw28, valence = inputs
     ctx = load_context(part, processed, with_m2=True)
     if base["imp_key"].tolist() != ctx.truth["imp_key"].tolist():
         raise ValueError(f"{part} rows are not in harness order")
-    f = base.drop(columns=[c for c in DROP if c in base.columns]).reset_index(drop=True)
-    keys = pd.MultiIndex.from_frame(f[["imp_key", "news_id"]].astype(str))
+    cols = {c: base[c].to_numpy() for c in base.columns if c not in DROP}
+    del base
+    keys = pd.MultiIndex.from_arrays([cols["imp_key"].astype(str), cols["news_id"].astype(str)])
     e = extra.reindex(keys)
     for c in EXTRA_COLS:
-        f[c] = e[c].to_numpy()
-    f = pd.concat([f, within_impression(f), emotion_columns(ctx, km, mu, sd, resid, raw28, valence)], axis=1)
-    f["m3bp_score"] = fused_scores(ctx, emotion_score(ctx, 50, 1.0), 0.8).astype(np.float32)
-    return f
+        cols[c] = e[c].to_numpy(np.float32)
+    del e, keys
+    norm = within_impression(pd.DataFrame({"imp_key": cols["imp_key"], **{c: cols[c] for c in NORM_COLS}}))
+    cols.update({c: norm[c].to_numpy() for c in norm.columns})
+    del norm
+    emo = emotion_columns(ctx, km, mu, sd, resid, raw28, valence)
+    cols.update(emo)
+    del emo
+    cols["m3bp_score"] = fused_scores(ctx, emotion_score(ctx, 50, 1.0), 0.8).astype(np.float32)
+    return cols
+
+
+def write_cols(cols, path):
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+    pq.write_table(pa.table({k: (v if v.dtype != object else v.astype(str)) for k, v in cols.items()}), path)
 
 
 def build():
     if not EXTRA.exists():
         extra_features(PROCESSED).to_parquet(EXTRA, index=False)
-    extra = pd.read_parquet(EXTRA).set_index(["imp_key", "news_id"])
     inputs = emotion_inputs()
-    frames = [part_frame(p, pd.read_parquet(PROCESSED / LTR_FEATURE_FILE.format(part=p)), extra, inputs) for p in ("fit", "valid")]
-    pd.concat(frames, ignore_index=True).to_parquet(FRAME, index=False)
-    print("built", FRAME, flush=True)
+    for p in ("fit",) if part_path("valid").exists() else ("valid", "fit"):
+        truth_keys = pd.read_parquet(PROCESSED / LTR_FEATURE_FILE.format(part=p), columns=["imp_key", "news_id"])
+        extra = pd.read_parquet(EXTRA).set_index(["imp_key", "news_id"])
+        extra = extra.reindex(pd.MultiIndex.from_frame(truth_keys.astype(str)))
+        del truth_keys
+        write_cols(part_frame(p, pd.read_parquet(PROCESSED / LTR_FEATURE_FILE.format(part=p)), extra, inputs), part_path(p))
+        del extra
+        print("built", part_path(p), flush=True)
 
 
-def load_frame():
-    f = pd.read_parquet(FRAME)
+def part_path(part):
+    return PROCESSED / f"ltr_v6_{part}.parquet"
+
+
+def load_frame(features=None):
+    cols = None if features is None else list(dict.fromkeys(["imp_key", "news_id", "label", "day", *features]))
+    f = pd.concat([pd.read_parquet(part_path(p), columns=cols) for p in ("fit", "valid")], ignore_index=True)
     f["day"] = pd.to_datetime(f["day"]).dt.normalize()
     return f
+
+
+def load_fold(features, fold):
+    """(train, test) rows of one fold, filtered and split in pyarrow and converted without block consolidation (lower peak memory)."""
+    import pyarrow as pa
+    import pyarrow.compute as pc
+    import pyarrow.parquet as pq
+    test = pd.Timestamp(FOLDS[fold])
+    cols = list(dict.fromkeys(["imp_key", "news_id", "label", "day", *features]))
+    t = pa.concat_tables([pq.read_table(part_path(p), columns=cols, filters=[("day", "<=", test)]) for p in ("fit", "valid")],
+                         promote_options="permissive")
+    is_test = pc.equal(t["day"], pa.scalar(test, type=t["day"].type))
+    out = []
+    for mask in (pc.invert(is_test), is_test):
+        f = t.filter(mask).to_pandas(split_blocks=True)
+        f["day"] = pd.to_datetime(f["day"]).dt.normalize()
+        out.append(f)
+    del t
+    return out[0], out[1]
 
 
 def fold_data(frame, fold):
@@ -96,9 +138,10 @@ def fold_data(frame, fold):
 def tune(models):
     import optuna
     optuna.logging.set_verbosity(optuna.logging.WARNING)
-    frame = load_frame()
-    folds = {k: fold_data(frame, k) for k in ("F3", "F4")}
     for name in models:
+        frame = load_frame(MODELS[name])
+        folds = {k: fold_data(frame, k) for k in ("F3", "F4")}
+        del frame
         study = optuna.create_study(study_name=name, storage=f"sqlite:///{STUDY.as_posix()}", direction="maximize", load_if_exists=True,
                                     sampler=optuna.samplers.TPESampler(seed=SEED))
         strong = name == "M5v6_F4"
@@ -119,12 +162,11 @@ def best_params(name):
 
 
 def evaluate_model(name):
-    frame = load_frame()
-    sha = file_sha(FRAME)
+    sha = file_sha(part_path("fit"), part_path("valid"))
     params = best_params(name)
     rows = []
     for fold in FOLDS:
-        tr, te = fold_data(frame, fold)
+        tr, te = load_fold(MODELS[name], fold)
         preds = []
         for seed in SEEDS:
             booster, info = fit_or_load(tr, te, MODELS[name], params, seed, f"v6-{fold}", sha, resume=True)
@@ -149,12 +191,11 @@ def evaluate_model(name):
 
 def controls():
     from src.click_signal import permute_within_groups
-    frame = load_frame()
-    sha = file_sha(FRAME)
-    tr, te = fold_data(frame, "F4")
-    tr = tr.assign(label=permute_within_groups(pd.factorize(tr["imp_key"])[0], tr["label"].to_numpy(), SEED))
+    sha = file_sha(part_path("fit"), part_path("valid"))
     rows = []
     for name in MODELS:
+        tr, te = fold_data(load_frame(MODELS[name]), "F4")
+        tr = tr.assign(label=permute_within_groups(pd.factorize(tr["imp_key"])[0], tr["label"].to_numpy(), SEED))
         booster, info = fit_or_load(tr, te, MODELS[name], best_params(name), SEED, "v6-F4-shuffled-labels", sha, resume=True)
         auc = float(np.nanmean(fast_metrics(te["imp_key"].to_numpy(), te["label"].to_numpy(), booster.predict(te[MODELS[name]]))["auc"]))
         rows.append({"model": name, "shuffled_label_valid_auc": auc, "rounds": info["best_iteration"]})
@@ -197,9 +238,10 @@ def select():
 def final_dev(label, reason):
     frozen = check_final_dev(label, reason)
     cfg = frozen["config"]
-    frame = load_frame()
-    extra = pd.read_parquet(EXTRA).set_index(["imp_key", "news_id"])
-    dev = part_frame("dev", build_features("dev", PROCESSED), extra, emotion_inputs())
+    frame = load_frame(cfg["features"])
+    base = build_features("dev", PROCESSED)
+    extra = pd.read_parquet(EXTRA).set_index(["imp_key", "news_id"]).reindex(pd.MultiIndex.from_frame(base[["imp_key", "news_id"]].astype(str)))
+    dev = pd.DataFrame(part_frame("dev", base, extra, emotion_inputs()))
     preds = [train_fixed(frame, cfg["features"], cfg["params"], int(s), cfg["rounds_by_seed"][str(s)]).predict(dev[cfg["features"]]) for s in cfg["seeds"]]
     truth = load_truth("dev", PROCESSED)
     out = dev[["imp_key", "news_id"]].assign(score=np.mean(preds, axis=0))
