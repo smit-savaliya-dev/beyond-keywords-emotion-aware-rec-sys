@@ -65,6 +65,32 @@ def train(models, ctrl_of=None):
     pd.concat([old[~old["model"].isin(t["model"])] if len(old) else old, t], ignore_index=True).to_csv(path, index=False)
 
 
+def select():
+    """Rule 8 for NRMS (plan v6): seeds replace folds. -> v6_nrms_selection.json."""
+    t = pd.read_csv(TABLES / "v6_nrms_seeds_valid.csv").set_index(["model", "seed"])["auc"]
+    m6 = t.loc["M6"]
+    noise = float(m6.std())
+    rows = []
+    for v in ("M7b", "M7a", "M7c"):
+        d = t.loc[v] - m6
+        rows.append({"variant": v, "mean_auc": float(t.loc[v].mean()), "gain_vs_m6": float(d.mean()), "seed_wins": int((d > 0).sum()),
+                     "m6_seed_sd": noise, "eligible": bool((d > 0).sum() >= 2 and d.mean() > noise)})
+    r = pd.DataFrame(rows)
+    elig = r[r["eligible"]]
+    if len(elig):
+        best = elig["mean_auc"].max()
+        chosen = next(v for v in ("M7b", "M7a", "M7c") if v in set(elig["variant"]) and best - float(elig.set_index("variant").loc[v, "mean_auc"]) < 0.0005)
+    else:
+        chosen = "M7b"
+    sel = {"selected": chosen, "selected_mode": MODES[chosen], "passed_rule": bool(len(elig) > 0), "m6_mean_auc": float(m6.mean()), "m6_seed_sd": noise}
+    if "M7ctrl" in t.index.get_level_values(0):
+        sel["ctrl_mean_auc"] = float(t.loc["M7ctrl"].mean())
+        sel["beats_ctrl"] = bool(t.loc[chosen].mean() > t.loc["M7ctrl"].mean())
+    r.to_csv(TABLES / "v6_nrms_rule8.csv", index=False)
+    (TABLES / "v6_nrms_selection.json").write_text(json.dumps(sel, indent=2), encoding="utf-8")
+    print(r.round(5).to_string(index=False), sel)
+
+
 def freeze(name, mode, control):
     doc = save_frozen(NAMES[name], {"mode": mode, "seeds": SEEDS, "control": control, "trained_on": "fit (days 9-13), early stopping on valid"},
                       {"selection": "plan v6 stage 3/4"})
@@ -101,12 +127,15 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--train", nargs="*", default=[])
     ap.add_argument("--ctrl", metavar="VARIANT")
+    ap.add_argument("--select", action="store_true")
     ap.add_argument("--freeze", nargs="*", default=[])
     ap.add_argument("--final-dev", nargs="*", default=[])
     ap.add_argument("--rerun-dev", metavar="REASON")
     args = ap.parse_args()
     if args.train or args.ctrl:
         train(args.train, args.ctrl)
+    if args.select:
+        select()
     for name in args.freeze:
         freeze(name, MODES.get(name, "none") if name != "M7ctrl" else json.loads((TABLES / "v6_nrms_selection.json").read_text())["selected_mode"],
                name == "M7ctrl")
