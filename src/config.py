@@ -135,7 +135,11 @@ SBERT_CHUNK = 50_000                                     # candidate rows per ch
 M3_NAME = "M3_sbert_emotion"
 MODEL_LADDER = [("M0_popularity", "M0 popularity", False), ("M1_tfidf", "M1 TF-IDF", False), ("M2_sbert", "M2 Sentence-BERT", False),
                 ("M3_sbert_emotion", "M3 = M2 + emotion", True), ("M4_lightgbm", "M4 LightGBM", False),
-                ("M5_lightgbm_emotion", "M5 = M4 + emotion", True), ("M6_nrms", "M6 NRMS", False), ("M7_nrms_emotion", "M7 = M6 + emotion", True)]
+                ("M5_lightgbm_emotion", "M5 = M4 + emotion", True), ("M3b_plus", "M3b+ (week 7)", True), ("M5b_lightgbm_emotion", "M5b (week 7)", True),
+                ("M4v6", "M4v6 LightGBM, fuller features", False), ("M5v6", "M5v6 = M4v6 + emotion", True), ("M6_nrms", "M6 NRMS", False),
+                ("M7a_nrms_emotion_item", "M7 = M6 + emotion", True), ("M7b_nrms_emotion_gated", "M7 = M6 + emotion", True),
+                ("M7c_nrms_emotion_both", "M7 = M6 + emotion", True), ("M7ctrl_nrms_permuted", "M7ctrl (emotion permuted)", True),
+                ("B0", "B0 = M4v6 + M6 blend", False), ("B1", "B1 = M5v6 + M7 blend", True)]
 M3_VARIANTS = ["cosine", "personal", "user_specific", "mood_repair"]  # grid order; first = primary (D52, D53)
 M3_REPORT_ONLY = "title_only"                            # spec v3 variant, reported, never selected
 M3_K_OTHER = 10

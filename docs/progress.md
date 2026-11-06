@@ -283,3 +283,13 @@ M0 to M5 are complete. M4 is the best model on dev. Next, when asked: M6, M7. Sp
 
 ## Resume here
 M0 to M5 plus M3b+ and M5b are complete. Next, when asked: M6, M7. Spec v5 is current; open: Q14, Q15.
+
+## 2026-11-06 week8-improve: stages 0-7 done
+- Audit first (`docs/audit_v6.md`), plan v6 committed before any result, then fair twins on rolling folds, NRMS, blends, subgroups, charts.
+- Final test (second look, D79): M4v6 0.7111 (+0.037 over M4), M5v6 0.7118 (+0.0007, Holm p 0.09), M6 0.6082, M7 0.6085, M7ctrl 0.6091, B0 0.7075,
+  B1 0.7120. Emotion did not clearly beat its twin anywhere. Report `docs/reports/week8_improvement_findings.md`. 261 tests pass.
+- Errors found in my own work: RAM/C: drive exhaustion from parallel jobs (D82); the pre-declared B1 - B0 mixes emotion with blend weight (D89);
+  tree shuffled-label controls biased by early stopping (D83); the first NRMS run's seed table was never written because it crashed (rerun from checkpoints).
+
+## Resume here
+All planned models (M0-M7) exist. Week 8 is the final fair comparison. Open: Q14, Q15.
