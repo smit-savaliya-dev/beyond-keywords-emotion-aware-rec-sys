@@ -1,7 +1,8 @@
 # Beyond Keywords: Emotion-Aware Ranking
 
 Does emotional context improve click ranking beyond content matching? An 8-model ablation (M0 to M7, each with and without emotion) on
-MIND-small. M0 to M5 are done. MSc Data Analytics Research Practicum, NCI.
+MIND-small. All models (M0 to M7, blends, both regimes) are done: **results in [docs/final_results_table.md](docs/final_results_table.md)**.
+MSc Data Analytics Research Practicum, NCI.
 Demo platform: [AURA](https://github.com/smit-savaliya-dev/aura-ai-powered-emotion-aware-ad-recommender-platform).
 
 **Reviewing this project? Read [docs/CODE_WALKTHROUGH.md](docs/CODE_WALKTHROUGH.md) first** (folder map, run order, what to read, where results live).
@@ -104,6 +105,33 @@ unchanged. Both were used for the tidy-up of `docs/cleanup_plan_v2.md` (old scri
 Pre-declared in `docs/experiments_plan_v5.md`; findings in `docs/reports/week7_behaviour_findings.md`; charts in `results/figures/v5_behaviour/`
 (`overview.png`). Scripts `06_01` to `06_12` are run by hand in order; they read saved dev result files, so they are not pipeline steps (D76).
 `06_07_e7_m3b_plus.py` and `06_08_e7_m5b.py` have `--tune` (valid) and `--final-dev` (once).
+
+## Regimes (plan v7)
+**R1 STANDARD (primary).** Every behavioural feature (item click-through, exposure, article age, the user's logged clicks) is computed from
+days before the scored day only, so a model never sees a click or impression from the day it ranks. This is the usual offline protocol and
+the setting in which the thesis claim is made (`src/same_day.py`, models `M4v6_R1`, `M5v6_R1`, `B0_R1`, `B1_R1`).
+
+**R2 REAL-TIME (secondary).** Behavioural features may also use earlier clicks and impressions of the same day, as a live system would
+(models `M4v6`, `M5v6`, `B0`, `B1` of week 8). It is time-causal, but on the final test it uses earlier labels of the test day itself, so
+its scores are not comparable with standard offline MIND results.
+
+## How to reproduce
+1. **Environment** (Python 3.11): `python -m venv .venv`, activate it, then `pip install -r requirements-lock.txt` for the exact versions used
+   (or `requirements.txt` for compatible newer ones; a clean clone with newer pandas/torch regenerated the checked tables identically,
+   see [docs/reproducibility_check.md](docs/reproducibility_check.md)). GPU: install the CUDA build of torch 2.11 (comment in the lock file).
+2. **Data** (not redistributed: MIND and the NRC lexicons have their own licences): put MIND-small `news.tsv` and `behaviors.tsv` in
+   `data/raw/train/` and `data/raw/dev/` (or let step `01_01` download them), and the NRC files as in Setup.
+3. **Tests**: `python -m pytest -q` (no data, GPU or internet needed).
+4. **Pipeline (weeks 1-6, valid only)**: `python scripts/run_pipeline.py`. GPU steps (`02_01`, `02_02`, `02_10`, `04_04`) need
+   `--force-step` the first time. Quick CPU smoke path: `python scripts/run_pipeline.py --only 01_02 01_03 01_04 04_01 04_02 --skip-tests`.
+5. **Week 7** (`06_*` scripts) and **week 8** (`07_02_trees_v6.py --build/--tune/--evaluate/--select`, `07_03_nrms.py --train/--select`,
+   `07_04_blends.py`, `07_05_twin_analysis.py`, `07_06_final_report.py`): run in that order; each script's docstring lists its options.
+6. **Plan v7 (regimes)**: `python scripts/08_01_regimes.py --build`, then for each of `T1_M4cols M4v6_R1 M5v6_R1_F2 M5v6_R1_F3 M5v6_R1_F6`:
+   `--tune NAME` and `--evaluate NAME`; then `--select` and `--controls`; record the printed frozen markers in `docs/decisions.md`;
+   `--final-dev M4v6_R1` and `--final-dev M5v6_R1` (once each); then `python scripts/08_02_regime_analysis.py --blends` and `--report`.
+   About 4 CPU hours on a 2024 laptop (heavy jobs one at a time; about 12 GB RAM peak).
+7. **Dev runs** are never part of the pipeline: each model's `--final-dev` refuses to run unless its frozen settings are recorded in
+   `docs/decisions.md` and it has no earlier dev run.
 
 ## Rules that protect the results
 - `fit` trains, `valid` (last day of train) tunes, `dev` is reported once. Never tune on dev.
