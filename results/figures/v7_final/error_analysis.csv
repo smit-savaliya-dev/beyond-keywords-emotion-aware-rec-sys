@@ -1,0 +1,21 @@
+kind,imp_key,headline,category,gain,rank_twin,rank_emotion,personal_match,consistency
+hurt,dev-24702,Opinion: Colin Kaepernick is about to get what he deserves: a chance,sports,-0.5555555555555556,4,9,-0.04184961922855113,0.8393313827030362
+hurt,dev-3183,The world's most profitable company is about to go public,finance,-0.5,8,15,-0.19616893610004082,1.0000000000000004
+hurt,dev-26161,"Taylor Swift Says Scooter Braun, Scott Borchetta Are Blocking Her From Playing Old Hits at AMAs",music,-0.47368421052631576,4,13,-0.24232615416740577,
+hurt,dev-13067,Judge agrees Alabama Islamic State recruit is not US citizen,news,-0.4444444444444444,4,8,-0.012196671692204286,
+hurt,dev-46097,Opinion: Colin Kaepernick is about to get what he deserves: a chance,sports,-0.4444444444444444,1,5,-0.11071501323715693,0.791346415540388
+hurt,dev-23721,"The Day in Sports: Thursday, November 14, 2019",sports,-0.4074074074074074,10,21,-0.18205382911117085,0.7670636641249944
+hurt,dev-23155,Opinion: Colin Kaepernick is about to get what he deserves: a chance,sports,-0.4,6,10,-0.04469475520246258,0.7019863577826517
+hurt,dev-11761,Opinion: Colin Kaepernick is about to get what he deserves: a chance,sports,-0.4,1,5,-0.03660555931412757,0.8073104111106469
+hurt,dev-61101,"Taylor Swift Rep Hits Back at Big Machine, Claims She's Actually Owed $7.9 Million in Unpaid Royalties",music,-0.4,2,6,-0.03736290910097684,0.7365456709154116
+hurt,dev-53717,White House releases summary of Trump's first call with Ukraine's Zelensky,news,-0.4,2,8,-0.08659104228393322,0.8020614378449338
+helped,dev-23980,"Former North Carolina State, NBA player Anthony Grundy dies in stabbing, police say",sports,0.4545454545454546,9,4,0.026176898352338718,0.7819365054177952
+helped,dev-8067,South Carolina teen gets life in prison for deadly elementary school shooting,news,0.4736842105263158,18,9,0.04413805023106443,0.844517986860386
+helped,dev-50801,30 Best Black Friday Deals from Costco,lifestyle,0.49999999999999994,9,4,0.04684620492736202,0.7903276174870864
+helped,dev-44913,"Selena Gomez Stands Up for Taylor Swift Amid Her Music Battle: 'It's Greed, Manipulation and Power'",music,0.5,23,11,0.0412114353009021,0.8914926796764067
+helped,dev-8477,Opinion: Colin Kaepernick is about to get what he deserves: a chance,sports,0.5,8,3,-0.08654830162690208,
+helped,dev-13758,Opinion: Colin Kaepernick is about to get what he deserves: a chance,sports,0.5,6,1,0.03457707956794964,0.8616522415961377
+helped,dev-11747,"Former North Carolina State, NBA player Anthony Grundy dies in stabbing, police say",sports,0.5121951219512195,29,8,0.016310281845629993,0.8462745179185598
+helped,dev-52825,South Carolina teen gets life in prison for deadly elementary school shooting,news,0.5294117647058822,13,4,0.046932880555841994,0.9152724337756023
+helped,dev-53035,This stately home is having the ultimate yard sale,finance,0.5333333333333332,13,5,0.10642697985676841,0.762808305305799
+helped,dev-24016,South Carolina teen gets life in prison for deadly elementary school shooting,news,0.6363636363636365,10,3,0.04153102363960981,1.0000000000000004
