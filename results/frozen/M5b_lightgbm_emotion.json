@@ -1,0 +1,73 @@
+{
+  "model": "M5b_lightgbm_emotion",
+  "config": {
+    "variant": "V3",
+    "features": [
+      "pop_ctr",
+      "m1_score",
+      "m2_score",
+      "category",
+      "subcategory",
+      "user_cat_affinity",
+      "history_len",
+      "title_len",
+      "imp_size",
+      "cong_pct_cos_personal",
+      "cong_six_negkl_personal",
+      "cong_valence_absdist_personal",
+      "consistency",
+      "cong_short_personal",
+      "exposure_bucket",
+      "go_vad_valence",
+      "go_vad_dominance"
+    ],
+    "params": {
+      "num_leaves": 31,
+      "learning_rate": 0.05,
+      "min_child_samples": 50
+    },
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "model_sha256": {
+      "42": "d45e66d6813352efad58220176acbc36f5d4873f58eabdaffd9aa57b8a522bb9",
+      "43": "499611c99e6962fec56b6753645062bf0db29cd34651078d10fe9103e178848b",
+      "44": "bbb471712eda68fe82bd0f5176ceaab2f1efe62655e8190a9e775e16cbbf9a13"
+    },
+    "exposure_q_fit": 1346.0,
+    "short_window": [
+      50,
+      1.0
+    ],
+    "m4_config_hash": "11ba13ceeb"
+  },
+  "config_hash": "a3e08a9306",
+  "chosen_on": "valid",
+  "evidence": {
+    "selection": "plan v5 E7: highest mean valid AUC over 3 seeds, ties (< 0.0005) to the simpler variant",
+    "mean_valid_auc": {
+      "V1": 0.675794,
+      "V2": 0.676618,
+      "V3": 0.682561,
+      "V4": 0.677107,
+      "V5": 0.678048
+    }
+  },
+  "frozen_utc": "2026-11-05T15:07:29+00:00",
+  "run_info": {
+    "timestamp_utc": "2026-11-05T15:07:29+00:00",
+    "python": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "git_commit": "9ac25eb",
+    "git_dirty": true,
+    "pandas": "3.0.6",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "scikit-learn": "1.9.1",
+    "pyarrow": "25.0.1",
+    "torch": "2.11.0+cu128",
+    "transformers": "5.18.0"
+  }
+}

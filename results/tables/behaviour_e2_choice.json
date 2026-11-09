@@ -1,0 +1,37 @@
+{
+  "window": {
+    "size": 50,
+    "decay": 1.0
+  },
+  "blend_a": 1.0,
+  "blend_a_best": 0.8,
+  "blend_kept": false,
+  "covered_test": {
+    "n": 10087,
+    "mean_a": 0.638279136711078,
+    "mean_b": 0.6382933429821187,
+    "mean_diff": 1.4206271040669752e-05,
+    "ci_low": -0.0013757577738692263,
+    "ci_high": 0.001404170315950566,
+    "dz": 0.00019947833332568447,
+    "t_stat": 0.02003441849267168,
+    "p": 0.9840163123794968,
+    "p_wilcoxon": 0.3952097302018758,
+    "pct_b_better": 22.494299593536233
+  },
+  "coverage_valid": 0.3332342253055831,
+  "run_info": {
+    "timestamp_utc": "2026-11-05T14:41:48+00:00",
+    "python": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "git_commit": "78bf4fe",
+    "git_dirty": true,
+    "pandas": "3.0.6",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "scikit-learn": "1.9.1",
+    "pyarrow": "25.0.1",
+    "torch": "2.11.0+cu128",
+    "transformers": "5.18.0"
+  }
+}

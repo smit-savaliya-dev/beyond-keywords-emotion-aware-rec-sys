@@ -45,7 +45,7 @@ Step `01_05_download_semeval` downloads SemEval-2007 into `data/external/semeval
 
 ## Reading order
 1. [CODE_WALKTHROUGH.md](CODE_WALKTHROUGH.md): the guide for a reviewer.
-2. `docs/reports/m4m5_report.md`: the latest results in simple language.
+2. `docs/reports/week7_behaviour_findings.md`: the latest results (when emotion helps); `docs/reports/m4m5_report.md` before it.
 3. `docs/figures_guide.md`: every chart explained.
 4. `docs/methodology_notes.md`: why the method is what it is.
 5. `docs/decisions.md`: every decision, with alternatives and evidence.

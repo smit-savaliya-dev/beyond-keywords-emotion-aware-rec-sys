@@ -1,0 +1,24 @@
+{
+  "k": 3,
+  "silhouette": {
+    "3": 0.1894273333447597,
+    "4": 0.18173665760025773,
+    "5": 0.16919928564869452,
+    "6": 0.1553704370892161
+  },
+  "names": [
+    "P1: excitement + joy",
+    "P2: fear + nervousness",
+    "P3: annoyance + optimism"
+  ],
+  "fit_users": 37345,
+  "stability": {
+    "ari_fit_centroids_vs_valid_refit": 0.9360905957821372,
+    "centroid_distance_after_matching": [
+      0.06933996116754146,
+      0.1338219758557666,
+      0.11319864733061955
+    ]
+  },
+  "standardisation": "fit mean and SD"
+}

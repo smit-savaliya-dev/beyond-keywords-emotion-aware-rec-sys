@@ -1,0 +1,9 @@
+persona,impressions,part
+P1: excitement + joy,9468,valid
+P3: annoyance + optimism,8904,valid
+P2: fear + nervousness,7879,valid
+too little history,4019,valid
+P1: excitement + joy,22778,dev
+P3: annoyance + optimism,21277,dev
+P2: fear + nervousness,18791,dev
+too little history,10306,dev

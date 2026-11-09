@@ -61,18 +61,19 @@ def dev_auc_row(comparison, a, b):
 def chart_model_scores():
     t = pd.read_csv(TABLES / "model_ladder.csv")
     t = t[t["part"] == "dev"]
-    fig, ax = new("Meaning-based models rank clicks best")
+    fig, ax = new("Richer time-aware tree models rank clicks best")
     ax.grid(axis="y", color="#e6e6e6")
     x = range(len(t))
-    ax.bar(x, t["auc"] - 0.5, bottom=0.5, color=[ORANGE if e else BLUE for e in t["emotion"]], width=0.65)
+    control = t["model"].str.contains("ctrl").to_numpy()
+    ax.bar(x, t["auc"] - 0.5, bottom=0.5, color=[GREY if c else (ORANGE if e else BLUE) for e, c in zip(t["emotion"], control)], width=0.65)
     for i, v in zip(x, t["auc"]):
-        ax.text(i, v + 0.003, f"{v:.3f}", ha="center", fontsize=17, fontweight="bold")
+        ax.text(i, v + 0.003, f"{v:.3f}", ha="center", fontsize=12, fontweight="bold")
     ax.axhline(0.5, color=GREY, linestyle="--", linewidth=2)
     ax.text(-0.45, 0.4965, "random guessing", ha="left", va="top", fontsize=15, color=INK)
-    ax.set_xticks(list(x), [lab.replace(" = ", "\n= ") for lab in t["label"]], fontsize=14)
-    ax.set_ylim(0.47, 0.70)
+    ax.set_xticks(list(x), [lab.split()[0] for lab in t["label"]], fontsize=14)
+    ax.set_ylim(0.47, float(t["auc"].max()) + 0.025)
     ax.set_ylabel("Ranking score on the final test (AUC)\nbars start at 0.5 = random guessing")
-    ax.legend(handles=[Patch(color=BLUE, label="Without emotion"), Patch(color=ORANGE, label="With emotion")], loc="upper left", frameon=False, fontsize=15)
+    ax.legend(handles=[Patch(color=BLUE, label="Without emotion"), Patch(color=ORANGE, label="With emotion"), Patch(color=GREY, label="Control (emotion permuted)")], loc="upper left", frameon=False, fontsize=14)
     save(fig, "1_model_scores.png")
 
 

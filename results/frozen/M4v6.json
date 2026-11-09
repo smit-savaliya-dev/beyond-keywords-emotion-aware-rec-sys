@@ -1,0 +1,76 @@
+{
+  "model": "M4v6",
+  "config": {
+    "source": "M4v6",
+    "features": [
+      "pop_ctr",
+      "m1_score",
+      "m2_score",
+      "category",
+      "subcategory",
+      "user_cat_affinity",
+      "history_len",
+      "title_len",
+      "imp_size",
+      "ctr_1h",
+      "shows_1h",
+      "ctr_6h",
+      "shows_6h",
+      "ctr_24h",
+      "shows_24h",
+      "exposure_log",
+      "age_hours",
+      "user_log_clicks",
+      "user_log_cat_share",
+      "pop_ctr_rank",
+      "pop_ctr_z",
+      "m1_score_rank",
+      "m1_score_z",
+      "m2_score_rank",
+      "m2_score_z",
+      "user_cat_affinity_rank",
+      "user_cat_affinity_z",
+      "ctr_24h_rank",
+      "ctr_24h_z"
+    ],
+    "params": {
+      "num_leaves": 55,
+      "learning_rate": 0.02649083634077794,
+      "min_child_samples": 50,
+      "colsample_bytree": 0.6831809216468459,
+      "reg_lambda": 0.06672367170464207
+    },
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "rounds_by_seed": {
+      "42": 237,
+      "43": 303,
+      "44": 257
+    },
+    "train_days": "9-14 Nov (fit + valid)"
+  },
+  "config_hash": "5b08eb79e3",
+  "chosen_on": "valid",
+  "evidence": {
+    "selection": "plan v6 twin",
+    "rule8_passed": true
+  },
+  "frozen_utc": "2026-11-06T02:56:38+00:00",
+  "run_info": {
+    "timestamp_utc": "2026-11-06T02:56:38+00:00",
+    "python": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "git_commit": "8ae41a8",
+    "git_dirty": true,
+    "pandas": "3.0.6",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "scikit-learn": "1.9.1",
+    "pyarrow": "25.0.1",
+    "torch": "2.11.0+cu128",
+    "transformers": "5.18.0"
+  }
+}

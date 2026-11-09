@@ -11,3 +11,4 @@ datasets>=2.19
 vaderSentiment>=3.3
 lightgbm==4.7.0
 sentence-transformers==6.2.0
+optuna==5.0.0

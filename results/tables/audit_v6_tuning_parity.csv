@@ -1,0 +1,13 @@
+model,valid_runs_logged
+M0_popularity,36
+M1_tfidf,90
+M2_sbert,20
+M3_sbert_emotion,180
+M3b_plus,1
+M4_lightgbm,32
+M5_all_lightgbm,27
+M5_congruence_only,3
+M5_item_only,3
+M5_lightgbm_emotion,27
+M5_permuted_items,3
+M5b_lightgbm_emotion,1

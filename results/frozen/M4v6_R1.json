@@ -1,0 +1,77 @@
+{
+  "model": "M4v6_R1",
+  "config": {
+    "source": "M4v6_R1",
+    "features": [
+      "pop_ctr",
+      "m1_score",
+      "m2_score",
+      "category",
+      "subcategory",
+      "user_cat_affinity",
+      "history_len",
+      "title_len",
+      "imp_size",
+      "pd_ctr_1h",
+      "pd_shows_1h",
+      "pd_ctr_6h",
+      "pd_shows_6h",
+      "pd_ctr_24h",
+      "pd_shows_24h",
+      "pd_exposure_log",
+      "pd_age_hours",
+      "pd_user_log_clicks",
+      "pd_user_log_cat_share",
+      "pop_ctr_rank",
+      "pop_ctr_z",
+      "m1_score_rank",
+      "m1_score_z",
+      "m2_score_rank",
+      "m2_score_z",
+      "user_cat_affinity_rank",
+      "user_cat_affinity_z",
+      "pd_ctr_24h_rank",
+      "pd_ctr_24h_z"
+    ],
+    "params": {
+      "num_leaves": 54,
+      "learning_rate": 0.028199996263578355,
+      "min_child_samples": 24,
+      "colsample_bytree": 0.9744427686266666,
+      "reg_lambda": 7.2866537374910445
+    },
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "rounds_by_seed": {
+      "42": 310,
+      "43": 223,
+      "44": 308
+    },
+    "train_days": "9-14 Nov (fit + valid)",
+    "regime": "R1 (previous days only)"
+  },
+  "config_hash": "5686c5c414",
+  "chosen_on": "valid",
+  "evidence": {
+    "selection": "plan v7 R1 twin",
+    "rule8_passed": true
+  },
+  "frozen_utc": "2026-11-09T20:19:19+00:00",
+  "run_info": {
+    "timestamp_utc": "2026-11-09T20:19:19+00:00",
+    "python": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "git_commit": "f0adbed",
+    "git_dirty": true,
+    "pandas": "3.0.6",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "scikit-learn": "1.9.1",
+    "pyarrow": "25.0.1",
+    "torch": "2.11.0+cu128",
+    "transformers": "5.18.0"
+  }
+}

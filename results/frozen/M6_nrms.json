@@ -1,0 +1,33 @@
+{
+  "model": "M6_nrms",
+  "config": {
+    "mode": "none",
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "control": false,
+    "trained_on": "fit (days 9-13), early stopping on valid"
+  },
+  "config_hash": "5fa42019f6",
+  "chosen_on": "valid",
+  "evidence": {
+    "selection": "plan v6 stage 3/4"
+  },
+  "frozen_utc": "2026-11-06T02:56:41+00:00",
+  "run_info": {
+    "timestamp_utc": "2026-11-06T02:56:41+00:00",
+    "python": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "git_commit": "8ae41a8",
+    "git_dirty": true,
+    "pandas": "3.0.6",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "scikit-learn": "1.9.1",
+    "pyarrow": "25.0.1",
+    "torch": "2.11.0+cu128",
+    "transformers": "5.18.0"
+  }
+}

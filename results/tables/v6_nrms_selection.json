@@ -1,0 +1,9 @@
+{
+  "selected": "M7b",
+  "selected_mode": "b",
+  "passed_rule": false,
+  "m6_mean_auc": 0.6386523333333333,
+  "m6_seed_sd": 0.0018341933740293984,
+  "ctrl_mean_auc": 0.6386006666666667,
+  "beats_ctrl": true
+}
