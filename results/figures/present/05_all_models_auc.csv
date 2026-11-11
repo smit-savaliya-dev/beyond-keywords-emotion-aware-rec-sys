@@ -1,0 +1,10 @@
+model,name,emotion,test_auc,label,source,random
+M0_popularity,M0 popularity,False,0.589,0.589,model_ladder.csv (dev),0.5
+M1_tfidf,M1 TF-IDF,False,0.574,0.574,model_ladder.csv (dev),0.5
+M2_sbert,M2 SBERT,False,0.625,0.625,model_ladder.csv (dev),0.5
+M3_sbert_emotion,M3 M2+emo,True,0.628,0.628,model_ladder.csv (dev),0.5
+M3b_plus,M3b+ M2+emo,True,0.629,0.629,model_ladder.csv (dev),0.5
+M4_lightgbm,M4 LightGBM,False,0.674,0.674,model_ladder.csv (dev),0.5
+M5_lightgbm_emotion,M5 M4+emo,True,0.671,0.671,model_ladder.csv (dev),0.5
+M6_nrms,M6 NRMS,False,0.608,0.608,model_ladder.csv (dev),0.5
+M7b_nrms_emotion_gated,M7 M6+emo,True,0.608,0.608,model_ladder.csv (dev),0.5

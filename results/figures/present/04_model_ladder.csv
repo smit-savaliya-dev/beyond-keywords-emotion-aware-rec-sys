@@ -1,0 +1,5 @@
+row,without_emotion,with_emotion,source
+Content models,M2 Sentence-BERT,M3 = M2 + emotion,model_ladder.csv
+Feature rankers (LightGBM),M4 LightGBM,M5 = M4 + emotion,model_ladder.csv
+Neural reader models,M6 NRMS,M7 = M6 + emotion,model_ladder.csv
+Floor (simple baselines),M0 popularity / M1 TF-IDF,,model_ladder.csv

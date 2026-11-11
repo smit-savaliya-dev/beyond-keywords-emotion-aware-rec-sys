@@ -1,0 +1,7 @@
+part,name,first_day,last_day,days,impressions,label,source
+fit,Train,2019-11-09,2019-11-13,5,126695,"126,695
+impressions",results/figures/EDA/eda_stats.json
+valid,Validate,2019-11-14,2019-11-14,1,30270,"30,270
+impressions",results/figures/EDA/eda_stats.json
+dev,Test,2019-11-15,2019-11-15,1,73152,"73,152
+impressions",results/figures/EDA/eda_stats.json

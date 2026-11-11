@@ -1,0 +1,6 @@
+panel,name,auc,source,label
+A,First M4 | (previous days),0.673933378961407,v7_survival_dev.csv dev_M4,0.674
+A,M4v6 | with same-day clicks (R2),0.7110786790467049,v7_survival_dev.csv dev_M4v6_R2,0.711
+A,M4v6 | previous days only (R1),0.6645411241510731,v7_survival_dev.csv dev_M4v6_R1,0.665
+B,Click rate | with same-day clicks,0.6473111171197394,v7_single_feature_auc.csv ctr_24h same_day_auc_R2 (valid day),0.647
+B,Click rate | previous days only,0.557459312989641,v7_single_feature_auc.csv ctr_24h previous_days_auc_R1 (valid day),0.557

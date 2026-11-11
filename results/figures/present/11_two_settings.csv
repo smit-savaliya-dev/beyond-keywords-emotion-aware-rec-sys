@@ -1,0 +1,5 @@
+setting,series,model,test_auc,label,pair_gain,gain_label,p_holm,significant,source
+previous days only (R1),without emotion,M4v6_R1,0.6645411241510731,0.6645,0.0050647535804904,+0.0051,3.352466632938781e-39,True,v7_dev_families.csv
+previous days only (R1),with emotion,M5v6_R1,0.6696058777315637,0.6696,0.0050647535804904,+0.0051,3.352466632938781e-39,True,v7_dev_families.csv
+with same-day clicks (R2),without emotion,M4v6,0.7110786790467049,0.7111,0.0007439714554207,+0.0007,0.0929065831638239,False,v7_dev_families.csv
+with same-day clicks (R2),with emotion,M5v6,0.7118226505021256,0.7118,0.0007439714554207,+0.0007,0.0929065831638239,False,v7_dev_families.csv

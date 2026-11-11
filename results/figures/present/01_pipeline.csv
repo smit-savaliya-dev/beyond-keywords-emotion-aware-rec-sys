@@ -1,0 +1,7 @@
+step,text,source,history_items,history_source
+1,MIND-small click logs,method,50,src/config.py CONGRUENCE_MAX_HISTORY
+2,"Article emotion scores (GoEmotions + NRC, title + abstract)",method,50,src/config.py CONGRUENCE_MAX_HISTORY
+3,Reader emotional profile (last 50 clicks),method,50,src/config.py CONGRUENCE_MAX_HISTORY
+4,Match score (reader vs article),method,50,src/config.py CONGRUENCE_MAX_HISTORY
+5,Content score + emotion score,method,50,src/config.py CONGRUENCE_MAX_HISTORY
+6,Final ranking,method,50,src/config.py CONGRUENCE_MAX_HISTORY

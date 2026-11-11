@@ -1,0 +1,5 @@
+panel,name,value,ci_low,ci_high,p,n,label,part,source,significant
+A,Emotion match alone,0.555130072004491,0.5512911695625876,0.5589645554312338,1.2936247610815351e-164,33383,0.555,valid,behaviour_e5_within_category_auc.csv (group all),True
+A,"Same, labels shuffled (control)",0.4997580934089337,0.4961160346591461,0.5040563592517224,0.9038331274480296,33721,0.500,valid,behaviour_e5_within_category_auc.csv (group all),False
+B,Validation day (14 Nov),0.001365755405016,-0.000382304162735,0.0029920030901188,0.1170050647130023,33383,+0.0014,valid,behaviour_e5_m3_gain_within_category.csv (group all),False
+B,Final test day (15 Nov),0.0039506240354503,0.0026895765843499,0.0053095386793375,7.058739659428925e-09,80125,+0.0040,dev,behaviour_e5_m3_gain_within_category.csv (group all),True

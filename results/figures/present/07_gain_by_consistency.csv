@@ -1,0 +1,4 @@
+group,name,impressions,gain,ci_low,ci_high,p_holm,significant,label,regime,source
+low,Most varied readers,22540,0.0040091111590767,0.0028004147396725,0.0053387916631209,2.2948773867289784e-09,True,+0.0040,previous days only (R1),"v7_subgroups.csv (dev, R1)"
+mid,Middle,23785,0.0038768160101903,0.0027152252855168,0.0050643877624497,4.309194802554042e-09,True,+0.0039,previous days only (R1),"v7_subgroups.csv (dev, R1)"
+high,Most consistent readers,23536,0.006936736013814,0.0053718407686998,0.0085368518228305,1.6896913018760058e-18,True,+0.0069,previous days only (R1),"v7_subgroups.csv (dev, R1)"

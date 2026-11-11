@@ -1,0 +1,8 @@
+category,impressions,gain,ci_low,ci_high,p_holm,significant,label,regime,source
+tv,3528,0.0187337295702227,0.016355153515024,0.0211977380627947,4.4366050529174026e-46,True,+0.0187,previous days only (R1),"v7_subgroups.csv (dev, R1, split 'clicked category')"
+news,17230,0.0110714957679333,0.009203467869256,0.0130003889278991,9.197493405502512e-27,True,+0.0111,previous days only (R1),"v7_subgroups.csv (dev, R1, split 'clicked category')"
+sports,18009,0.0090675529259149,0.0078512369752913,0.0104213242806214,5.141732245707833e-41,True,+0.0091,previous days only (R1),"v7_subgroups.csv (dev, R1, split 'clicked category')"
+other,16386,0.0033276568489226,0.0024543768406224,0.0042165542126765,6.101301294905643e-11,True,+0.0033,previous days only (R1),"v7_subgroups.csv (dev, R1, split 'clicked category')"
+lifestyle,13008,0.0009589905128811,-0.0011584592760213,0.0030735780444742,0.3734606365962281,False,+0.0010,previous days only (R1),"v7_subgroups.csv (dev, R1, split 'clicked category')"
+finance,2416,-0.0035479222970877,-0.0070820168920789,0.0002092661312496,0.1493201153172351,False,-0.0035,previous days only (R1),"v7_subgroups.csv (dev, R1, split 'clicked category')"
+music,2575,-0.04197473016553,-0.0467240185222382,-0.037490046186728,1.832939403280731e-67,True,-0.0420,previous days only (R1),"v7_subgroups.csv (dev, R1, split 'clicked category')"

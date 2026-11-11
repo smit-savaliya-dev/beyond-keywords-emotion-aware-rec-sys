@@ -1,0 +1,6 @@
+comparison,setting,gain,ci_low,ci_high,p_holm,significant,impressions,source,label
+M3 vs M2,content model (Sentence-BERT),0.0029013501154226,0.002286777183411,0.0035159230474341,2.239673822696272e-19,True,73152,m2m3_comparison.csv,+0.0029
+M3b+ vs M2,"content model, week-7 profile",0.0040126676012189,0.0033972867529558,0.004628048449482,9.25381944619394e-37,True,73152,behaviour_e7_final_family.csv,+0.0040
+M5v6 vs M4v6,"feature ranker, previous days only (R1)",0.0050647535804904,0.0043121250623257,0.0058173820986552,3.352466632938781e-39,True,73152,v7_dev_families.csv,+0.0051
+M5v6 vs M4v6,"feature ranker, with same-day clicks (R2)",0.0007439714554207,6.810970112114325e-05,0.0014198332097203,0.0929065831638239,False,73152,v7_dev_families.csv,+0.0007
+M7 vs M6,neural reader model (NRMS),0.0002330112034818,-0.0002318169692345,0.0006978393761983,0.3258489470695638,False,73152,v7_dev_families.csv,+0.0002

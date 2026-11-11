@@ -1,0 +1,9 @@
+regime,setting,fold,emotion_model,twin,gain,label,seed_noise_sd,source
+R1,previous days only (R1),F1,M5v6_R1_F3,M4v6_R1,0.0129459691794987,+0.0129,0.0021450417314043,v7_fold_evidence.csv gain_seed_mean; v7_fold_means.csv seed_sd of the twin
+R1,previous days only (R1),F2,M5v6_R1_F3,M4v6_R1,0.005197155937385,+0.0052,0.0021450417314043,v7_fold_evidence.csv gain_seed_mean; v7_fold_means.csv seed_sd of the twin
+R1,previous days only (R1),F3,M5v6_R1_F3,M4v6_R1,0.0049161418054255,+0.0049,0.0021450417314043,v7_fold_evidence.csv gain_seed_mean; v7_fold_means.csv seed_sd of the twin
+R1,previous days only (R1),F4,M5v6_R1_F3,M4v6_R1,0.005019859062264,+0.0050,0.0021450417314043,v7_fold_evidence.csv gain_seed_mean; v7_fold_means.csv seed_sd of the twin
+R2,with same-day clicks (R2),F1,M5v6_F2,M4v6,0.0036034852115953,+0.0036,0.0009652363519888,v7_fold_evidence.csv gain_seed_mean; v7_fold_means.csv seed_sd of the twin
+R2,with same-day clicks (R2),F2,M5v6_F2,M4v6,0.0010937989250404,+0.0011,0.0009652363519888,v7_fold_evidence.csv gain_seed_mean; v7_fold_means.csv seed_sd of the twin
+R2,with same-day clicks (R2),F3,M5v6_F2,M4v6,-0.0006093219943654,-0.0006,0.0009652363519888,v7_fold_evidence.csv gain_seed_mean; v7_fold_means.csv seed_sd of the twin
+R2,with same-day clicks (R2),F4,M5v6_F2,M4v6,0.0006918852071653,+0.0007,0.0009652363519888,v7_fold_evidence.csv gain_seed_mean; v7_fold_means.csv seed_sd of the twin
