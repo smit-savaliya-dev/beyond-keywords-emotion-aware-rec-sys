@@ -1,0 +1,7 @@
+position,chart
+1,3_results/all_models_auc.png
+2,3_results/emotion_gain_auc.png
+3,3_results/all_metrics_heatmap.png
+4,3_results/two_settings.png
+5,4_analysis/gain_by_consistency.png
+6,4_analysis/gain_by_category.png

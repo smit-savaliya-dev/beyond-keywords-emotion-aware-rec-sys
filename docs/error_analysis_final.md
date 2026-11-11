@@ -42,4 +42,4 @@ emotionally, 0-1), known history items, and where each model put the clicked sto
 | 9 | White House releases summary of Trump's first call with Ukraine's Zelensky | news | excitement 0.58, joy 0.53 | -0.087 (14 of 16) | 0.80 | 9 | 2 -> 8 | -0.400 |
 | 10 | Taylor Swift Rep Hits Back at Big Machine, Claims She's Actually Owed $7.9 Million in Unpaid Royalties | music | annoyance 0.83, joy 0.32 | -0.037 (6 of 11) | 0.74 | 3 | 2 -> 6 | -0.400 |
 
-Chart: `results/figures/v7_final/error_analysis.png`. Table: `results/tables/v7_error_analysis.csv`.
+Chart: `archive/figures/v7_final/error_analysis.png`. Table: `results/tables/v7_error_analysis.csv`.

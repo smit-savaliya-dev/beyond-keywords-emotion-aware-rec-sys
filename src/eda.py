@@ -1,7 +1,7 @@
 """EDA figures for MIND-small: six individual captioned PNGs plus one combined overview.
 
 Inputs: news, behaviours and impressions of the fit part, and data_summary.json (dev is never read).
-Outputs: PNGs and eda_stats.json in results/figures/EDA/.
+Outputs: PNGs and eda_stats.json in archive/figures/EDA/.
 """
 import json
 import textwrap

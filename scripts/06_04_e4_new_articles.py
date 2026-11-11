@@ -2,7 +2,7 @@
 Buckets new / few / many with the cut fixed on fit. AUC within each bucket for M0 to M5 from the saved valid and dev score files.
 
 Reads:  impressions (all parts: item and time only for exposure, labels of valid and dev for the bucket AUC), saved scores of M0 to M5.
-Writes: results/tables/behaviour_e4_*.csv, behaviour_e4_meta.json; results/figures/v5_behaviour/e4_*.png.
+Writes: results/tables/behaviour_e4_*.csv, behaviour_e4_meta.json; archive/figures/v5_behaviour/e4_*.png.
 Not a pipeline step: it reads saved dev result files. Nothing is chosen here.
 Run:    python scripts/06_04_e4_new_articles.py
 """

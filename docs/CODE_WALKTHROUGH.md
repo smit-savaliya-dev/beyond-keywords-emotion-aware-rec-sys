@@ -64,13 +64,13 @@ Step ids are the script names without `.py`. Scripts marked "by hand" are not pi
 ## Where the key results and charts are
 | What | Where |
 |---|---|
-| Model ladder, dev AUC with 95% CI (M0 to M5) | `results/figures/results/1_model_ladder.png`, `results/tables/model_ladder.csv` |
-| Gain from emotion per metric: M3 - M2 and M5 - M4, valid and dev, Holm | `results/figures/results/2_m3_gain_by_metric.png`, `m2m3_comparison.csv`, `m4m5_comparison.csv` |
-| Alpha curve of the fusion (valid) | `results/figures/results/3_alpha_ablation.png`, `m3_fusion_grid_valid.csv` |
+| Model ladder, dev AUC with 95% CI (M0 to M5) | `archive/figures/results/1_model_ladder.png`, `results/tables/model_ladder.csv` |
+| Gain from emotion per metric: M3 - M2 and M5 - M4, valid and dev, Holm | `archive/figures/results/2_m3_gain_by_metric.png`, `m2m3_comparison.csv`, `m4m5_comparison.csv` |
+| Alpha curve of the fusion (valid) | `archive/figures/results/3_alpha_ablation.png`, `m3_fusion_grid_valid.csv` |
 | Where emotion helps M3: by category and by history length (descriptive) | `4_m3_gain_by_category.png`, `5_m3_gain_by_history.png`, `m3_where_it_helps_dev.csv` |
 | Emotion scores against human ratings (SemEval-2007) | `6_emotion_validation.png`, `semeval2007_validation.csv` |
 | Item-identity controls and the fresh-item split behind the M5 result | `m5_controls_valid.csv`, `m5_fresh_items.csv`, `docs/decisions.md` D69 to D71 |
-| Click signal and congruence analyses | `emotion_signal_v2.csv`, `congruence_signal_fit.csv`, `context_windows_signal.csv`, `results/figures/basic/` |
+| Click signal and congruence analyses | `emotion_signal_v2.csv`, `congruence_signal_fit.csv`, `context_windows_signal.csv`, `archive/figures/basic/` |
 | All model metrics, every part | `results/tables/summary.csv` (`runs_log.csv` for every run) |
 | Every chart explained | `docs/figures_guide.md` |
 

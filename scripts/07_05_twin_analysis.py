@@ -2,7 +2,7 @@
 (fold F4) and dev (read from the single saved prediction files): by consistency tertile, clicked category, history length, persona, time slot.
 
 Reads:  saved per-impression files; behaviours; news; E1 cut-offs; spec v5; frozen settings. Writes: results/tables/v6_twin_subgroups.csv,
-results/figures/v6_improve/twin_*.png. Not a pipeline step: it reads saved dev result files and chooses nothing.
+archive/figures/v6_improve/twin_*.png. Not a pipeline step: it reads saved dev result files and chooses nothing.
 Run:    python scripts/07_05_twin_analysis.py
 """
 import json
@@ -14,7 +14,7 @@ import _bootstrap  # noqa: F401
 from src import behaviour_charts as bc
 from src.behaviour import assign_tertile, history_consistency, time_slot, window_profiles
 from src.behaviour_runs import load_context
-from src.config import BEHAVIOUR_SPEC_VERSION, FIGURES, FROZEN_DIR, PROCESSED, RESULTS, TABLES
+from src.config import ARCHIVE_FIGS, BEHAVIOUR_SPEC_VERSION, FIGURES, FROZEN_DIR, PROCESSED, RESULTS, TABLES
 from src.emotion_features import GO_EMOTIONS
 from src.emotion_spec import load_spec
 from src.ltr_v6 import persona_model
@@ -22,7 +22,7 @@ from src.run_registry import load_rows
 from src.subgroups import group_gains
 from src.where_it_helps import HISTORY_BINS, clicked_category, history_bin, top_categories
 
-OUT = FIGURES / "v6_improve"
+OUT = ARCHIVE_FIGS / "v6_improve"
 NRMS = {"M7a": "M7a_nrms_emotion_item", "M7b": "M7b_nrms_emotion_gated", "M7c": "M7c_nrms_emotion_both"}
 
 

@@ -3,7 +3,7 @@ dev-day differences, and how much M5 relied on raw item-level emotion. Fit and v
 (candidate counts, history lengths, categories, item ids), never as model output.
 
 Reads:  impressions, behaviours, news, the M4 feature tables (fit, valid), frozen M4 and M5 settings, m5_feature_importance.csv, runs_log.csv.
-Writes: results/tables/audit_v6_*.csv; results/figures/v6_improve/audit_*.png.
+Writes: results/tables/audit_v6_*.csv; archive/figures/v6_improve/audit_*.png.
 Run:    python scripts/07_00_audit.py
 """
 import json
@@ -13,11 +13,11 @@ import pandas as pd
 
 import _bootstrap  # noqa: F401
 from src import behaviour_charts as bc
-from src.config import FIGURES, FROZEN_DIR, LTR_FEATURE_FILE, LTR_GRID, M4_FEATURES, M4_NAME, M5_NAME, PROCESSED, TABLES
+from src.config import ARCHIVE_FIGS, FIGURES, FROZEN_DIR, LTR_FEATURE_FILE, LTR_GRID, M4_FEATURES, M4_NAME, M5_NAME, PROCESSED, TABLES
 from src.evaluate import load_truth
 from src.lightgbm_ranker import file_sha, fit_or_load, model_features, score_frame
 
-OUT = FIGURES / "v6_improve"
+OUT = ARCHIVE_FIGS / "v6_improve"
 SEEDS = [42, 43, 44, 45, 46]
 GROUPS = {"popularity (pop_ctr)": ["pop_ctr"], "TF-IDF match (m1_score)": ["m1_score"], "Sentence-BERT match (m2_score)": ["m2_score"],
           "category and subcategory": ["category", "subcategory"], "user category share": ["user_cat_affinity"],

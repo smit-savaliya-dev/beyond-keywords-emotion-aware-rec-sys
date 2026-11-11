@@ -79,4 +79,4 @@ For M5v6 vs M4v6, M7 vs M6 and B1 vs B0 on dev (and F4/valid): gain by consisten
 persona (E8), time slot (exploratory). Questions: does the gain still rise with consistency? Does the joy-reader loss disappear with the gate (M7b)?
 
 ## Stage 7: charts
-Old v5 charts copied to `results/figures/archive_v5/`; affected charts regenerated; new charts in `results/figures/v6_improve/` with a CSV each.
+Old v5 charts copied to `archive/figures/archive_v5/`; affected charts regenerated; new charts in `archive/figures/v6_improve/` with a CSV each.

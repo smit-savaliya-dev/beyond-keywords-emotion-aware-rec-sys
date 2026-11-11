@@ -1,0 +1,7 @@
+step,text,history_items
+1,MIND click logs,50
+2,"Article emotion scores (GoEmotions + NRC, title + abstract)",50
+3,Reader profile (last 50 clicks),50
+4,Match score (reader vs article),50
+5,Content score + emotion score,50
+6,Ranking,50

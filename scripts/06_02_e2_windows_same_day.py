@@ -2,7 +2,7 @@
 chosen on valid; M2 with the same windows is reported for context. Dev numbers come only from the final M3b+ file (06_07).
 
 Reads:  fit and valid behaviours and impressions, the saved valid M2 scores, the M2 embeddings, spec v5.
-Writes: results/tables/behaviour_e2_*.csv, behaviour_e2_choice.json; results/figures/v5_behaviour/e2_*.png.
+Writes: results/tables/behaviour_e2_*.csv, behaviour_e2_choice.json; archive/figures/v5_behaviour/e2_*.png.
 Run:    python scripts/06_02_e2_windows_same_day.py
 """
 import json

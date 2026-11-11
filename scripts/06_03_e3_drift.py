@@ -3,7 +3,7 @@ Drift tertiles fixed on fit; short (last 5) vs long (last 50, decay 0.9) profile
 is in 06_09, read from the final prediction file.
 
 Reads:  fit and valid behaviours and impressions, saved valid M2 scores, spec v5.
-Writes: results/tables/behaviour_e3_*.csv, behaviour_e3_meta.json; results/figures/v5_behaviour/e3_*.png.
+Writes: results/tables/behaviour_e3_*.csv, behaviour_e3_meta.json; archive/figures/v5_behaviour/e3_*.png.
 Run:    python scripts/06_03_e3_drift.py
 """
 import json

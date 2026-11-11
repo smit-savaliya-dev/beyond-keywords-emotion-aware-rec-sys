@@ -9,9 +9,10 @@ ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "raw"
 PROCESSED = ROOT / "data" / "processed"
 RESULTS = ROOT / "results"
-FIGURES = RESULTS / "figures"
+FIGURES = RESULTS / "figures"                 # final chart set only (scripts/07_final_figures.py)
+ARCHIVE_FIGS = ROOT / "archive" / "figures"   # older charts, kept for the record (D99)
 TABLES = RESULTS / "tables"
-DIAGNOSTICS = FIGURES / "EDA"
+DIAGNOSTICS = ARCHIVE_FIGS / "EDA"
 
 MIND_URLS = {
     "train": "https://mind201910small.blob.core.windows.net/release/MINDsmall_train.zip",
@@ -207,8 +208,8 @@ CONTEXT_CONTROL = {"older_5": {"skip": 5, "size": 5, "decay": 1.0}}  # same size
 CONTEXT_CONTROL_MIN_HISTORY = 10
 
 # Story charts.
-STORY_DIR = FIGURES / "basic"
-RESULTS_FIGS = FIGURES / "results"
+STORY_DIR = ARCHIVE_FIGS / "basic"
+RESULTS_FIGS = ARCHIVE_FIGS / "results"
 RESULT_CHARTS = ["1_model_ladder", "2_m3_gain_by_metric", "3_alpha_ablation", "4_m3_gain_by_category", "5_m3_gain_by_history",
                  "6_emotion_validation"]
 STORY_TOP_CATEGORIES = 10
@@ -246,7 +247,7 @@ SEMEVAL_MIN_MAIN_EMOTIONS = 3
 
 # Week-7 behaviour experiments (docs/experiments_plan_v5.md, D73-D76). Definitions live in the behaviour section of spec v5.
 BEHAVIOUR_SPEC_VERSION = 5
-BEHAVIOUR_FIGS = FIGURES / "v5_behaviour"
+BEHAVIOUR_FIGS = ARCHIVE_FIGS / "v5_behaviour"
 M3B_NAME = "M3b_adaptive_alpha"        # valid only (E1)
 M3BP_NAME = "M3b_plus"                 # final, dev once (E7)
 M5B_NAME = "M5b_lightgbm_emotion"      # final, dev once (E7): mean of 3 seeds

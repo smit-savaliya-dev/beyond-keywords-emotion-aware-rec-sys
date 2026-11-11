@@ -1,0 +1,5 @@
+setting,model,name,emotion,test_auc,label,pair_gain,gain_label,p_holm,significant
+Standard setting (previous days only),M4v6_R1,LightGBM ranker,False,0.6645411241510731,0.6645,0.0050647535804904,+0.0051,7.040179929171439e-38,True
+Standard setting (previous days only),M5v6_R1,LightGBM + emotion,True,0.6696058777315637,0.6696,0.0050647535804904,+0.0051,7.040179929171439e-38,True
+Real-time setting (with same-day clicks),M4v6,LightGBM ranker,False,0.7110786790467049,0.7111,0.0007439714554207,+0.0007,0.6503460821467674,False
+Real-time setting (with same-day clicks),M5v6,LightGBM + emotion,True,0.7118226505021256,0.7118,0.0007439714554207,+0.0007,0.6503460821467674,False

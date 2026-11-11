@@ -1,0 +1,5 @@
+panel,name,auc,source,label,earlier_lightgbm_auc
+A,LightGBM ranker | standard setting | (previous days only),0.6645411241510731,final_all_metrics.csv M4v6_R1,0.665,0.674
+A,LightGBM ranker | real-time setting | (with same-day clicks),0.7110786790467049,final_all_metrics.csv M4v6,0.711,0.674
+B,Click rate | with same-day clicks,0.6473111171197394,v7_single_feature_auc.csv (valid day),0.647,0.674
+B,Click rate | previous days only,0.557459312989641,v7_single_feature_auc.csv (valid day),0.557,0.674

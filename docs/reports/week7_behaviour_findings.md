@@ -2,7 +2,7 @@
 
 Branch `week7-behaviour`, local commits only. All experiments were pre-declared in `docs/experiments_plan_v5.md` (committed before any
 result). Fit chose cut-offs, valid chose settings, dev was used once each for the two new final models (M3b+, M5b); all other dev numbers
-come from the saved dev prediction files. Numbers are AUC differences unless stated. Charts: `results/figures/v5_behaviour/`
+come from the saved dev prediction files. Numbers are AUC differences unless stated. Charts: `archive/figures/v5_behaviour/`
 (`overview.png` is the one-page summary). Tables: `results/tables/behaviour_*.csv`. 250 tests pass.
 
 ## Results per experiment

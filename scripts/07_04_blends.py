@@ -3,7 +3,7 @@ each impression, w chosen on valid (fold F4 predictions); B1b adds v z(personal 
 Dev is evaluated once per blend from the already-saved dev predictions of its parts (no model is rerun).
 
 Reads:  saved valid and dev scores of M4v6, M5v6 (its source on valid), M6 and the selected M7; frozen settings; behaviours (personal match).
-Writes: results/tables/v6_blends_*.csv, valid and dev files of B0, B1 (and B1b if kept); results/figures/v6_improve/blend_weights.png.
+Writes: results/tables/v6_blends_*.csv, valid and dev files of B0, B1 (and B1b if kept); archive/figures/v6_improve/blend_weights.png.
 Run:    python scripts/07_04_blends.py
 """
 import json
@@ -14,7 +14,7 @@ import pandas as pd
 import _bootstrap  # noqa: F401
 from src import behaviour_charts as bc
 from src.behaviour_runs import emotion_score, load_context
-from src.config import FIGURES, FROZEN_DIR, RESULTS, TABLES
+from src.config import ARCHIVE_FIGS, FIGURES, FROZEN_DIR, RESULTS, TABLES
 from src.evaluate import evaluate, save_results
 from src.run_registry import append_run
 from src.stats import paired_test
@@ -80,7 +80,7 @@ def main():
             append_run(name, part, "blend-of-saved-predictions" if part == "dev" else "blend-chosen-on-valid", choice, s)
             print(part, name, round(float(s["auc"]), 5), flush=True)
     cv = pd.DataFrame(curves)
-    bc.lines(FIGURES / "v6_improve" / "blend_weights.png", "How much tree vs NRMS in the blend?",
+    bc.lines(ARCHIVE_FIGS / "v6_improve" / "blend_weights.png", "How much tree vs NRMS in the blend?",
              f"Valid AUC of the within-impression z-score blend by the tree weight w (0 = NRMS only, 1 = tree only). Chosen: B0 w = {best['B0'][0]}, "
              f"B1 w = {w1}. Chosen on valid, so optimistic.", GRID,
              [("B0: M4v6 + M6 (no emotion)", cv[cv["blend"] == "B0"]["valid_auc"].tolist(), None, None, bc.BLUE, "o"),

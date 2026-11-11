@@ -1,7 +1,7 @@
 """The results charts for the supervisor, built from saved tables only, with captions computed from the same numbers.
 
 Inputs: tables in results/tables/ (model ladder, comparisons, fusion grid, RQ5 table, SemEval table). Outputs: at most six PNGs
-in results/figures/results/ and results_chart_captions.json. Reads no impression or behaviour data.
+in archive/figures/results/ and results_chart_captions.json. Reads no impression or behaviour data.
 """
 import json
 

@@ -1,0 +1,3 @@
+stage,neutral_pct,source,label
+before: top label only,81.1,emotion_weighted_vs_combined.json weighted.dominant_pct.neutral,81%
+"after: any emotion above t = 0.05, stance labels excluded",39.0,"emotion_label_variants_grid.csv v2b, t = 0.05 (emotion_v2_choice.json)",39%

@@ -2,7 +2,7 @@
 and dev (from the saved prediction files), trend tests, and M3b: alpha chosen per tertile on valid (valid only).
 
 Reads:  behaviours and impressions of fit, valid and dev; saved M2 and M3 scores and per-impression files (valid, dev); spec v5.
-Writes: results/tables/behaviour_e1_*.csv and behaviour_e1_meta.json; results/figures/v5_behaviour/e1_*.png.
+Writes: results/tables/behaviour_e1_*.csv and behaviour_e1_meta.json; archive/figures/v5_behaviour/e1_*.png.
 Not a pipeline step: it reads saved dev result files (like 04_08). Selects only on valid; dev is reported, never used to choose.
 Run:    python scripts/06_01_e1_consistency.py
 """

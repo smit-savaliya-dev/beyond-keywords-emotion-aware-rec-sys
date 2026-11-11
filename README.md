@@ -2,6 +2,10 @@
 
 Does emotional context improve click ranking beyond content matching? An 8-model ablation (M0 to M7, each with and without emotion) on
 MIND-small. All models (M0 to M7, blends, both regimes) are done: **results in [docs/final_results_table.md](docs/final_results_table.md)**.
+**Charts: [results/figures/](results/figures/README.md)** (the final set, one README row per chart; older charts in `archive/figures/`).
+**Every metric beyond AUC:** `results/tables/final_all_metrics.csv` (final models x AUC, MRR, nDCG, precision, recall, hit rate,
+diversity, coverage) and `results/tables/final_twin_gains_all_metrics.csv` (emotion vs twin per metric, with CIs and Holm p), computed
+from the saved final dev predictions by `scripts/08_03_final_metrics.py`; charts rebuilt by `python scripts/07_final_figures.py`.
 MSc Data Analytics Research Practicum, NCI.
 Demo platform: [AURA](https://github.com/smit-savaliya-dev/aura-ai-powered-emotion-aware-ad-recommender-platform).
 
@@ -64,7 +68,7 @@ A step id is the script name without `.py`; a stage (`04`) or a step number (`04
 | 03_05 | `03_05_context_windows.py` | fit + valid | short-term vs long-term context, history column |
 | 03_06 | `03_06_true_recency.py` | fit + valid | true recency from earlier log clicks, analysis only |
 | 03_07 | `03_07_percentile_robustness.py` | fit + valid | train-only percentile check |
-| 03_08 | `03_08_story_charts.py` | saved tables | the 8 charts in `results/figures/basic/` |
+| 03_08 | `03_08_story_charts.py` | saved tables | the 8 charts in `archive/figures/basic/` |
 | 03_09 | `03_09_semeval_validation.py` | SemEval | trial selects the rule, test reports correlations, kappa, spec verdict |
 | 04_01 | `04_01_m0_popularity.py --tune` | valid | M0 grid, frozen settings |
 | 04_02 | `04_02_m1_tfidf.py --tune` | valid | M1 grid, frozen settings |
@@ -78,7 +82,7 @@ A step id is the script name without `.py`; a stage (`04`) or a step number (`04
 | 05_01 | `05_01_m5_controls.py --tune` | valid | item-identity controls for M5 (D69) |
 | 05_02 | `05_02_compare_m4m5.py --part valid` | valid | paired M5 vs M4, M5 vs M3, M4 vs M2, M5-all vs M5, fairness check, controls, fresh-item split |
 | 05_03 | `05_03_feature_importance.py` | valid | gain and mean absolute contribution for M5 |
-| 05_05 | `05_05_results_charts.py` | saved tables | the 6 charts in `results/figures/results/` |
+| 05_05 | `05_05_results_charts.py` | saved tables | the 6 charts in `archive/figures/results/` |
 | 90 | `show_results.py` | saved tables | terminal summary (last step) |
 
 `04_08_where_it_helps.py` and `05_04_model_ladder.py` are not pipeline steps: they read dev results and are run once by hand (see below).
@@ -102,7 +106,7 @@ boosters and figures byte for byte); `check_logic_unchanged.py --check` proves a
 unchanged. Both were used for the tidy-up of `docs/cleanup_plan_v2.md` (old script names are translated there).
 
 ## Week 7: when does emotion help? (plan v5)
-Pre-declared in `docs/experiments_plan_v5.md`; findings in `docs/reports/week7_behaviour_findings.md`; charts in `results/figures/v5_behaviour/`
+Pre-declared in `docs/experiments_plan_v5.md`; findings in `docs/reports/week7_behaviour_findings.md`; charts in `archive/figures/v5_behaviour/`
 (`overview.png`). Scripts `06_01` to `06_12` are run by hand in order; they read saved dev result files, so they are not pipeline steps (D76).
 `06_07_e7_m3b_plus.py` and `06_08_e7_m5b.py` have `--tune` (valid) and `--final-dev` (once).
 

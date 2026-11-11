@@ -219,7 +219,7 @@ M0 to M3 are complete. Next, when asked: M4, M5. Spec v3 is current; open: Q12, 
 - Spec v4 written (D62): only the fusion score changes. Q12 and Q13 decided.
 
 ## 2026-11-02 results-m4m5 step 2: results charts; step 3 pre-declared
-- Six charts in `results/figures/results/`, captions computed from saved tables (`scripts/54_results_charts.py`, `src/results_charts.py`). The alpha curve and the SemEval chart moved there from diagnostics, so one copy exists. `model_ladder.csv` comes from `scripts/53_results_model_ladder.py`, by hand, because it reads dev result files.
+- Six charts in `archive/figures/results/`, captions computed from saved tables (`scripts/54_results_charts.py`, `src/results_charts.py`). The alpha curve and the SemEval chart moved there from diagnostics, so one copy exists. `model_ladder.csv` comes from `scripts/53_results_model_ladder.py`, by hand, because it reads dev result files.
 - MY ERROR corrected: sadness Spearman is 0.5946, so 0.59. The Week 6 draft and the base-v4 report said 0.60, a double rounding from 0.595.
 - D63-D68 committed before any M4 or M5 feature build or training.
 
@@ -248,7 +248,7 @@ M0 to M5 are complete. M4 is the best model on dev. Next, when asked: M6, M7. Sp
 - `scripts/check_logic_unchanged.py` (logic in `src/logic_check.py`): baseline of 112 `.py` files = base commit 3a9d39f plus a hash of each normalised syntax tree (docstrings dropped, renamed modules and scripts mapped). `--check` on the unchanged tree: 0 problems.
 
 ## 2026-11-04 tidy-for-review step 1: results charts
-- All six charts already existed in `results/figures/results/`, read from saved tables. Missing piece: M5 - M4. Chart 1 now shows paired-difference brackets (M3 - M2 +0.0029, M5 - M4 -0.0030) and chart 2 has a second panel, M5 minus M4, valid and dev side by side with Holm marking. Both read `m4m5_comparison.csv` (added as an input of the pipeline step). Max 6 charts unchanged.
+- All six charts already existed in `archive/figures/results/`, read from saved tables. Missing piece: M5 - M4. Chart 1 now shows paired-difference brackets (M3 - M2 +0.0029, M5 - M4 -0.0030) and chart 2 has a second panel, M5 minus M4, valid and dev side by side with Holm marking. Both read `m4m5_comparison.csv` (added as an input of the pipeline step). Max 6 charts unchanged.
 - Diff against the step 0 snapshot: only `1_model_ladder.png`, `2_m3_gain_by_metric.png` and `results_chart_captions.json` differ; the other four charts regenerate byte-identical. `docs/figures_guide.md` updated. 224 tests pass.
 - Step 0 baselines kept as `*_step0` / tag `tidy`; a second baseline (tag `tidy_charts`, new AST baseline) is taken on this commit so steps 2 to 5 are proven against it.
 
@@ -277,7 +277,7 @@ M0 to M5 are complete. M4 is the best model on dev. Next, when asked: M6, M7. Sp
 - One commit per experiment; plan v5 committed first (D74). M3b+ and M5b frozen on valid (D77, D78) and run on dev once each.
 - Final test: M3b+ 0.6293 (+0.0011 over M3, +0.0040 over M2); M5b 0.6647 (-0.0092 below M4, as warned in D78). Emotion helps consistent
   users and "fear + nervousness" readers most, is not topic in disguise, and does not come from recency. Report:
-  `docs/reports/week7_behaviour_findings.md`; charts `results/figures/v5_behaviour/` (overview.png). 250 tests pass.
+  `docs/reports/week7_behaviour_findings.md`; charts `archive/figures/v5_behaviour/` (overview.png). 250 tests pass.
 - Errors found and fixed in my own work: two chart lookups used display labels instead of table keys; captions ran off the edge; value labels
   floated above bars that start at 0.5; M3b+ was labelled "adaptive" although its adaptive parts were rejected.
 

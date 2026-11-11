@@ -1,7 +1,7 @@
 # Audit v6: what went wrong before, checked with data (fit and valid only)
 
 Dev numbers this round are a SECOND LOOK; the primary evidence is the rolling-origin folds on days 9-14. Script `scripts/07_00_audit.py`,
-tables `results/tables/audit_v6_*.csv`, charts `results/figures/v6_improve/audit_*.png`.
+tables `results/tables/audit_v6_*.csv`, charts `archive/figures/v6_improve/audit_*.png`.
 
 **a) Item overlap: YES, it explains the valid-vs-dev gap of M5b.** 70.8% of valid candidate rows show an article already shown in fit
 (46% of unique valid articles; 63% of valid clicks). On dev only 19.4% of rows were shown in fit, but 78.7% were shown in fit or valid.

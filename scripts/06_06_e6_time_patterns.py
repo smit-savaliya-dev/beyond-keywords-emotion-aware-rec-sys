@@ -2,7 +2,7 @@
 Fit scores are computed with the frozen M2 and M3 settings; valid and dev come from the saved prediction files. No claims, no family.
 
 Reads:  fit, valid and dev behaviours and impressions; saved M2 and M3 per-impression files; the fit M4 feature table (M2 score); spec v5.
-Writes: results/tables/behaviour_e6_*.csv; results/figures/v5_behaviour/e6_*.png.
+Writes: results/tables/behaviour_e6_*.csv; archive/figures/v5_behaviour/e6_*.png.
 Run:    python scripts/06_06_e6_time_patterns.py
 """
 import numpy as np

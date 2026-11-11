@@ -1,0 +1,10 @@
+name,measure,count,label,articles_total
+Train,impressions,126695,"126,695",65238
+Validate,impressions,30270,"30,270",65238
+Test,impressions,73152,"73,152",65238
+Train,users,46012,"46,012",65238
+Validate,users,20179,"20,179",65238
+Test,users,50000,"50,000",65238
+Train,clicks,189519,"189,519",65238
+Validate,clicks,46825,"46,825",65238
+Test,clicks,111383,"111,383",65238

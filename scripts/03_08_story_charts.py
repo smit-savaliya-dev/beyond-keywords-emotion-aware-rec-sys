@@ -1,7 +1,7 @@
 """The eight story charts on the data and emotion layer, and the data behind them.
 
 Reads:  saved item-level emotion files and fit/valid result tables. No clicks are loaded and dev is never read.
-Writes: results/figures/basic/*.png and results/tables/story_*.csv.
+Writes: archive/figures/basic/*.png and results/tables/story_*.csv.
 Run:    python scripts/03_08_story_charts.py
 """
 import argparse

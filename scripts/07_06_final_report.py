@@ -2,7 +2,7 @@
 Dev numbers are a SECOND LOOK (D79); the primary evidence is the rolling folds (trees) and valid seeds (NRMS).
 
 Reads:  saved valid/dev per-impression files, fold tables (v6_trees_*.csv, ltr_v6_eval_*), NRMS seed tables and curves, selection files.
-Writes: results/tables/v6_final_*.csv; results/figures/v6_improve/*.png and overview_v6.png; results/figures/v5_behaviour/e7_final_comparison.png.
+Writes: results/tables/v6_final_*.csv; archive/figures/v6_improve/*.png and overview_v6.png; archive/figures/v5_behaviour/e7_final_comparison.png.
 Not a pipeline step: it reads saved dev result files. Run: python scripts/07_06_final_report.py
 """
 import json
@@ -15,12 +15,12 @@ from scipy import stats as st
 import _bootstrap  # noqa: F401
 from src import behaviour_charts as bc
 from src.behaviour_runs import load_context
-from src.config import BEHAVIOUR_FIGS, FIGURES, FROZEN_DIR, PROCESSED, RESULTS, TABLES
+from src.config import ARCHIVE_FIGS, BEHAVIOUR_FIGS, FIGURES, FROZEN_DIR, PROCESSED, RESULTS, TABLES
 from src.nrms_runs import RUN_DIR
 from src.stats import paired_test
 from src.subgroups import paired_family, shuffled_labels, fast_metrics
 
-OUT = FIGURES / "v6_improve"
+OUT = ARCHIVE_FIGS / "v6_improve"
 NRMS = {"M7a": "M7a_nrms_emotion_item", "M7b": "M7b_nrms_emotion_gated", "M7c": "M7c_nrms_emotion_both"}
 
 
@@ -132,9 +132,9 @@ def main():
             colors=[bc.BLUE if i == "M6" else (bc.GREY if i == "M7ctrl" else bc.ORANGE) for i in agg.index], zero=False, base=0.6,
             lim=(0.6, float(agg["max"].max()) + 0.01))
     # regenerated headline comparison (old version archived first)
-    arch = FIGURES / "archive_v5"
+    arch = ARCHIVE_FIGS / "archive_v5"
     arch.mkdir(exist_ok=True)
-    for f in [*BEHAVIOUR_FIGS.glob("*.png"), *(FIGURES / "presentation").glob("*.png"), *(FIGURES / "results").glob("*.png")]:
+    for f in [*BEHAVIOUR_FIGS.glob("*.png"), *(ARCHIVE_FIGS / "presentation").glob("*.png"), *(ARCHIVE_FIGS / "results").glob("*.png")]:
         dest = arch / f.parent.name / f.name
         dest.parent.mkdir(exist_ok=True)
         if not dest.exists():

@@ -2,7 +2,7 @@
 categories) of each model's top 10 per impression, valid and dev, from the saved prediction files. Paired t-tests against M2. Descriptive.
 
 Reads:  saved scores of M2, M3, M3b+, M4, M5b; news categories; v2b labels; impressions.
-Writes: results/tables/behaviour_e9_diversity.csv; results/figures/v5_behaviour/e9_diversity.png.
+Writes: results/tables/behaviour_e9_diversity.csv; archive/figures/v5_behaviour/e9_diversity.png.
 Not a pipeline step: it reads saved dev result files.
 Run:    python scripts/06_11_e9_diversity.py
 """

@@ -3,7 +3,7 @@ and M3 - M2 within category (valid, dev, from the saved files). (b) Residual emo
 M2 fused with the user's topic share? Weights chosen on valid.
 
 Reads:  fit, valid and dev behaviours and impressions; news categories; saved M2 and M3 scores; the valid M4 feature table (user_cat_affinity).
-Writes: results/tables/behaviour_e5_*.csv; results/figures/v5_behaviour/e5_*.png.
+Writes: results/tables/behaviour_e5_*.csv; archive/figures/v5_behaviour/e5_*.png.
 Not a pipeline step: it reads saved dev result files. Only valid chooses.
 Run:    python scripts/06_05_e5_within_topic.py
 """

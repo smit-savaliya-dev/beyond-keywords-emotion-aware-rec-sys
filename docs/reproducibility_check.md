@@ -15,7 +15,7 @@
 |---|---|
 | `news.parquet`, `behaviors.parquet`, `impressions.parquet` | identical frames (65,238 / 230,117 / 8,584,442 rows) |
 | `data_summary.json` | identical except `run_info` (package versions, git commit, timestamp) |
-| `results/figures/EDA/eda_stats.json` | identical |
+| `archive/figures/EDA/eda_stats.json` | identical |
 | M0 popularity: frozen setting + hash, valid per-impression metrics, summary row | identical (hash 5ade23b12a, max difference 0.0) |
 | M1 TF-IDF: frozen setting + hash, valid per-impression metrics, summary row | identical (hash 4c4afdcfbc, max difference 0.0) |
 

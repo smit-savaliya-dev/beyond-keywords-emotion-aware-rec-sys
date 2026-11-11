@@ -2,7 +2,7 @@
 
 Reads:  data/processed/news_emotion_features.parquet.
 Writes: results/tables/emotion_feature_distributions.csv, emotion_cross_source_correlations.csv, emotion_cross_source_spearman.csv,
-        emotion_title_vs_abstract.csv, emotion_low_mass.json, and one heatmap in results/figures/EDA/.
+        emotion_title_vs_abstract.csv, emotion_low_mass.json, and one heatmap in archive/figures/EDA/.
 Run:    python scripts/02_05_diagnostics.py
 """
 import argparse

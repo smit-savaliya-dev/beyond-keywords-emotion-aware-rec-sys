@@ -1,6 +1,6 @@
-"""One-page contact sheet of the six most useful week-7 charts, for the professor (results/figures/v5_behaviour/overview.png).
+"""One-page contact sheet of the six most useful week-7 charts, for the professor (archive/figures/v5_behaviour/overview.png).
 
-Reads:  the PNGs written by scripts 06_01 to 06_11. Writes: results/figures/v5_behaviour/overview.png.
+Reads:  the PNGs written by scripts 06_01 to 06_11. Writes: archive/figures/v5_behaviour/overview.png.
 Run:    python scripts/06_12_overview.py
 """
 import _bootstrap  # noqa: F401

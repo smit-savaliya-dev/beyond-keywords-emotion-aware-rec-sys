@@ -18,7 +18,7 @@ Branch `week7-behaviour`. Decisions D73 to D76 in `docs/decisions.md`. New featu
 - **Subgroups.** Gains per group use the subgroup helper (`src/subgroups.py`): mean AUC, MRR, nDCG@10 per group, gain of A over B with a
   95% bootstrap CI that resamples users (1,000 draws, seed 42), and the group size. Groups under 500 impressions are reported and flagged
   "too small", never hidden.
-- **Charts.** `results/figures/v5_behaviour/<exp>_<name>.png`, 200 dpi, the style of `scripts/05_presentation_charts.py`, a plain
+- **Charts.** `archive/figures/v5_behaviour/<exp>_<name>.png`, 200 dpi, the style of `scripts/05_presentation_charts.py`, a plain
   title and a one-line caption. Every chart's numbers are saved in `results/tables/behaviour_<exp>*.csv`.
 - **Reporting.** Every variant tried is reported, negative results included.
 

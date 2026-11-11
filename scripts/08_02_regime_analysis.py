@@ -4,7 +4,7 @@
   --report     fold evidence, survival of the M4v6 gain, dev families (Holm), shuffled-label checks, subgroups, error analysis, charts
 Dev is read only from saved prediction files (a further look at dev, which was already seen in weeks 7-8). Nothing here chooses a model.
 Reads: results/tables/v7_*.csv, v6_trees_folds.csv, data/processed/ltr_v6_eval_* and ltr_v7_eval_*, saved valid/dev scores and per-impression files.
-Writes: results/tables/v7_*.csv, results/figures/v7_final/*.png (+ a CSV per chart), docs/error_analysis_final.md (tables; summary added by hand).
+Writes: results/tables/v7_*.csv, archive/figures/v7_final/*.png (+ a CSV per chart), docs/error_analysis_final.md (tables; summary added by hand).
 """
 import argparse
 import importlib
@@ -17,7 +17,7 @@ import _bootstrap  # noqa: F401
 from src import behaviour_charts as bc
 from src.behaviour import assign_tertile, history_consistency, time_slot, window_profiles
 from src.behaviour_runs import emotion_score, load_context
-from src.config import BEHAVIOUR_SPEC_VERSION, FIGURES, PROCESSED, RESULTS, ROOT, TABLES
+from src.config import ARCHIVE_FIGS, BEHAVIOUR_SPEC_VERSION, FIGURES, PROCESSED, RESULTS, ROOT, TABLES
 from src.emotion_spec import load_spec
 from src.evaluate import evaluate, save_results
 from src.ltr_v6 import FOLDS, persona_model
@@ -27,7 +27,7 @@ from src.subgroups import fast_metrics, group_gains, paired_family, shuffled_lab
 from src.where_it_helps import clicked_category, history_bin, top_categories
 
 blends_v6 = importlib.import_module("07_04_blends")
-OUT = FIGURES / "v7_final"
+OUT = ARCHIVE_FIGS / "v7_final"
 M7, M7CTRL, M6 = "M7b_nrms_emotion_gated", "M7ctrl_nrms_permuted", "M6_nrms"
 OLD_M4, OLD_M5 = "M4_lightgbm", "M5_lightgbm_emotion"
 
@@ -287,7 +287,7 @@ SUMMARY_PLACEHOLDER
 ## 10 impressions where emotion hurt most
 {table("hurt")}
 
-Chart: `results/figures/v7_final/error_analysis.png`. Table: `results/tables/v7_error_analysis.csv`.
+Chart: `archive/figures/v7_final/error_analysis.png`. Table: `results/tables/v7_error_analysis.csv`.
 """
     path = ROOT / "docs" / "error_analysis_final.md"
     if path.exists() and "SUMMARY_PLACEHOLDER" not in path.read_text(encoding="utf-8"):

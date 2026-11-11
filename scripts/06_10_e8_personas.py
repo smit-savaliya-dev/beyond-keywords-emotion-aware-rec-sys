@@ -2,7 +2,7 @@
 stability checked on valid users, and the gains of M3 over M2 and M3b+ over M3 per persona on valid and dev (from the saved files).
 
 Reads:  fit, valid and dev behaviours; saved per-impression files of M2, M3 and M3b+; spec v5.
-Writes: results/tables/behaviour_e8_*.csv, behaviour_e8_meta.json; results/figures/v5_behaviour/e8_*.png.
+Writes: results/tables/behaviour_e8_*.csv, behaviour_e8_meta.json; archive/figures/v5_behaviour/e8_*.png.
 Not a pipeline step: it reads saved dev result files. Descriptive, nothing is chosen from the gains.
 Run:    python scripts/06_10_e8_personas.py
 """

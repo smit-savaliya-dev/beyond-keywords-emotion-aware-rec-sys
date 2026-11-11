@@ -22,7 +22,7 @@ Our transformers-based all-mpnet-base-v2 embeddings against the sentence-transfo
 
 Threshold 0.999: pass. Nothing was re-encoded and no dev run was repeated (D61).
 
-## The 6 results charts (`results/figures/results/`)
+## The 6 results charts (`archive/figures/results/`)
 | Chart | Takeaway |
 |---|---|
 | 1 Model ladder | M4 is the highest at 0.674; each step up comes from content and popularity, not from emotion. |

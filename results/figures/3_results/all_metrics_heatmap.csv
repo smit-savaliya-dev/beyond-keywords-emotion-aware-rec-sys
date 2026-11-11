@@ -1,0 +1,12 @@
+model,name,family,auc,mrr,ndcg@5,ndcg@10,p@5,r@10,hr@5,hr@10
+M0_popularity,Popularity,Baselines,0.589,0.275,0.29,0.351,0.103,0.583,0.476,0.66
+M1_tfidf,Keyword match (TF-IDF),Baselines,0.574,0.276,0.293,0.355,0.105,0.595,0.485,0.671
+M2_sbert,Meaning match (Sentence-BERT),Meaning,0.625,0.298,0.325,0.385,0.117,0.635,0.534,0.712
+M3_sbert_emotion,Meaning + emotion,Meaning,0.628,0.299,0.325,0.386,0.117,0.636,0.535,0.712
+M3b_plus,"Meaning + emotion, tuned profile",Meaning,0.629,0.299,0.326,0.387,0.117,0.637,0.536,0.713
+M4v6_R1,LightGBM ranker,LightGBM,0.665,0.322,0.355,0.416,0.128,0.671,0.575,0.75
+M5v6_R1,LightGBM + emotion,LightGBM,0.67,0.325,0.358,0.42,0.129,0.676,0.581,0.754
+M6_nrms,Neural ranker (NRMS),Neural,0.608,0.278,0.3,0.366,0.11,0.626,0.509,0.703
+M7b_nrms_emotion_gated,Neural + emotion,Neural,0.608,0.279,0.301,0.366,0.11,0.626,0.51,0.704
+B0_R1,Combined ranker (LightGBM + neural),Combined,0.663,0.321,0.353,0.416,0.127,0.674,0.575,0.754
+B1_R1,Combined + emotion,Combined,0.669,0.325,0.358,0.421,0.129,0.679,0.583,0.758

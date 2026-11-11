@@ -3,7 +3,7 @@ user-level check, shuffled-label control, and the dev subgroups of M3b+ (drift f
 all read from the single saved dev prediction file of each model. Plus the E7 charts.
 
 Reads:  saved valid and dev scores and per-impression files of M2 to M5, M3b+ and M5b; behaviours; news; E1, E3 and E7 tables.
-Writes: results/tables/behaviour_e7_*.csv; results/figures/v5_behaviour/e7_*.png.
+Writes: results/tables/behaviour_e7_*.csv; archive/figures/v5_behaviour/e7_*.png.
 Not a pipeline step: it reads saved dev result files. It chooses nothing.
 Run:    python scripts/06_09_e7_final_report.py
 """

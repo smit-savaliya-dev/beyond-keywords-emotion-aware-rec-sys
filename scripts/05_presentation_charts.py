@@ -2,7 +2,7 @@
 
 Reads:  results/tables/model_ladder.csv, m2m3_comparison.csv, m4m5_comparison.csv, emotion_signal_v2.csv,
         semeval2007_validation.csv, m3_where_it_helps_dev.csv, story_emotion_mix.csv.
-Writes: results/figures/presentation/{1_model_scores, 2_emotion_gain, 3_personal_match, 4_emotion_validation, 5_where_it_helps,
+Writes: archive/figures/presentation/{1_model_scores, 2_emotion_gain, 3_personal_match, 4_emotion_validation, 5_where_it_helps,
         6_neutral_reduction}.png (12 x 6.75 in, 300 dpi). Not a pipeline step: it only presents saved results.
 Run:    python scripts/05_presentation_charts.py
 """
@@ -19,7 +19,7 @@ from matplotlib.patches import Patch
 from src.config import M2_NAME, M3_NAME, M4_NAME, M5_NAME, ROOT, TABLES
 from src.terminal_summary import ROLE_NAMES
 
-OUT = ROOT / "results" / "figures" / "presentation"
+OUT = ROOT / "archive" / "figures" / "presentation"
 BLUE, ORANGE, GREY = "#0072B2", "#E69F00", "#999999"  # blue = without emotion, orange = with emotion, grey = reference
 INK = "#1a1a1a"
 plt.rcParams.update({"font.size": 14, "axes.labelsize": 15, "axes.titlesize": 22, "axes.titleweight": "bold", "axes.titlelocation": "left",

@@ -3,7 +3,7 @@
 **Honesty note.** Dev (15 Nov) was already looked at in week 7, and that motivated some of these changes. Dev numbers this round are a
 SECOND LOOK; the primary evidence is the rolling-origin folds on days 9-14 (and, for NRMS, the three seeds on valid). Branch `week8-improve`,
 local commits only. Plan `docs/experiments_plan_v6.md` (committed before any result), audit `docs/audit_v6.md`, decisions D79-D89.
-Charts `results/figures/v6_improve/` (`overview_v6.png`), tables `results/tables/v6_*.csv` and `audit_v6_*.csv`. 261 tests pass.
+Charts `archive/figures/v6_improve/` (`overview_v6.png`), tables `results/tables/v6_*.csv` and `audit_v6_*.csv`. 261 tests pass.
 
 ## Per stage
 **Stage 0 Audit** - FOUND THE MISTAKES

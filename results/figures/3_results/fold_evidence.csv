@@ -1,0 +1,9 @@
+setting,fold,gain,label,seed_noise_sd
+Standard setting (previous days only),F1,0.0129459691794987,+0.0129,0.0021450417314043
+Standard setting (previous days only),F2,0.005197155937385,+0.0052,0.0021450417314043
+Standard setting (previous days only),F3,0.0049161418054255,+0.0049,0.0021450417314043
+Standard setting (previous days only),F4,0.005019859062264,+0.0050,0.0021450417314043
+Real-time setting (with same-day clicks),F1,0.0036034852115953,+0.0036,0.0009652363519888
+Real-time setting (with same-day clicks),F2,0.0010937989250404,+0.0011,0.0009652363519888
+Real-time setting (with same-day clicks),F3,-0.0006093219943654,-0.0006,0.0009652363519888
+Real-time setting (with same-day clicks),F4,0.0006918852071653,+0.0007,0.0009652363519888
