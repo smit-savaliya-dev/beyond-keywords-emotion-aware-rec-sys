@@ -96,7 +96,7 @@ dot are 95% confidence intervals: if a bar stays clear of zero, the difference i
 
 # Diagnostics
 
-## What M5 uses (`archive/figures/EDA/m5_feature_importance.png`)
+## What M5 uses (`results/figures/EDA/m5_feature_importance.png`)
 - **Shows:** how much each feature moves the M5 score on valid, coloured by family. It is in diagnostics because the results folder is limited to 6 charts.
 - **Why it matters:** content and popularity carry most of the model.
 - **Read with care:** a high bar for an item-level emotion feature does not mean emotion drives clicks. Those features can act as an item ID (see `docs/methodology_notes.md`, section 9), so this chart

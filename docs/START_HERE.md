@@ -39,7 +39,8 @@ Step `01_05_download_semeval` downloads SemEval-2007 into `data/external/semeval
 | `results/tables/final_all_metrics.csv` | **every final model x every metric** (AUC, MRR, nDCG@5/10, P@5, R@10, HR@5/10, diversity, coverage), final test day |
 | `results/tables/final_twin_gains_all_metrics.csv` | **emotion model minus its twin, every metric**: gain, impression and user-level 95% CI, p, Holm p, dz |
 | `results/tables/` | the result tables code, docs and charts read; `summary.csv` holds model metrics, `runs_log.csv` every run |
-| `archive/figures/` | older charts (EDA, story, results, week 5-8), kept for the record (D99) |
+| `results/figures/EDA/` | exploratory charts, kept as they are (D102) |
+| `archive/figures/` | older charts (story, results, presentation, week 5-8), kept for the record (D99) |
 | `archive/tables/` | tables that were written but never read again (D99) |
 | `results/frozen/` | frozen model settings |
 | `results/archive/` | superseded results and proof records; `annotation/` holds the cancelled hand-label sheet and tool |

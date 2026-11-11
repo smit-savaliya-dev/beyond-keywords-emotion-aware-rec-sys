@@ -1,0 +1,7 @@
+part,feature,name,dz,ci_low,ci_high,impressions,significant,label
+Training days (9-13 Nov),cong_pct_cos,Plain match,0.1907001114746412,0.1851437651023796,0.1962564578469028,126695,True,0.19
+Training days (9-13 Nov),cong_pct_cos_personal,Personal match | (minus the average reader),0.2462690798502031,0.2406797043109814,0.2518584553894249,126695,True,0.25
+Training days (9-13 Nov),cong_pct_cos_userspecific,Strict personal match | (minus another reader),0.1378864908653431,0.1323538706495051,0.1434191110811811,126695,True,0.14
+Validation day (14 Nov),cong_pct_cos,Plain match,0.1665321114932871,0.1551887899859298,0.1778754330006445,30270,True,0.17
+Validation day (14 Nov),cong_pct_cos_personal,Personal match | (minus the average reader),0.2388370877507763,0.2274120783931529,0.2502620971083996,30270,True,0.24
+Validation day (14 Nov),cong_pct_cos_userspecific,Strict personal match | (minus another reader),0.1366723247665321,0.1253543549730888,0.1479902945599754,30270,True,0.14

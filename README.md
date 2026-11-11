@@ -2,7 +2,7 @@
 
 Does emotional context improve click ranking beyond content matching? An 8-model ablation (M0 to M7, each with and without emotion) on
 MIND-small. All models (M0 to M7, blends, both regimes) are done: **results in [docs/final_results_table.md](docs/final_results_table.md)**.
-**Charts: [results/figures/](results/figures/README.md)** (the final set, one README row per chart; older charts in `archive/figures/`).
+**Charts: [results/figures/](results/figures/README.md)** (the final set for slides and the report, one README row per chart with its report section; EDA charts in `results/figures/EDA/`; older charts in `archive/figures/`).
 **Every metric beyond AUC:** `results/tables/final_all_metrics.csv` (final models x AUC, MRR, nDCG, precision, recall, hit rate,
 diversity, coverage) and `results/tables/final_twin_gains_all_metrics.csv` (emotion vs twin per metric, with CIs and Holm p), computed
 from the saved final dev predictions by `scripts/08_03_final_metrics.py`; charts rebuilt by `python scripts/07_final_figures.py`.

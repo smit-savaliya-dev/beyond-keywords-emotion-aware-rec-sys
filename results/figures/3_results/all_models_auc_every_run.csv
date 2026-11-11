@@ -1,0 +1,22 @@
+group,model,name,code,kind,emotion,baseline,test_auc,label,source
+Standard setting: final models,M0_popularity,Popularity,M0,final,False,True,0.589026170743246,0.589,final_all_metrics.csv
+Standard setting: final models,M1_tfidf,Keyword match (TF-IDF),M1,final,False,True,0.5744347298007846,0.574,final_all_metrics.csv
+Standard setting: final models,M2_sbert,Meaning match (Sentence-BERT),M2,final,False,False,0.6253062896748289,0.625,final_all_metrics.csv
+Standard setting: final models,M3_sbert_emotion,Meaning + emotion,M3,final,True,False,0.6282076397902516,0.628,final_all_metrics.csv
+Standard setting: final models,M3b_plus,"Meaning + emotion, tuned profile",M3b+,final,True,False,0.6293189572760478,0.629,final_all_metrics.csv
+Standard setting: final models,M4v6_R1,LightGBM ranker,M4v6,final,False,False,0.6645411241510731,0.665,final_all_metrics.csv
+Standard setting: final models,M5v6_R1,LightGBM + emotion,M5v6,final,True,False,0.6696058777315637,0.670,final_all_metrics.csv
+Standard setting: final models,M6_nrms,Neural ranker (NRMS),M6,final,False,False,0.6082259765886383,0.608,final_all_metrics.csv
+Standard setting: final models,M7b_nrms_emotion_gated,Neural + emotion,M7,final,True,False,0.6084589877921202,0.608,final_all_metrics.csv
+Standard setting: final models,B0_R1,Combined ranker (LightGBM + neural),B0,final,False,False,0.6628186992218149,0.663,final_all_metrics.csv
+Standard setting: final models,B1_R1,Combined + emotion,B1,final,True,False,0.668890565457265,0.669,final_all_metrics.csv
+Standard setting: earlier versions and controls,M4_lightgbm,Earlier LightGBM ranker (week 4),M4,earlier,False,False,0.6739,0.674,summary.csv (dev)
+Standard setting: earlier versions and controls,M5_lightgbm_emotion,Earlier LightGBM + emotion (week 4),M5,earlier,True,False,0.6709,0.671,summary.csv (dev)
+Standard setting: earlier versions and controls,M5_congruence_only,Earlier LightGBM + emotion match only,M5 match-only,earlier,True,False,0.6709,0.671,summary.csv (dev)
+Standard setting: earlier versions and controls,M5b_lightgbm_emotion,"LightGBM + emotion, week-7 version",M5b,earlier,True,False,0.6647,0.665,summary.csv (dev)
+Standard setting: earlier versions and controls,M5_permuted_items,"Control: earlier LightGBM, emotions shuffled",M5 permuted,control,True,False,0.6666,0.667,summary.csv (dev)
+Standard setting: earlier versions and controls,M7ctrl_nrms_permuted,"Control: neural, emotions shuffled",M7ctrl,control,True,False,0.6091,0.609,summary.csv (dev)
+Real-time setting: final models,M4v6,LightGBM ranker,M4v6,final,False,False,0.7110786790467049,0.711,final_all_metrics.csv
+Real-time setting: final models,M5v6,LightGBM + emotion,M5v6,final,True,False,0.7118226505021256,0.712,final_all_metrics.csv
+Real-time setting: final models,B0,Combined ranker (LightGBM + neural),B0,final,False,False,0.7074609802123235,0.707,final_all_metrics.csv
+Real-time setting: final models,B1,Combined + emotion,B1,final,True,False,0.7119926573536206,0.712,final_all_metrics.csv

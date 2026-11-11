@@ -3,9 +3,11 @@
 Reads:  results/tables/final_all_metrics.csv, final_twin_gains_all_metrics.csv, final_dataset_overview.csv, summary.csv,
         v7_subgroups.csv, v7_single_feature_auc.csv, v7_fold_evidence.csv, v7_fold_means.csv, behaviour_e5_within_category_auc.csv,
         behaviour_e5_m3_gain_within_category.csv, emotion_weighted_vs_combined.json, emotion_label_variants_grid.csv,
-        emotion_v2_choice.json, semeval2007_validation.csv; src.config (history length).
+        emotion_v2_choice.json, story_emotion_mix.csv, semeval2007_validation.csv, emotion_signal_v2.csv,
+        v7_dev_shuffled_controls.csv; src.config (history length).
 Writes: results/figures/{1_method,2_data,3_results,4_analysis}/*.png + one CSV per chart (plotted numbers and exact label text),
         results/figures/overview.png (+ CSV), results/figures/README.md. Names and colours: src/plot_style.py.
+        results/figures/EDA/ is written by the EDA scripts (01_04, 02_05, 05_03), not by this script; the README lists it.
 Run:    python scripts/07_final_figures.py [--out DIR]
 """
 import argparse
@@ -209,49 +211,74 @@ def dataset_overview(out):
     return d
 
 
+EMO_COLOURS = [("neutral", LIGHT), ("joy", ORANGE), ("sadness", BLUE), ("surprise", SKY), ("anger", VERMILION), ("fear", "#CC79A7")]
+
+
 def neutral_fix(out):
+    """Full emotion mix before and after the labelling fix; the neutral shares are checked against the tables that chose the rule."""
     base = tab("emotion_weighted_vs_combined.json")
     t = float(tab("emotion_v2_choice.json")["chosen_t"])
     grid = tab("emotion_label_variants_grid.csv")
     after = grid[(grid["variant"] == "v2b") & np.isclose(grid["t"], t)]
     if len(after) != 1:
         raise Missing("results/tables/emotion_label_variants_grid.csv: v2b row at the chosen t")
-    d = ps.write_csv(pd.DataFrame([
-        {"stage": "before: top label only", "neutral_pct": round(float(base["weighted"]["dominant_pct"]["neutral"]), 1),
-         "source": "emotion_weighted_vs_combined.json weighted.dominant_pct.neutral"},
-        {"stage": f"after: any emotion above t = {t:g}, stance labels excluded", "neutral_pct": round(float(after["pct_neutral"].iloc[0]), 1),
-         "source": f"emotion_label_variants_grid.csv v2b, t = {t:g} (emotion_v2_choice.json)"}]).assign(
-        label=lambda x: x["neutral_pct"].map(lambda v: f"{v:.0f}%")), out / "neutral_fix.csv")
-    fig = ps.figure(f"After the labelling fix, far fewer articles count as neutral ({d['label'][0]} to {d['label'][1]})",
-                    "Same classifier, new rule: an article is emotional if any emotion label scores above the threshold (stance labels excluded).")
-    ax = fig.add_axes([0.1, 0.17, 0.85, 0.66])
+    mix = tab("story_emotion_mix.csv").set_index("Unnamed: 0")
+    stages = [("Before the fix\n(top label only)", "v1 (1/3 title, argmax)", float(base["weighted"]["dominant_pct"]["neutral"])),
+              (f"After the fix\n(any emotion above {t:g})", "v2b (v2 without stance labels)", float(after["pct_neutral"].iloc[0]))]
+    rows = []
+    for stage, key, neutral_check in stages:
+        if key not in mix.index:
+            raise Missing(f"results/tables/story_emotion_mix.csv: row {key}")
+        assert abs(float(mix.loc[key, "neutral"]) - neutral_check) < 0.05, f"neutral share differs for {key}"
+        for emo, _ in EMO_COLOURS:
+            v = float(mix.loc[key, emo])
+            rows.append({"stage": stage.replace("\n", " | "), "emotion": emo, "pct": v, "label": f"{v:.0f}%",
+                         "source": f"story_emotion_mix.csv '{key}'"})
+    d = ps.write_csv(pd.DataFrame(rows), out / "neutral_fix.csv")
+    neu = d[d["emotion"] == "neutral"]["label"].tolist()
+    fig = ps.figure(f"After the labelling fix, far fewer articles count as neutral ({neu[0]} to {neu[1]})",
+                    "Share of all articles by main emotion label. Same classifier, new rule: an article is emotional if any emotion "
+                    "label scores above the threshold (stance labels excluded).")
+    ax = fig.add_axes([0.1, 0.2, 0.66, 0.65])
     ps.tidy(ax)
-    ax.bar([0, 1], d["neutral_pct"], width=0.5, color=[GREY, GREEN])
-    for i, r in d.iterrows():
-        ax.text(i, r["neutral_pct"] + 1.5, r["label"], ha="center", va="bottom", fontsize=24, weight="bold")
-    ax.set_xticks([0, 1], ["Before the fix\n(top label only)", "After the fix\n(any emotion above the threshold)"], fontsize=17)
+    st = list(dict.fromkeys(d["stage"]))
+    bottom = np.zeros(len(st))
+    for emo, col in EMO_COLOURS:
+        v = d[d["emotion"] == emo].set_index("stage").loc[st]
+        ax.bar(range(len(st)), v["pct"], bottom=bottom, width=0.5, color=col, ec="white", lw=1.5, label=emo)
+        for i, (_, r) in enumerate(v.iterrows()):
+            if r["pct"] >= 3:
+                ax.text(i, bottom[i] + r["pct"] / 2, f"{emo} {r['label']}", ha="center", va="center", fontsize=16, weight="bold",
+                        color="white" if emo in ("sadness", "anger") else INK)
+        bottom += v["pct"].to_numpy()
+    ax.set_xticks(range(len(st)), [s.replace(" | ", "\n") for s in st], fontsize=17)
+    ax.set_xlim(-0.6, len(st) - 0.4)
     ax.set_ylim(0, 100)
-    ax.set_ylabel("Articles labelled neutral (%)")
+    ax.set_ylabel("Share of all articles (%)")
+    ax.legend(loc="center left", bbox_to_anchor=(1.02, 0.5), frameon=False, fontsize=16, reverse=True)
     ps.save(fig, out / "neutral_fix.png")
     return d
 
 
 def emotion_validation(out):
     t = tab("semeval2007_validation.csv")
-    emos = ["sadness", "anger", "fear", "joy", "surprise"]
+    gold = [("valence", "go_vad_valence", "vad_valence")] + [(e, "goemotions_group", "nrc_emolex")
+                                                             for e in ("sadness", "anger", "fear", "joy", "surprise")]
     rows = []
-    for e in emos:
-        for src, name in (("goemotions_group", "GoEmotions (our article scores)"), ("nrc_emolex", "NRC word list")):
+    for e, go, nrc in gold:
+        for src, name in ((go, "GoEmotions (our article scores)"), (nrc, "NRC word lists")):
             r = one(t, "semeval2007_validation.csv", gold=e, source=src, kind="correlation")
-            rows.append({"emotion": e, "source": name, "spearman": r["spearman"], "ci_low": r["spearman_low"], "ci_high": r["spearman_high"],
-                         "n": int(r["n"]), "label": f"{r['spearman']:.2f}"})
+            rows.append({"emotion": e, "source": name, "source_code": src, "spearman": r["spearman"], "ci_low": r["spearman_low"],
+                         "ci_high": r["spearman_high"], "n": int(r["n"]), "label": f"{r['spearman']:.2f}"})
     d = ps.write_csv(pd.DataFrame(rows), out / "emotion_validation.csv")
-    fig = ps.figure("Our emotion scores agree with human ratings, best for sadness",
-                    f"Spearman correlation with SemEval-2007 human emotion ratings of {d['n'].iloc[0]:,} news headlines, with 95% CIs. 0 = no agreement.")
-    ax = fig.add_axes([0.08, 0.17, 0.89, 0.66])
+    fig = ps.figure("Our emotion scores agree with human ratings better than the NRC word lists",
+                    f"Spearman correlation with SemEval-2007 human ratings of {d['n'].iloc[0]:,} news headlines, 95% CIs. NRC = EmoLex for the "
+                    "five emotions, VAD lexicon for valence. 0 = no agreement.")
+    ax = fig.add_axes([0.08, 0.21, 0.89, 0.62])
     ps.tidy(ax)
     w = 0.38
-    for j, (src, c) in enumerate((("GoEmotions (our article scores)", ORANGE), ("NRC word list", GREY))):
+    emos = [g[0] for g in gold]
+    for j, (src, c) in enumerate((("GoEmotions (our article scores)", ORANGE), ("NRC word lists", GREY))):
         sub = d[d["source"] == src].reset_index(drop=True)
         x = np.arange(len(emos)) + (j - 0.5) * w
         ax.bar(x, sub["spearman"], width=w * 0.95, color=c, label=src)
@@ -260,11 +287,45 @@ def emotion_validation(out):
         for xx, (_, r) in zip(x, sub.iterrows()):
             ax.text(xx, max(r["ci_high"], 0) + 0.015, r["label"], ha="center", va="bottom", fontsize=15, weight="bold")
     ax.axhline(0, color=INK, lw=1.2)
-    ax.set_xticks(np.arange(len(emos)), [e.capitalize() for e in emos], fontsize=16)
+    ax.set_xticks(np.arange(len(emos)), ["Valence\n(positive vs negative)"] + [e.capitalize() for e in emos[1:]], fontsize=16)
     ax.set_ylabel("Agreement with human ratings\n(Spearman correlation)")
-    ax.set_ylim(min(0, float(d["ci_low"].min())) - 0.05, 0.75)
+    ax.set_ylim(min(0, float(d["ci_low"].min())) - 0.05, 0.85)
     ax.legend(loc="upper right", frameon=False)
     ps.save(fig, out / "emotion_validation.png")
+    return d
+
+
+def emotion_match_signal(out):
+    """Before any model: is the article closer to the reader's emotion profile when it is clicked? (D-analysis, fit and valid only)."""
+    t = tab("emotion_signal_v2.csv")
+    order = [("cong_pct_cos", "Plain match"), ("cong_pct_cos_personal", "Personal match\n(minus the average reader)"),
+             ("cong_pct_cos_userspecific", "Strict personal match\n(minus another reader)")]
+    rows = []
+    for part, pname in (("fit", "Training days (9-13 Nov)"), ("valid", "Validation day (14 Nov)")):
+        for f, name in order:
+            r = one(t, "emotion_signal_v2.csv", feature=f, part=part)
+            rows.append({"part": pname, "feature": f, "name": name.replace("\n", " | "), "dz": r["dz"], "ci_low": r["dz_ci_low"],
+                         "ci_high": r["dz_ci_high"], "impressions": int(r["n_groups"]), "significant": bool(r["significant_holm"]),
+                         "label": f"{r['dz']:.2f}"})
+    d = ps.write_csv(pd.DataFrame(rows), out / "emotion_match_signal.csv")
+    fig = ps.figure("Readers click articles whose emotions match what they read before",
+                    "Effect size (dz) of the emotion match of clicked minus non-clicked articles in the same list, 95% CIs. Measured before "
+                    "any model was built; the test day is not used. 0 = no difference.")
+    ax = fig.add_axes([0.09, 0.2, 0.88, 0.63])
+    ps.tidy(ax)
+    w = 0.36
+    for j, (part, c) in enumerate(zip(dict.fromkeys(d["part"]), (BLUE, ORANGE))):
+        s = d[d["part"] == part].reset_index(drop=True)
+        x = np.arange(len(s)) + (j - 0.5) * w
+        ax.bar(x, s["dz"], width=w * 0.95, color=c, label=f"{part}, {s['impressions'].iloc[0]:,} lists")
+        ax.errorbar(x, s["dz"], yerr=[s["dz"] - s["ci_low"], s["ci_high"] - s["dz"]], fmt="none", ecolor=INK, elinewidth=1.6, capsize=6)
+        for xx, (_, r) in zip(x, s.iterrows()):
+            ax.text(xx, r["ci_high"] + 0.006, r["label"], ha="center", va="bottom", fontsize=17, weight="bold")
+    ax.set_xticks(range(len(order)), [n for _, n in order], fontsize=16)
+    ax.set_ylim(0, float(d["ci_high"].max()) * 1.3)
+    ax.set_ylabel("Clicked minus non-clicked\n(effect size dz)")
+    ax.legend(loc="upper right", frameon=False)
+    ps.save(fig, out / "emotion_match_signal.png")
     return d
 
 
@@ -309,6 +370,70 @@ def all_models_auc(out):
     fig.text(0.035, 0.085, f"An earlier LightGBM without emotion scored {d['earlier_lightgbm_auc'].iloc[0]:.3f} in the standard setting; "
              "see the full results table.", fontsize=14.5, color=MUTED)
     ps.save(fig, out / "all_models_auc.png")
+    return d
+
+
+STD_FINAL, RT_FINAL = "Standard setting: final models", "Real-time setting: final models"
+EARLIER = "Standard setting: earlier versions and controls"
+EVERY_RUN = ([(STD_FINAL, c, DISPLAY[c], CODE[c], "final") for c in STD_ORDER]
+             + [(EARLIER, "M4_lightgbm", "Earlier LightGBM ranker (week 4)", "M4", "earlier"),
+                (EARLIER, "M5_lightgbm_emotion", "Earlier LightGBM + emotion (week 4)", "M5", "earlier"),
+                (EARLIER, "M5_congruence_only", "Earlier LightGBM + emotion match only", "M5 match-only", "earlier"),
+                (EARLIER, "M5b_lightgbm_emotion", "LightGBM + emotion, week-7 version", "M5b", "earlier"),
+                (EARLIER, "M5_permuted_items", "Control: earlier LightGBM, emotions shuffled", "M5 permuted", "control"),
+                (EARLIER, "M7ctrl_nrms_permuted", "Control: neural, emotions shuffled", "M7ctrl", "control")]
+             + [(RT_FINAL, c, DISPLAY[c], CODE[c], "final") for c in ("M4v6", "M5v6", "B0", "B1")])
+WITH_EMOTION = ("M3", "M5", "M7", "B1")
+
+
+def all_models_auc_every_run(out):
+    """Every model ever scored on the final test day (from presentation/1_model_scores), with its setting and status made explicit."""
+    fm = tab("final_all_metrics.csv").set_index("model")
+    s = tab("summary.csv")
+    s = s[s["part"] == "dev"].set_index("model")
+    rows = []
+    for group, code, name, short, kind in EVERY_RUN:
+        if code in fm.index:
+            auc, src = float(fm.loc[code, "auc"]), "final_all_metrics.csv"
+        elif code in s.index:
+            auc, src = float(s.loc[code, "auc"]), "summary.csv (dev)"
+        else:
+            raise Missing(f"results/tables/summary.csv: dev row for {code}")
+        rows.append({"group": group, "model": code, "name": name, "code": short, "kind": kind,
+                     "emotion": code.startswith(WITH_EMOTION), "baseline": code in ("M0_popularity", "M1_tfidf"),
+                     "test_auc": auc, "label": auc_txt(auc), "source": src})
+    d = ps.write_csv(pd.DataFrame(rows), out / "all_models_auc_every_run.csv")
+    fig = ps.figure("AUC of every model run on the final test day",
+                    "Final test (15 Nov), bars start at 0.50 = random. Faded = earlier versions replaced by the final models; hatched = "
+                    "controls with article emotions shuffled. Real-time models also use same-day clicks, so compare within a setting.")
+    ax = fig.add_axes([0.36, 0.19, 0.6, 0.64])
+    ps.tidy(ax, grid="x")
+    y, ticks, labels, pos = 0.0, [], [], []
+    for g in dict.fromkeys(d["group"]):
+        ax.text(0.5005, y, g, ha="left", va="center", fontsize=15, weight="bold", color=MUTED)
+        y -= 1
+        for _, r in d[d["group"] == g].iterrows():
+            pos.append(y)
+            ticks.append(y)
+            labels.append(f"{r['name']}  [{r['code']}]")
+            y -= 1
+        y -= 0.4
+    pos = np.array(pos)
+    for yy, (_, r) in zip(pos, d.iterrows()):
+        col = LIGHT if r["kind"] == "control" else (GREY if r["baseline"] else (ORANGE if r["emotion"] else BLUE))
+        ax.barh(yy, r["test_auc"] - 0.5, left=0.5, height=0.72, color=col, alpha=0.45 if r["kind"] == "earlier" else 1,
+                hatch="//" if r["kind"] == "control" else None, ec=MUTED if r["kind"] == "control" else "none", lw=0.6)
+        ax.text(r["test_auc"] + 0.002, yy, r["label"], va="center", ha="left", fontsize=13, weight="bold" if r["kind"] == "final" else "normal")
+    ax.set_yticks(ticks, labels, fontsize=12.5)
+    for tl, (_, r) in zip(ax.get_yticklabels(), d.iterrows()):
+        tl.set_color(INK if r["kind"] == "final" else MUTED)
+    ax.set_xlim(0.5, 0.74)
+    ax.set_ylim(y + 0.6, 0.7)
+    ax.set_xlabel("AUC on the final test day (0.50 = random)")
+    ax.legend(handles=[Patch(color=GREY, label="baseline"), Patch(color=BLUE, label="without emotion"), Patch(color=ORANGE, label="with emotion"),
+                       Patch(color=ORANGE, alpha=0.45, label="earlier version"), Patch(fc=LIGHT, ec=MUTED, hatch="//", label="control")],
+              loc="upper right", bbox_to_anchor=(0.97, 0.9), bbox_transform=fig.transFigure, ncol=5, frameon=False, fontsize=13)
+    ps.save(fig, out / "all_models_auc_every_run.png")
     return d
 
 
@@ -436,6 +561,35 @@ def two_settings(out):
     return d
 
 
+def two_settings_all_metrics(out):
+    g = gains()
+    rows = []
+    for setting, pair in ((STD, "LightGBM + emotion vs LightGBM (Standard)"), (RT, "LightGBM + emotion vs LightGBM (Real-time)")):
+        for k in RANK8:
+            r = one(g, "final_twin_gains_all_metrics.csv", pair=pair, metric=k)
+            rows.append({"setting": SETTING[setting], "pair": pair, "metric": k, "metric_name": METRIC_LABEL[k], "gain": r["gain"],
+                         "ci_low": r["ci_low"], "ci_high": r["ci_high"], "user_ci_low": r["user_ci_low"], "user_ci_high": r["user_ci_high"],
+                         "p_holm": r["p_holm"], "significant": bool(r["significant_holm"]), "label": gain_txt(r["gain"])})
+    d = ps.write_csv(pd.DataFrame(rows), out / "two_settings_all_metrics.csv")
+    fig = ps.figure("With same-day clicks, emotion makes the top of the list slightly worse",
+                    "LightGBM + emotion minus LightGBM on each metric, final test day, 95% CIs, Holm over all 70 tests. The combined ranker "
+                    "loses on the same top-5 metrics in the real-time setting (final_twin_gains_all_metrics.csv).")
+    axes = [fig.add_axes([0.13, 0.2, 0.34, 0.6]), fig.add_axes([0.63, 0.2, 0.34, 0.6])]
+    lo, hi = float(d["ci_low"].min()), float(d["ci_high"].max())
+    for ax, setting in zip(axes, dict.fromkeys(d["setting"])):
+        t = d[d["setting"] == setting].reset_index(drop=True)
+        hbar_gains(ax, t, [n + ("" if s else "\nn.s.") for n, s in zip(t["metric_name"], t["significant"])], label_size=13)
+        span = hi - lo
+        ax.set_xlim(lo - 0.45 * span, hi + 0.45 * span)
+        ax.locator_params(axis="x", nbins=5)
+        ax.set_title(setting, fontsize=17, weight="bold", loc="left", pad=12)
+        ax.set_xlabel("gain over the twin without emotion")
+    fig.legend(handles=[Patch(color=ORANGE, label="significant gain"), Patch(color=VERMILION, label="significant loss"),
+                        Patch(color=LIGHT, label=f"{NS} (n.s.)")], loc="upper right", bbox_to_anchor=(0.98, 0.9), ncol=3, frameon=False)
+    ps.save(fig, out / "two_settings_all_metrics.png")
+    return d
+
+
 def same_day_check(out):
     m = final_metrics().set_index("model")
     sf = one(tab("v7_single_feature_auc.csv"), "v7_single_feature_auc.csv", feature="ctr_24h")
@@ -510,6 +664,62 @@ def fold_evidence(out):
                        Patch(color=ORANGE, alpha=0.3, label=f"seed noise, standard (SD {sds.iloc[0]:.4f})"),
                        Patch(color=GREY, alpha=0.4, label=f"seed noise, real-time (SD {sds.iloc[1]:.4f})")], loc="upper right", frameon=False)
     ps.save(fig, out / "fold_evidence.png")
+    return d
+
+
+def controls(out):
+    fm = final_metrics().set_index("model")
+    sh = tab("v7_dev_shuffled_controls.csv").set_index("model")
+    s = tab("summary.csv")
+    rows = []
+    for code in ("M4v6_R1", "M5v6_R1", "B0_R1", "B1_R1"):
+        if code not in sh.index:
+            raise Missing(f"results/tables/v7_dev_shuffled_controls.csv: {code}")
+        for kind, v, src in (("real clicks", fm.loc[code, "auc"], "final_all_metrics.csv"),
+                             ("clicks shuffled", sh.loc[code, "dev_auc_shuffled_labels"], "v7_dev_shuffled_controls.csv")):
+            rows.append({"panel": "A", "model": code, "name": DISPLAY[code], "kind": kind, "emotion": code in ("M5v6_R1", "B1_R1"),
+                         "auc": float(v), "label": f"{float(v):.3f}", "source": src})
+    for code, name, kind in (("M6_nrms", "Neural ranker (NRMS)", "no emotion"), ("M7b_nrms_emotion_gated", "Neural + emotion", "real emotion"),
+                             ("M7ctrl_nrms_permuted", "Neural + shuffled emotion\n(control)", "shuffled emotion")):
+        v = float(fm.loc[code, "auc"]) if code in fm.index else float(one(s, "summary.csv", model=code, part="dev")["auc"])
+        rows.append({"panel": "B", "model": code, "name": name.replace("\n", " | "), "kind": kind, "emotion": code != "M6_nrms", "auc": v,
+                     "label": f"{v:.4f}", "source": "final_all_metrics.csv" if code in fm.index else "summary.csv (dev)"})
+    d = ps.write_csv(pd.DataFrame(rows), out / "controls.csv")
+    fig = ps.figure("Two checks: no information leak, and the neural ranker gains nothing from emotion",
+                    "A: final-test AUC of the standard-setting rankers, and the same scores with the clicks shuffled inside each list (must be "
+                    "0.50). B: the neural ranker with real and with shuffled article emotions scores the same.")
+    ax1, ax2 = fig.add_axes([0.07, 0.22, 0.5, 0.58]), fig.add_axes([0.66, 0.22, 0.31, 0.58])
+    A = d[d["panel"] == "A"]
+    names = list(dict.fromkeys(A["name"]))
+    w = 0.38
+    ps.tidy(ax1)
+    for j, kind in enumerate(("real clicks", "clicks shuffled")):
+        t = A[A["kind"] == kind].set_index("name").loc[names]
+        x = np.arange(len(names)) + (j - 0.5) * w
+        cols = [LIGHT if j else (ORANGE if e else BLUE) for e in t["emotion"]]
+        ax1.bar(x, t["auc"] - 0.45, bottom=0.45, width=w * 0.95, color=cols, hatch="//" if j else None, ec=MUTED if j else "none", lw=0.6)
+        for xx, (_, r) in zip(x, t.iterrows()):
+            ax1.text(xx, r["auc"] + 0.003, r["label"], ha="center", va="bottom", fontsize=14, weight="bold")
+    ax1.axhline(0.5, color=INK, ls="--", lw=1.5)
+    ax1.set_xticks(range(len(names)), [n.replace("Combined ranker (LightGBM + neural)", "Combined ranker").replace(" + ", "\n+ ") for n in names],
+                   fontsize=14)
+    ax1.set_ylim(0.45, 0.72)
+    ax1.set_ylabel("AUC (0.50 = random)")
+    ax1.set_title("A. Shuffled clicks fall to chance", fontsize=17, loc="left", weight="bold", pad=12)
+    ax1.legend(handles=[Patch(color=BLUE, label="real clicks"), Patch(fc=LIGHT, ec=MUTED, hatch="//", label="clicks shuffled")],
+               loc="upper right", frameon=False)
+    B = d[d["panel"] == "B"].reset_index(drop=True)
+    ps.tidy(ax2)
+    for i, r in B.iterrows():
+        ctrl = r["kind"] == "shuffled emotion"
+        ax2.bar(i, r["auc"] - 0.6, bottom=0.6, width=0.6, color=LIGHT if ctrl else (ORANGE if r["emotion"] else BLUE),
+                hatch="//" if ctrl else None, ec=MUTED if ctrl else "none", lw=0.6)
+        ax2.text(i, r["auc"] + 0.0004, r["label"], ha="center", va="bottom", fontsize=15, weight="bold")
+    ax2.set_xticks(range(3), [n.replace(" | ", "\n").replace(" (NRMS)", "").replace("Neural + ", "Neural +\n") for n in B["name"]], fontsize=13)
+    ax2.set_ylim(0.6, 0.615)
+    ax2.set_ylabel("AUC (axis zoomed)")
+    ax2.set_title("B. Neural ranker", fontsize=17, loc="left", weight="bold", pad=12)
+    ps.save(fig, out / "controls.png")
     return d
 
 
@@ -658,17 +868,35 @@ def overview(out):
 CHARTS = [("1_method", "pipeline", "How it works", pipeline), ("1_method", "time_split", "How it works", time_split),
           ("1_method", "model_pairs", "Models", model_pairs), ("2_data", "dataset_overview", "Problem", dataset_overview),
           ("2_data", "neutral_fix", "Problem", neutral_fix), ("2_data", "emotion_validation", "How it works", emotion_validation),
-          ("3_results", "all_models_auc", "Result 1", all_models_auc), ("3_results", "all_metrics_heatmap", "Result 1", all_metrics_heatmap),
+          ("2_data", "emotion_match_signal", "Problem", emotion_match_signal),
+          ("3_results", "all_models_auc", "Result 1", all_models_auc),
+          ("3_results", "all_models_auc_every_run", "Backup", all_models_auc_every_run),
+          ("3_results", "all_metrics_heatmap", "Result 1", all_metrics_heatmap),
           ("3_results", "emotion_gain_all_metrics", "Result 1", emotion_gain_all_metrics),
           ("3_results", "emotion_gain_auc", "Result 1", emotion_gain_auc), ("3_results", "two_settings", "Same-day check", two_settings),
+          ("3_results", "two_settings_all_metrics", "Same-day check", two_settings_all_metrics),
           ("3_results", "same_day_check", "Same-day check", same_day_check), ("3_results", "fold_evidence", "Result 1", fold_evidence),
+          ("3_results", "controls", "Backup", controls),
           ("4_analysis", "gain_by_consistency", "Result 2", gain_by_consistency), ("4_analysis", "gain_by_category", "Result 2", gain_by_category),
           ("4_analysis", "not_topic", "Result 2", not_topic), ("4_analysis", "list_quality", "Result 2", list_quality),
           ("", "overview", "Conclusion", overview)]
+REPORT = {"pipeline": "Methodology: system design", "time_split": "Methodology: evaluation design", "model_pairs": "Methodology: models",
+          "dataset_overview": "Data: dataset description", "neutral_fix": "Methodology: emotion labelling",
+          "emotion_validation": "Methodology: emotion labelling (validity)", "emotion_match_signal": "Data analysis: is there an emotion signal?",
+          "all_models_auc": "Results: main model comparison", "all_models_auc_every_run": "Results or appendix: every model run",
+          "all_metrics_heatmap": "Results: other ranking metrics", "emotion_gain_all_metrics": "Results: other ranking metrics",
+          "emotion_gain_auc": "Results: main finding (emotion vs twin)", "two_settings": "Results: the two settings",
+          "two_settings_all_metrics": "Results / discussion: the two settings", "same_day_check": "Discussion: why real-time scores higher",
+          "fold_evidence": "Results: robustness", "controls": "Results: validity checks", "gain_by_consistency": "Discussion: who benefits",
+          "gain_by_category": "Discussion: where emotion helps", "not_topic": "Discussion: emotion is not just topic",
+          "list_quality": "Discussion: list quality (diversity, coverage)", "overview": "Summary / poster"}
 SOURCES = {"pipeline": "method; src/config.py (history length)", "time_split": "final_dataset_overview.csv",
            "model_pairs": "names only (src/plot_style.py)", "dataset_overview": "final_dataset_overview.csv",
-           "neutral_fix": "emotion_weighted_vs_combined.json, emotion_label_variants_grid.csv, emotion_v2_choice.json",
-           "emotion_validation": "semeval2007_validation.csv", "all_models_auc": "final_all_metrics.csv, summary.csv",
+           "neutral_fix": "story_emotion_mix.csv (checked against emotion_weighted_vs_combined.json, emotion_label_variants_grid.csv, emotion_v2_choice.json)",
+           "emotion_validation": "semeval2007_validation.csv", "emotion_match_signal": "emotion_signal_v2.csv",
+           "all_models_auc_every_run": "final_all_metrics.csv, summary.csv", "two_settings_all_metrics": "final_twin_gains_all_metrics.csv",
+           "controls": "final_all_metrics.csv, v7_dev_shuffled_controls.csv, summary.csv",
+           "all_models_auc": "final_all_metrics.csv, summary.csv",
            "all_metrics_heatmap": "final_all_metrics.csv", "emotion_gain_all_metrics": "final_twin_gains_all_metrics.csv",
            "emotion_gain_auc": "final_twin_gains_all_metrics.csv", "two_settings": "final_all_metrics.csv, final_twin_gains_all_metrics.csv",
            "same_day_check": "final_all_metrics.csv, v7_single_feature_auc.csv, summary.csv",
@@ -682,7 +910,11 @@ def check_labels(name, d):
     rules = {"emotion_gain_auc": ("gain", gain_txt), "emotion_gain_all_metrics": ("gain", gain_txt), "gain_by_consistency": ("gain", gain_txt),
              "gain_by_category": ("gain", gain_txt), "fold_evidence": ("gain", gain_txt), "all_models_auc": ("test_auc", auc_txt),
              "same_day_check": ("auc", auc_txt), "two_settings": ("test_auc", lambda v: f"{v:.4f}"),
-             "emotion_validation": ("spearman", lambda v: f"{v:.2f}")}
+             "emotion_validation": ("spearman", lambda v: f"{v:.2f}"), "emotion_match_signal": ("dz", lambda v: f"{v:.2f}"),
+             "all_models_auc_every_run": ("test_auc", auc_txt), "two_settings_all_metrics": ("gain", gain_txt),
+             "neutral_fix": ("pct", lambda v: f"{v:.0f}%")}
+    if name == "controls":
+        assert all(f"{v:.{3 if p == 'A' else 4}f}" == lab for v, p, lab in zip(d["auc"], d["panel"], d["label"])), "controls: label differs"
     if name in rules:
         col, f = rules[name]
         assert (d[col].map(f) == d["label"]).all(), f"{name}: a label differs from its CSV value"
@@ -697,19 +929,41 @@ def takeaways(data):
     if (d := data.get("dataset_overview")) is not None:
         t["dataset_overview"] = f"{int(d['articles_total'].iloc[0]):,} articles; the test day alone has {d[(d['name'] == 'Test') & (d['measure'] == 'impressions')]['label'].iloc[0]} impressions."
     if (d := data.get("neutral_fix")) is not None:
-        t["neutral_fix"] = f"The old rule called {d['label'][0]} of articles neutral; the fixed rule calls {d['label'][1]} neutral."
+        neu = d[d["emotion"] == "neutral"]["label"].tolist()
+        t["neutral_fix"] = f"The old rule called {neu[0]} of articles neutral; the fixed rule calls {neu[1]} neutral, so joy, sadness and surprise become visible."
     if (d := data.get("emotion_validation")) is not None:
-        go = d[d["source"].str.startswith("GoEmotions")].set_index("emotion")["label"]
-        t["emotion_validation"] = f"Our scores agree with human ratings (Spearman {go.min()} to {go.max()}), better than the NRC word list."
+        go = d[d["source"].str.startswith("GoEmotions")].set_index("emotion")["spearman"]
+        t["emotion_validation"] = (f"Our scores agree with human ratings (Spearman {go.min():.2f} to {go.max():.2f}, highest for valence), "
+                                   "higher than the NRC word lists on every emotion.")
+    if (d := data.get("emotion_match_signal")) is not None:
+        p = d[d["feature"] == "cong_pct_cos_personal"].set_index("part")["label"]
+        t["emotion_match_signal"] = (f"Before any model: clicked articles match the reader's emotion profile better than skipped ones "
+                                     f"(personal match dz {p.iloc[0]} training, {p.iloc[1]} validation).")
     if (d := data.get("all_models_auc")) is not None:
         best = d.loc[d["test_auc"].idxmax()]
         t["all_models_auc"] = f"All final models beat random; the best in the standard setting is {best['name']} at {best['label']}."
+    if (d := data.get("all_models_auc_every_run")) is not None:
+        t["all_models_auc_every_run"] = (f"All {len(d)} runs scored on the test day, including earlier versions and controls, each labelled "
+                                         "with its setting and code.")
+    if (d := data.get("two_settings_all_metrics")) is not None:
+        rt = d[d["setting"] == SETTING[RT]]
+        neg = rt[(rt["gain"] < 0) & rt["significant"]]["metric_name"].tolist()
+        std = d[d["setting"] == SETTING[STD]]
+        first = ("Standard: every metric gains significantly. " if bool(((std["gain"] > 0) & std["significant"]).all())
+                 else "Standard: mostly positive. ")
+        t["two_settings_all_metrics"] = first + "Real-time: AUC is flat and emotion significantly lowers " + ", ".join(neg) + "."
+    if (d := data.get("controls")) is not None:
+        a = d[(d["panel"] == "A") & (d["kind"] == "clicks shuffled")]["auc"]
+        t["controls"] = (f"With clicks shuffled every ranker scores {a.min():.3f}-{a.max():.3f} (chance); shuffled emotion scores like real "
+                         "emotion in the neural ranker.")
     if "all_metrics_heatmap" in data:
-        t["all_metrics_heatmap"] = "MRR, nDCG, precision, recall and hit rate rank the models almost the same way as AUC."
+        t["all_metrics_heatmap"] = "MRR, nDCG, precision, recall and hit rate order the model families the same way as AUC."
     if (d := data.get("emotion_gain_all_metrics")) is not None:
-        neg = d[(d["gain"] < 0) & d["significant"]]
-        t["emotion_gain_all_metrics"] = ("Where emotion helps on AUC it helps on the other metrics too; "
-                                         + ("no metric shows a significant loss." if neg.empty else f"{len(neg)} significant losses."))
+        sig = d.groupby("pair_name")["significant"].sum()
+        full = [p for p, k in sig.items() if k == len(RANK8)]
+        t["emotion_gain_all_metrics"] = ("Standard setting: every gain is positive; significant on all eight metrics for "
+                                         + (", ".join(full) if full else "no pair")
+                                         + ", mostly not significant beyond AUC for the meaning and neural models.")
     if (d := data.get("emotion_gain_auc")) is not None:
         t["emotion_gain_auc"] = "Emotion adds " + ", ".join(f"{l} ({n.lower()})" for n, l in zip(d["name"], d["label"])) + "."
     if (d := data.get("two_settings")) is not None:
@@ -725,8 +979,11 @@ def takeaways(data):
         t["gain_by_category"] = f"Largest when the click is {d['group'].iloc[0]} ({d['label'].iloc[0]}); music clicks lose ({d.set_index('group').loc['music', 'label']})."
     if (d := data.get("not_topic")) is not None:
         t["not_topic"] = f"Inside one category the emotion match still beats chance (AUC {d['label'][0]} vs {d['label'][1]}): it is not just topic."
-    if "list_quality" in data:
-        t["list_quality"] = "Emotion leaves the variety of categories and emotions in the top 10 almost unchanged."
+    if (d := data.get("list_quality")) is not None:
+        c = d[(d["metric"] == "cat_div@10") & d["emotion"]]
+        fall = c[(c["gain"] < 0) & c["significant"]]["family"].tolist()
+        t["list_quality"] = ("Emotion changes the variety of the top 10 by about 1% or less"
+                             + (f"; category variety falls slightly but significantly for {', '.join(fall)}." if fall else "."))
     return t
 
 
@@ -736,14 +993,21 @@ def readme(out, data, skipped):
              "Built by `python scripts/07_final_figures.py` from saved tables only (no training, no dev scoring). Every PNG has a CSV",
              "next to it with the plotted numbers and the exact label text. Sources are in `results/tables/`. Older charts are in",
              "`archive/figures/` (D99). Names and colours: `src/plot_style.py`. Main results use the standard setting (pre-declared",
-             "primary); the real-time setting appears only where the two settings are compared. \"Final test\" = 15 Nov (dev).", "",
-             "| Chart | Slide | Takeaway | Source |", "|---|---|---|---|"]
+             "primary); the real-time setting appears only where the two settings are compared. \"Final test\" = 15 Nov (dev).",
+             "\"Slide\" = where the chart fits a talk; \"Report section\" = where it fits the written report (D102-D104).", "",
+             "| Chart | Slide | Report section | Takeaway | Source |", "|---|---|---|---|---|"]
     for folder, name, slide, _ in CHARTS:
         if name in data:
             path = f"{folder}/{name}.png" if folder else f"{name}.png"
-            lines.append(f"| `{path}` | {slide} | {tk.get(name, '')} | {SOURCES[name]} |")
+            lines.append(f"| `{path}` | {slide} | {REPORT[name]} | {tk.get(name, '')} | {SOURCES[name]} |")
     if skipped:
         lines += ["", "## Not built", ""] + [f"- `{n}`: missing {why}" for n, why in skipped]
+    lines += ["", "## EDA (kept as it is)", "",
+              "`EDA/` holds the exploratory charts, written by other scripts and not by this one (D102):", "",
+              "| Chart | Report section | Written by |", "|---|---|---|",
+              "| `EDA/01_part_sizes.png` ... `EDA/06_integrity.png`, `EDA/eda_overview.png`, `EDA/eda_stats.json` | Data: exploratory analysis | `scripts/01_04_eda.py` |",
+              "| `EDA/emotion_cross_source_spearman.png` | Methodology: emotion sources agree | `scripts/02_05_diagnostics.py` |",
+              "| `EDA/m5_feature_importance.png` | Appendix only: the EARLIER week-4 LightGBM + emotion (M5), not a final model | `scripts/05_03_feature_importance.py` |"]
     lines += ["", "## Names used in charts", "", "| Display name | Code |", "|---|---|"]
     seen = {}
     for code, name in DISPLAY.items():

@@ -12,7 +12,7 @@ RESULTS = ROOT / "results"
 FIGURES = RESULTS / "figures"                 # final chart set only (scripts/07_final_figures.py)
 ARCHIVE_FIGS = ROOT / "archive" / "figures"   # older charts, kept for the record (D99)
 TABLES = RESULTS / "tables"
-DIAGNOSTICS = ARCHIVE_FIGS / "EDA"
+DIAGNOSTICS = FIGURES / "EDA"
 
 MIND_URLS = {
     "train": "https://mind201910small.blob.core.windows.net/release/MINDsmall_train.zip",

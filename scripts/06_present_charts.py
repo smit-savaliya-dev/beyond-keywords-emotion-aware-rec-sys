@@ -4,7 +4,7 @@ any existing result file or chart.
 Reads:  results/tables/{model_ladder, m2m3_comparison, behaviour_e7_final_family, v7_dev_families, v7_subgroups, v7_survival_dev,
         v7_single_feature_auc, v7_fold_evidence, v7_fold_means, behaviour_e5_within_category_auc,
         behaviour_e5_m3_gain_within_category, emotion_label_variants_grid}.csv, emotion_weighted_vs_combined.json,
-        emotion_v2_choice.json; archive/figures/EDA/eda_stats.json (part sizes and dates); src.config (history length).
+        emotion_v2_choice.json; results/figures/EDA/eda_stats.json (part sizes and dates); src.config (history length).
 Writes: archive/figures/present/NN_*.png (16:9, 200 dpi) + one CSV per chart with the plotted values and the exact label text,
         00_overview.png, README.md. A chart whose source file is missing is skipped and named in the output.
 Every drawn number is read back from the chart's CSV after it is written, so labels and CSVs cannot disagree.
@@ -28,7 +28,7 @@ from matplotlib.patches import FancyArrowPatch, FancyBboxPatch, Patch
 from src.config import CONGRUENCE_MAX_HISTORY, ROOT, TABLES
 
 OUT = ROOT / "archive" / "figures" / "present"
-EDA_STATS = ROOT / "archive" / "figures" / "EDA" / "eda_stats.json"
+EDA_STATS = ROOT / "results" / "figures" / "EDA" / "eda_stats.json"
 # Okabe-Ito (colour-blind safe). Blue = without emotion, orange = with emotion, grey = not significant; vermilion = significant loss.
 BLUE, ORANGE, GREY, VERMILION, GREEN, PURPLE, YELLOW = "#0072B2", "#E69F00", "#999999", "#D55E00", "#009E73", "#CC79A7", "#F0E442"
 INK, MUTED = "#1a1a1a", "#555555"
@@ -182,14 +182,14 @@ def c01_pipeline(out):
 
 
 def c02_time_split(out):
-    st = jfile(EDA_STATS, "archive/figures/EDA/eda_stats.json")["parts"]
+    st = jfile(EDA_STATS, "results/figures/EDA/eda_stats.json")["parts"]
     rows = []
     for part, name in (("fit", "Train"), ("valid", "Validate"), ("dev", "Test")):
         p = st[part]
         a, b = pd.Timestamp(p["first_time"]).normalize(), pd.Timestamp(p["last_time"]).normalize()
         rows.append({"part": part, "name": name, "first_day": a.strftime("%Y-%m-%d"), "last_day": b.strftime("%Y-%m-%d"),
                      "days": (b - a).days + 1, "impressions": int(p["impressions"]), "label": f"{int(p['impressions']):,}" + chr(10) + "impressions"})
-    d = write_csv(pd.DataFrame(rows).assign(source="archive/figures/EDA/eda_stats.json"), out, "02_time_split")
+    d = write_csv(pd.DataFrame(rows).assign(source="results/figures/EDA/eda_stats.json"), out, "02_time_split")
     fig = figure("We train on the past and test on a later day",
                  "Models learn from 9-13 Nov, settings are chosen on 14 Nov, and the final test is 15 Nov; no setting is chosen on the test day.")
     ax = fig.add_axes([0.05, 0.2, 0.9, 0.6])
@@ -636,7 +636,7 @@ def takeaways(data):
     return t
 
 
-SOURCES = {"01_pipeline.png": "method (src/config.py for the history length)", "02_time_split.png": "archive/figures/EDA/eda_stats.json",
+SOURCES = {"01_pipeline.png": "method (src/config.py for the history length)", "02_time_split.png": "results/figures/EDA/eda_stats.json",
            "03_neutral_fix.png": "emotion_weighted_vs_combined.json, emotion_label_variants_grid.csv, emotion_v2_choice.json",
            "04_model_ladder.png": "model_ladder.csv", "05_all_models_auc.png": "model_ladder.csv",
            "06_emotion_gain_vs_twin.png": "m2m3_comparison.csv, behaviour_e7_final_family.csv, v7_dev_families.csv",
