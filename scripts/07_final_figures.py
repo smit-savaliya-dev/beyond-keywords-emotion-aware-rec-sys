@@ -330,16 +330,15 @@ def emotion_match_signal(out):
 
 
 # ======================================================================= 3_results
-def all_models_auc(out):
+def _all_models_bars(out, name, metric, value_col, title, caption, ylim, ylabel, random_line):
+    """Final models of the standard setting as bars grouped by family (shared by the AUC and the nDCG@10 chart)."""
     m = final_metrics()
     m = m[m["setting"] == STD].set_index("model").loc[STD_ORDER].reset_index()
     early = one(tab("summary.csv"), "summary.csv", model="M4_lightgbm", part="dev")
     d = ps.write_csv(pd.DataFrame({"model": m["model"], "name": m["model"].map(DISPLAY), "code": m["model"].map(CODE), "family": m["family"],
-                                   "emotion": m["emotion"], "test_auc": m["auc"].round(3), "label": m["auc"].map(auc_txt)}).assign(
-        earlier_lightgbm_auc=round(float(early["auc"]), 3)), out / "all_models_auc.csv")
-    fig = ps.figure("Every final model beats random; emotion adds a little within each family",
-                    "Final-test AUC (15 Nov), standard setting (previous days only). Grey = baselines, blue = without emotion, orange = with emotion.",
-                    size=(16, 9))
+                                   "emotion": m["emotion"], value_col: m[metric].round(3), "label": m[metric].map(auc_txt)}).assign(
+        **{f"earlier_lightgbm_{metric.replace('@', '')}": round(float(early[metric]), 3)}), out / f"{name}.csv")
+    fig = ps.figure(title(d), caption, size=(16, 9))
     ax = fig.add_axes([0.07, 0.31, 0.91, 0.54])
     ps.tidy(ax)
     gap, xs, x, prev = 0.6, [], 0.0, None
@@ -350,11 +349,13 @@ def all_models_auc(out):
         x += 1
         prev = fam
     xs = np.array(xs)
-    ax.bar(xs, d["test_auc"], width=0.8, color=[ps.model_colour(e, f) for e, f in zip(d["emotion"], d["family"])])
+    ax.bar(xs, d[value_col] - ylim[0], bottom=ylim[0], width=0.8, color=[ps.model_colour(e, f) for e, f in zip(d["emotion"], d["family"])])
+    step = (ylim[1] - ylim[0]) / 83
     for xx, (_, r) in zip(xs, d.iterrows()):
-        ax.text(xx, r["test_auc"] + 0.003, r["label"], ha="center", va="bottom", fontsize=14, weight="bold")
-    ax.axhline(0.5, color=INK, ls="--", lw=1.6)
-    ax.text(xs[-1] + 0.45, 0.502, "random", ha="right", va="bottom", fontsize=14)
+        ax.text(xx, r[value_col] + step, r["label"], ha="center", va="bottom", fontsize=14, weight="bold")
+    if random_line:
+        ax.axhline(0.5, color=INK, ls="--", lw=1.6)
+        ax.text(xs[-1] + 0.45, 0.502, "random", ha="right", va="bottom", fontsize=14)
     wrap = {"Meaning match (Sentence-BERT)": "Meaning\nmatch\n(S-BERT)", "Keyword match (TF-IDF)": "Keyword\nmatch\n(TF-IDF)",
             "Meaning + emotion, tuned profile": "Meaning +\nemotion,\ntuned", "Combined ranker (LightGBM + neural)": "Combined\nranker",
             "Neural ranker (NRMS)": "Neural\nranker\n(NRMS)", "Meaning + emotion": "Meaning +\nemotion", "LightGBM + emotion": "LightGBM +\nemotion",
@@ -364,13 +365,29 @@ def all_models_auc(out):
         xx = xs[(d["family"] == fam).to_numpy()]
         ax.annotate(fam, xy=(xx.mean(), 0), xycoords=("data", "axes fraction"), xytext=(0, -92), textcoords="offset points",
                     ha="center", va="top", fontsize=16, weight="bold", color=MUTED)
-    ax.set_ylim(0.45, 0.70)
+    ax.set_ylim(*ylim)
     ax.set_xlim(xs[0] - 0.6, xs[-1] + 0.6)
-    ax.set_ylabel("AUC (0.50 = random)")
-    fig.text(0.035, 0.085, f"An earlier LightGBM without emotion scored {d['earlier_lightgbm_auc'].iloc[0]:.3f} in the standard setting; "
+    ax.set_ylabel(ylabel)
+    fig.text(0.035, 0.085, f"An earlier LightGBM without emotion scored {d.iloc[0, -1]:.3f} in the standard setting; "
              "see the full results table.", fontsize=14.5, color=MUTED)
-    ps.save(fig, out / "all_models_auc.png")
+    ps.save(fig, out / f"{name}.png")
     return d
+
+
+def all_models_auc(out):
+    return _all_models_bars(out, "all_models_auc", "auc", "test_auc",
+                            lambda d: "Every final model beats random; emotion adds a little within each family",
+                            "Final-test AUC (15 Nov), standard setting (previous days only). Grey = baselines, blue = without emotion, "
+                            "orange = with emotion.", (0.45, 0.70), "AUC (0.50 = random)", True)
+
+
+def all_models_ndcg10(out):
+    def title(d):
+        best = d.loc[d["test_ndcg10"].idxmax()]
+        return f"Top-10 ranking quality (nDCG@10): best is {best['name']} at {best['label']}"
+    return _all_models_bars(out, "all_models_ndcg10", "ndcg@10", "test_ndcg10", title,
+                            "Final-test nDCG@10 (15 Nov), standard setting; 0 to 1. Grey = baselines, blue = without emotion, orange = "
+                            "with emotion.", (0.30, 0.44), "nDCG@10 (axis starts at 0.30)", False)
 
 
 STD_FINAL, RT_FINAL = "Standard setting: final models", "Real-time setting: final models"
@@ -870,6 +887,7 @@ CHARTS = [("1_method", "pipeline", "How it works", pipeline), ("1_method", "time
           ("2_data", "neutral_fix", "Problem", neutral_fix), ("2_data", "emotion_validation", "How it works", emotion_validation),
           ("2_data", "emotion_match_signal", "Problem", emotion_match_signal),
           ("3_results", "all_models_auc", "Result 1", all_models_auc),
+          ("3_results", "all_models_ndcg10", "Result 1", all_models_ndcg10),
           ("3_results", "all_models_auc_every_run", "Backup", all_models_auc_every_run),
           ("3_results", "all_metrics_heatmap", "Result 1", all_metrics_heatmap),
           ("3_results", "emotion_gain_all_metrics", "Result 1", emotion_gain_all_metrics),
@@ -883,7 +901,7 @@ CHARTS = [("1_method", "pipeline", "How it works", pipeline), ("1_method", "time
 REPORT = {"pipeline": "Methodology: system design", "time_split": "Methodology: evaluation design", "model_pairs": "Methodology: models",
           "dataset_overview": "Data: dataset description", "neutral_fix": "Methodology: emotion labelling",
           "emotion_validation": "Methodology: emotion labelling (validity)", "emotion_match_signal": "Data analysis: is there an emotion signal?",
-          "all_models_auc": "Results: main model comparison", "all_models_auc_every_run": "Results or appendix: every model run",
+          "all_models_auc": "Results: main model comparison", "all_models_ndcg10": "Results: main model comparison (second metric)", "all_models_auc_every_run": "Results or appendix: every model run",
           "all_metrics_heatmap": "Results: other ranking metrics", "emotion_gain_all_metrics": "Results: other ranking metrics",
           "emotion_gain_auc": "Results: main finding (emotion vs twin)", "two_settings": "Results: the two settings",
           "two_settings_all_metrics": "Results / discussion: the two settings", "same_day_check": "Discussion: why real-time scores higher",
@@ -896,7 +914,7 @@ SOURCES = {"pipeline": "method; src/config.py (history length)", "time_split": "
            "emotion_validation": "semeval2007_validation.csv", "emotion_match_signal": "emotion_signal_v2.csv",
            "all_models_auc_every_run": "final_all_metrics.csv, summary.csv", "two_settings_all_metrics": "final_twin_gains_all_metrics.csv",
            "controls": "final_all_metrics.csv, v7_dev_shuffled_controls.csv, summary.csv",
-           "all_models_auc": "final_all_metrics.csv, summary.csv",
+           "all_models_auc": "final_all_metrics.csv, summary.csv", "all_models_ndcg10": "final_all_metrics.csv, summary.csv",
            "all_metrics_heatmap": "final_all_metrics.csv", "emotion_gain_all_metrics": "final_twin_gains_all_metrics.csv",
            "emotion_gain_auc": "final_twin_gains_all_metrics.csv", "two_settings": "final_all_metrics.csv, final_twin_gains_all_metrics.csv",
            "same_day_check": "final_all_metrics.csv, v7_single_feature_auc.csv, summary.csv",
@@ -908,7 +926,7 @@ SOURCES = {"pipeline": "method; src/config.py (history length)", "time_split": "
 def check_labels(name, d):
     """Every label string equals the formatted value in the same CSV row."""
     rules = {"emotion_gain_auc": ("gain", gain_txt), "emotion_gain_all_metrics": ("gain", gain_txt), "gain_by_consistency": ("gain", gain_txt),
-             "gain_by_category": ("gain", gain_txt), "fold_evidence": ("gain", gain_txt), "all_models_auc": ("test_auc", auc_txt),
+             "gain_by_category": ("gain", gain_txt), "fold_evidence": ("gain", gain_txt), "all_models_auc": ("test_auc", auc_txt), "all_models_ndcg10": ("test_ndcg10", auc_txt),
              "same_day_check": ("auc", auc_txt), "two_settings": ("test_auc", lambda v: f"{v:.4f}"),
              "emotion_validation": ("spearman", lambda v: f"{v:.2f}"), "emotion_match_signal": ("dz", lambda v: f"{v:.2f}"),
              "all_models_auc_every_run": ("test_auc", auc_txt), "two_settings_all_metrics": ("gain", gain_txt),
@@ -942,6 +960,12 @@ def takeaways(data):
     if (d := data.get("all_models_auc")) is not None:
         best = d.loc[d["test_auc"].idxmax()]
         t["all_models_auc"] = f"All final models beat random; the best in the standard setting is {best['name']} at {best['label']}."
+    if (d := data.get("all_models_ndcg10")) is not None:
+        best = d.loc[d["test_ndcg10"].idxmax()]
+        fam = d[d["family"] != "Baselines"].groupby("family")
+        g = [s[s["emotion"]]["test_ndcg10"].max() - s[~s["emotion"]]["test_ndcg10"].iloc[0] for _, s in fam]
+        t["all_models_ndcg10"] = (f"The second metric, nDCG@10 (order of the top 10): the families rank as with AUC; best is {best['name']} "
+                                  f"at {best['label']}; the best emotion model adds {min(g):+.3f} to {max(g):+.3f} per family.")
     if (d := data.get("all_models_auc_every_run")) is not None:
         t["all_models_auc_every_run"] = (f"All {len(d)} runs scored on the test day, including earlier versions and controls, each labelled "
                                          "with its setting and code.")

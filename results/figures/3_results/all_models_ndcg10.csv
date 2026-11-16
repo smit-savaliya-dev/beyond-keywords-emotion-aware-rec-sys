@@ -1,0 +1,12 @@
+model,name,code,family,emotion,test_ndcg10,label,earlier_lightgbm_ndcg10
+M0_popularity,Popularity,M0,Baselines,False,0.351,0.351,0.418
+M1_tfidf,Keyword match (TF-IDF),M1,Baselines,False,0.355,0.355,0.418
+M2_sbert,Meaning match (Sentence-BERT),M2,Meaning,False,0.385,0.385,0.418
+M3_sbert_emotion,Meaning + emotion,M3,Meaning,True,0.386,0.386,0.418
+M3b_plus,"Meaning + emotion, tuned profile",M3b+,Meaning,True,0.387,0.387,0.418
+M4v6_R1,LightGBM ranker,M4v6,LightGBM,False,0.416,0.416,0.418
+M5v6_R1,LightGBM + emotion,M5v6,LightGBM,True,0.42,0.420,0.418
+M6_nrms,Neural ranker (NRMS),M6,Neural,False,0.366,0.366,0.418
+M7b_nrms_emotion_gated,Neural + emotion,M7,Neural,True,0.366,0.366,0.418
+B0_R1,Combined ranker (LightGBM + neural),B0,Combined,False,0.416,0.416,0.418
+B1_R1,Combined + emotion,B1,Combined,True,0.421,0.421,0.418

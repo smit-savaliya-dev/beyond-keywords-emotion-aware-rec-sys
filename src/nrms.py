@@ -4,6 +4,8 @@ News encoder: word embeddings -> dropout -> multi-head self-attention (16 heads 
 User encoder: multi-head self-attention over the clicked-news vectors -> additive attention. Score = dot(user, news).
 M7a adds a small linear projection of the item emotion vector to every news vector; M7b adds g(user) * w * cos(user emotion profile, item emotion),
 with g a small gate on the user's emotional consistency and history length; M7c does both. M7ctrl uses item emotion vectors permuted across items.
+Plan v8: M7e adds (w0 + w1 * consistency) * z(personal match), the personal match standardised with fit statistics; M7f adds the M7a
+projection too. Their emotion parameters are listed by emotion_parameters() so they can get their own learning rate.
 
 Inputs: token ids of every title, history rows, candidate rows with labels. Outputs: trained weights and scores per candidate.
 Training uses one clicked candidate plus K non-clicks sampled from the same impression (softmax cross-entropy over K + 1).
@@ -50,7 +52,7 @@ class AdditiveAttention(nn.Module):
 
 
 class NRMS(nn.Module):
-    """NRMS with optional emotion: mode in {'none', 'a', 'b', 'c'}."""
+    """NRMS with optional emotion: mode in {'none', 'a', 'b', 'c', 'e', 'f'}."""
 
     def __init__(self, embeddings, mode="none", emo_dim=31, dropout=0.2):
         super().__init__()
@@ -61,12 +63,20 @@ class NRMS(nn.Module):
         self.news_pool = AdditiveAttention(NEWS_DIM)
         self.user_att = SelfAttention(NEWS_DIM)
         self.user_pool = AdditiveAttention(NEWS_DIM)
-        if mode in ("a", "c"):
+        if mode in ("a", "c", "f"):
             self.emo_proj = nn.Linear(emo_dim, NEWS_DIM, bias=False)
             nn.init.normal_(self.emo_proj.weight, std=0.01)
         if mode in ("b", "c"):
             self.gate = nn.Sequential(nn.Linear(3, 8), nn.ReLU(), nn.Linear(8, 1))
             self.w = nn.Parameter(torch.zeros(1))
+        if mode in ("e", "f"):
+            self.w0 = nn.Parameter(torch.ones(1))
+            self.w1 = nn.Parameter(torch.zeros(1))
+
+    def emotion_parameters(self):
+        """The parameters added for emotion (empty for M6)."""
+        names = ("emo_proj", "gate", "w", "w0", "w1")
+        return [p for n, p in self.named_parameters() if n.split(".")[0] in names]
 
     def encode_news(self, tokens, emo=None):
         """tokens: (n, L) ids, 0 = padding; emo: (n, emo_dim) or None. -> (n, 256)."""
@@ -75,7 +85,7 @@ class NRMS(nn.Module):
         x = self.drop(self.emb(tokens))
         x = self.drop(self.news_att(x, mask))
         v = self.news_pool(x, mask)
-        if self.mode in ("a", "c") and emo is not None:
+        if self.mode in ("a", "c", "f") and emo is not None:
             v = v + self.emo_proj(emo)
         return v
 
@@ -89,10 +99,13 @@ class NRMS(nn.Module):
         return u * has[:, None].to(u.dtype)
 
     def score(self, user, cand, cong=None, user_feats=None):
-        """user: (b, 256); cand: (b, c, 256); cong: (b, c) cosine of the user emotion profile with each candidate; user_feats: (b, 3)."""
+        """user: (b, 256); cand: (b, c, 256); cong: (b, c) cosine of the user emotion profile with each candidate (modes b, c) or the
+        standardised personal match (modes e, f); user_feats: (b, 3) consistency, has-consistency, log(1 + history)."""
         s = (cand * user[:, None, :]).sum(-1)
         if self.mode in ("b", "c") and cong is not None:
             s = s + torch.sigmoid(self.gate(user_feats)) * self.w * cong
+        if self.mode in ("e", "f") and cong is not None:
+            s = s + (self.w0 + self.w1 * user_feats[:, :1]) * cong
         return s
 
 

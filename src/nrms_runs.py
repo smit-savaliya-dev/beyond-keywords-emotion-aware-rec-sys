@@ -93,12 +93,39 @@ class Tables:
         self.emo = torch.as_tensor(e.astype(np.float32), device=device)
         self.pct = torch.as_tensor(pct.astype(np.float32), device=device)
         self.unit_pct = torch.nn.functional.normalize(self.pct, dim=1)
+        # plan v8 (modes e, f): cos(item, corpus mean) per item, and the fit mean / SD of the personal match (set by the caller)
+        mean = torch.nn.functional.normalize(self.pct.double().mean(dim=0, keepdim=True), dim=1).float()
+        self.generic = (self.unit_pct * mean).sum(-1)
+        self.pm_mu, self.pm_sd = 0.0, 1.0
 
 
 def _cong(tables, profiles, cand_ids):
     """cos(profile, item go_pct) per candidate: profiles (b, 8), cand_ids (b, c)."""
     p = torch.nn.functional.normalize(profiles, dim=1)
     return (tables.unit_pct[cand_ids] * p[:, None, :]).sum(-1)
+
+
+def _emotion_input(mode, tables, profiles, cand_ids):
+    """Modes b, c: the plain cosine. Modes e, f: the personal match (cosine minus cosine to the corpus mean), fit-standardised."""
+    c = _cong(tables, profiles, cand_ids)
+    if mode in ("e", "f"):
+        return (c - tables.generic[cand_ids] - tables.pm_mu) / tables.pm_sd
+    return c
+
+
+def personal_match_stats(data, tables):
+    """Mean and SD of the personal match over all candidate rows of `data` (call with fit), computed as in training."""
+    vals = []
+    prof = torch.as_tensor(data.profiles, device=tables.pct.device)
+    lens = [len(c) for c in data.cands]
+    owner = torch.as_tensor(np.repeat(np.arange(len(lens)), lens), device=tables.pct.device)
+    items = torch.as_tensor(np.concatenate(data.cands), device=tables.pct.device)
+    for s in range(0, len(items), 1_000_000):
+        o, it = owner[s:s + 1_000_000], items[s:s + 1_000_000]
+        p = torch.nn.functional.normalize(prof[o], dim=1)
+        vals.append(((tables.unit_pct[it] * p).sum(-1) - tables.generic[it]).double())
+    v = torch.cat(vals)
+    return float(v.mean()), float(v.std())
 
 
 def train_epoch(model, opt, scaler, data, imps, tables, rng, batch, device, limit=None):
@@ -119,8 +146,9 @@ def train_epoch(model, opt, scaler, data, imps, tables, rng, batch, device, limi
             u = model.encode_user(vec[torch.as_tensor(hidx, device=device)], torch.as_tensor(hmask, device=device))
             cand = vec[torch.as_tensor(cidx, device=device)]
             cong = feats = None
-            if model.mode in ("b", "c"):
-                cong = _cong(tables, torch.as_tensor(data.profiles[owner], device=device), ids_t[torch.as_tensor(cidx, device=device)])
+            if model.mode in ("b", "c", "e", "f"):
+                cong = _emotion_input(model.mode, tables, torch.as_tensor(data.profiles[owner], device=device),
+                                      ids_t[torch.as_tensor(cidx, device=device)])
                 feats = torch.as_tensor(data.user_feats[owner], device=device)
             logits = model.score(u, cand, cong, feats)
             loss = torch.nn.functional.cross_entropy(logits.float(), torch.zeros(len(owner), dtype=torch.long, device=device))
@@ -159,8 +187,8 @@ def score_part(model, data, tables, device, imps=None, chunk=2048):
         for i, r in enumerate(rows):
             c = torch.as_tensor(data.cands[r], device=device)
             cong = feats = None
-            if model.mode in ("b", "c"):
-                cong = _cong(tables, torch.as_tensor(data.profiles[r:r + 1], device=device), c[None, :])
+            if model.mode in ("b", "c", "e", "f"):
+                cong = _emotion_input(model.mode, tables, torch.as_tensor(data.profiles[r:r + 1], device=device), c[None, :])
                 feats = torch.as_tensor(data.user_feats[r:r + 1], device=device)
             out[r] = model.score(u[i:i + 1], vec[c][None], cong, feats)[0].float().cpu().numpy()
     full = np.full(sum(len(c) for c in data.cands), np.nan)
@@ -179,14 +207,20 @@ def fold_auc(data, scores, imps):
 
 
 def train_run(name, mode, seed, train, train_imps, valid, valid_imps, tables, emb, device, max_epochs=8, patience=1, batch=32, lr=1e-4,
-              limit=None, log=print):
-    """Train with early stopping on the valid impressions' AUC; one checkpoint per epoch, resumable. -> (best model, epoch log)."""
+              limit=None, log=print, emo_lr=None):
+    """Train with early stopping on the valid impressions' AUC; one checkpoint per epoch, resumable. -> (best model, epoch log).
+    emo_lr: own learning rate for the emotion parameters (plan v8); None = one learning rate for all, as in plan v6."""
     run = RUN_DIR / name
     run.mkdir(parents=True, exist_ok=True)
     torch.manual_seed(seed)
     rng = np.random.default_rng(seed)
     model = NRMS(emb, mode).to(device)
-    opt = torch.optim.Adam(model.parameters(), lr=lr)
+    if emo_lr is None:
+        opt = torch.optim.Adam(model.parameters(), lr=lr)
+    else:
+        emo = {id(p) for p in model.emotion_parameters()}
+        opt = torch.optim.Adam([{"params": [p for p in model.parameters() if id(p) not in emo], "lr": lr},
+                                {"params": model.emotion_parameters(), "lr": emo_lr}])
     scaler = torch.amp.GradScaler("cuda")
     hist_path = run / "log.json"
     history = json.loads(hist_path.read_text(encoding="utf-8")) if hist_path.exists() else []
