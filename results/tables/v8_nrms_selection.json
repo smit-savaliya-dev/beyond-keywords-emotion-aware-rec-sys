@@ -1,0 +1,11 @@
+{
+  "rule": "plan v8 = plan v6 Rule 8 (seeds), D105",
+  "m6_mean_auc": 0.6386523333333333,
+  "m6_seed_sd": 0.0018341933740293984,
+  "passed_rule": true,
+  "selected": "M7d",
+  "selected_name": "M7d_nrms_emotion_fusion",
+  "gain_vs_m6": 0.005954895722705615,
+  "ctrl_mean_auc": 0.6387476666666666,
+  "beats_ctrl": true
+}

@@ -56,3 +56,19 @@ def test_emotion_terms_start_neutral_and_enter_the_score():
     with torch.no_grad():
         b.w.fill_(1.0)
     assert not torch.allclose(b.score(u, c, cong, feats), b.score(u, c))
+
+
+def test_v8_modes_add_a_scaled_personal_match_term():
+    """Modes e/f (plan v8): score = dot + (w0 + w1 * consistency) * input; w0 starts at 1, so the input enters at full scale."""
+    import numpy as np
+    import torch
+    from src.nrms import NRMS
+    emb = np.random.default_rng(0).random((20, 8)).astype("float32")
+    u, c = torch.randn(2, 256), torch.randn(2, 4, 256)
+    pm, feats = torch.randn(2, 4), torch.rand(2, 3)
+    base = NRMS(emb, "none").score(u, c)
+    for mode, n_emo in (("e", 2), ("f", 3)):
+        net = NRMS(emb, mode)
+        assert len(net.emotion_parameters()) == n_emo
+        assert torch.allclose(net.score(u, c, pm, feats), base + pm)
+    assert NRMS(emb, "none").emotion_parameters() == []
