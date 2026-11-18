@@ -1,7 +1,7 @@
 # Final charts
 
-Built by `python scripts/07_final_figures.py` from saved tables only (no training, no dev scoring). Every PNG has a CSV
-next to it with the plotted numbers and the exact label text. Sources are in `results/tables/`. Older charts are in
+Built by `python scripts/07_final_figures.py` from saved tables only (no training, no dev scoring). Every PNG outside
+`3_results/` has a CSV next to it with the plotted numbers and the exact label text. Sources are in `results/tables/`. Older charts are in
 `archive/figures/` (D99). Names and colours: `src/plot_style.py`. Main results use the standard setting (pre-declared
 primary); the real-time setting appears only where the two settings are compared. "Final test" = 15 Nov (dev).
 "Slide" = where the chart fits a talk; "Report section" = where it fits the written report (D102-D104).

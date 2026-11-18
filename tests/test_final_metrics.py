@@ -80,7 +80,11 @@ def test_final_figures_write_every_file(tmp_path):
     assert skipped == []
     for folder, name, _, _ in mod.CHARTS:
         base = tmp_path / folder / name if folder else tmp_path / name
-        assert base.with_suffix(".png").stat().st_size > 10_000 and not pd.read_csv(base.with_suffix(".csv")).empty
+        assert base.with_suffix(".png").stat().st_size > 10_000
+        if folder == "3_results":
+            assert not base.with_suffix(".csv").exists()
+        else:
+            assert not pd.read_csv(base.with_suffix(".csv")).empty
     text = (tmp_path / "README.md").read_text(encoding="utf-8")
     assert "Names used in charts" in text and all(f"{n}.png" in text for _, n, _, _ in mod.CHARTS)
 
@@ -113,7 +117,8 @@ def test_week9_figures_write_every_file_with_names_not_codes(tmp_path):
     for folder, name, takeaway, _ in created:
         base = (tmp_path / folder / name) if folder else (tmp_path / name)
         assert base.with_suffix(".png").stat().st_size > 10_000 and takeaway
-        d = pd.read_csv(base.with_suffix(".csv"))
+        assert base.with_suffix(".csv").exists() == (folder != "3_results")
+        d = mod.DATA[name]
         assert not d.empty
         for col in ("display_name", "model", "label"):
             if col in d:

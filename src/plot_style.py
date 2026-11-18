@@ -4,8 +4,10 @@ Charts never show an internal code alone: DISPLAY gives the plain name. Colours 
 grey = baselines, blue = without emotion, orange = with emotion, light grey (+ the words "not significant") = Holm p > 0.05,
 vermilion = a significant loss.
 """
+import io
 import textwrap
 import time
+from pathlib import Path
 
 import matplotlib
 
@@ -78,10 +80,20 @@ def save(fig, path):
     plt.close(fig)
 
 
+NO_CSV_FOLDERS = {"3_results"}                    # charts there are PNG only; their numbers stay in results/tables/
+
+
 def write_csv(df, path):
-    """Write the plotted numbers and read them back; the chart is drawn from the read-back frame so labels equal the CSV."""
-    df.to_csv(path, index=False, lineterminator="\n")
+    """Write the plotted numbers and read them back; the chart is drawn from the read-back frame so labels equal the CSV.
+    In NO_CSV_FOLDERS the same round trip runs in memory, so the label checks are unchanged but no file is left there."""
+    path = Path(path)
     text = {c: str for c in df.columns if "label" in c or c in ("name", "text", "family", "setting", "metric_name", "group", "pair")}
+    if path.parent.name in NO_CSV_FOLDERS:
+        buf = io.StringIO()
+        df.to_csv(buf, index=False, lineterminator="\n")
+        buf.seek(0)
+        return pd.read_csv(buf, keep_default_na=False, na_values=[""], dtype=text)
+    df.to_csv(path, index=False, lineterminator="\n")
     return pd.read_csv(path, keep_default_na=False, na_values=[""], dtype=text)
 
 

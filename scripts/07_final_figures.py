@@ -5,7 +5,7 @@ Reads:  results/tables/final_all_metrics.csv, final_twin_gains_all_metrics.csv, 
         behaviour_e5_m3_gain_within_category.csv, emotion_weighted_vs_combined.json, emotion_label_variants_grid.csv,
         emotion_v2_choice.json, story_emotion_mix.csv, semeval2007_validation.csv, emotion_signal_v2.csv,
         v7_dev_shuffled_controls.csv; src.config (history length).
-Writes: results/figures/{1_method,2_data,3_results,4_analysis}/*.png + one CSV per chart (plotted numbers and exact label text),
+Writes: results/figures/{1_method,2_data,3_results,4_analysis}/*.png + one CSV per chart (plotted numbers and exact label text; none in 3_results/),
         results/figures/overview.png (+ CSV), results/figures/README.md. Names and colours: src/plot_style.py.
         results/figures/EDA/ is written by the EDA scripts (01_04, 02_05, 05_03), not by this script; the README lists it.
 Run:    python scripts/07_final_figures.py [--out DIR]
@@ -1016,8 +1016,8 @@ def takeaways(data):
 def readme(out, data, skipped):
     tk = takeaways(data)
     lines = ["# Final charts", "",
-             "Built by `python scripts/07_final_figures.py` from saved tables only (no training, no dev scoring). Every PNG has a CSV",
-             "next to it with the plotted numbers and the exact label text. Sources are in `results/tables/`. Older charts are in",
+             "Built by `python scripts/07_final_figures.py` from saved tables only (no training, no dev scoring). Every PNG outside",
+             "`3_results/` has a CSV next to it with the plotted numbers and the exact label text. Sources are in `results/tables/`. Older charts are in",
              "`archive/figures/` (D99). Names and colours: `src/plot_style.py`. Main results use the standard setting (pre-declared",
              "primary); the real-time setting appears only where the two settings are compared. \"Final test\" = 15 Nov (dev).",
              "\"Slide\" = where the chart fits a talk; \"Report section\" = where it fits the written report (D102-D104).", "",

@@ -1,7 +1,7 @@
 """Week-9 figures: one pair per approach (chosen on valid AUC, D109), 8 metrics, emotion gains; built only from saved tables.
 
 Reads:  results/tables/final_metrics_all_models.csv, final_emotion_gains_all_metrics.csv (scripts/08_04_week9_metrics.py).
-Writes: results/figures/3_results/01_metrics_table ... 11_emotion_gain_auc (.png + .csv), results/figures/1_method/12_metrics_explained,
+Writes: results/figures/3_results/01_metrics_table ... 11_emotion_gain_auc (.png only), results/figures/1_method/12_metrics_explained,
         results/figures/00_week9_overview; a copy of each in results/figures/week9/ with its README.md; the week-9 block of
         results/figures/README.md. Colours and names: src/plot_style.py (FAMILY_SHADES).
 Run:    python scripts/08_week9_figures.py [--out DIR]
@@ -37,6 +37,7 @@ APPROACHES = ["Baselines", "Meaning", "LightGBM", "Neural", "Combined"]
 APPROACH_NAME = {"Baselines": "Baselines", "Meaning": "Meaning match", "LightGBM": "LightGBM", "Neural": "Neural (NRMS)", "Combined": "Combined"}
 NS = "not significant"
 CREATED = []                                      # (folder, name, takeaway, source) of every figure written
+DATA = {}                                         # name -> the plotted numbers (no CSV is written for 3_results/)
 
 
 def load():
@@ -64,7 +65,9 @@ def figure(title, caption, size=(16, 9)):
 def write(fig, out, folder, name, d, takeaway, source):
     path = (out / folder if folder else out)
     path.mkdir(parents=True, exist_ok=True)
-    d.to_csv(path / f"{name}.csv", index=False, encoding="utf-8")
+    DATA[name] = d
+    if (folder or "") not in ps.NO_CSV_FOLDERS:
+        d.to_csv(path / f"{name}.csv", index=False, encoding="utf-8")
     ps.save(fig, path / f"{name}.png")
     CREATED.append((folder, name, takeaway, source))
     print("wrote", f"{folder}/{name}.png" if folder else f"{name}.png", flush=True)
@@ -492,8 +495,8 @@ def readmes(out):
     lines = ["# Week-9 figures", "",
              "Copies of every figure made or updated by `python scripts/08_week9_figures.py` (originals in `3_results/`, `1_method/` and the",
              "figures root). Built only from saved tables (`scripts/08_04_week9_metrics.py`), test day = 15 Nov, standard setting unless",
-             "stated. Models: one per approach, chosen on validation AUC (D109). PNGs only here; the CSV with the plotted numbers sits next",
-             "to each original.", "",
+             "stated. Models: one per approach, chosen on validation AUC (D109). PNGs only here; the plotted numbers are in the source tables",
+             "in `results/tables/`.", "",
              "| Figure | Takeaway | Source CSV |", "|---|---|---|"]
     lines += [f"| `{n}.png` | {tk} | {src} |" for _, n, tk, src in order]
     lines += ["", "## Names used", "", "| Display name | Internal code |", "|---|---|"] + [f"| {a} | {b} |" for a, b in NAMES_TABLE]
@@ -522,6 +525,7 @@ def readmes(out):
 
 def main(out=FIGURES):
     CREATED.clear()
+    DATA.clear()
     m, g = load()
     metrics_table(out, m, g)
     gain_table(out, m, g)
