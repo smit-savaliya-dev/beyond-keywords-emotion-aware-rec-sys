@@ -1,0 +1,43 @@
+{
+  "model": "M7d_nrms_emotion_fusion",
+  "config": {
+    "base": "M6_nrms, best valid checkpoint of each seed",
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "alpha_per_seed": {
+      "42": 0.75,
+      "43": 0.8,
+      "44": 0.8
+    },
+    "emotion_score": "personal match, window_profiles(50, 0.9)",
+    "fusion": "alpha * minmax(M6 seed) + (1 - alpha) * minmax(personal match) within each impression; mean over seeds"
+  },
+  "config_hash": "d16a78c868",
+  "chosen_on": "valid",
+  "evidence": {
+    "selection": "plan v8 Rule 8 (D106)",
+    "valid_auc_crossfit": {
+      "42": 0.64631,
+      "43": 0.643466,
+      "44": 0.644046
+    }
+  },
+  "frozen_utc": "2026-11-18T12:53:58+00:00",
+  "run_info": {
+    "timestamp_utc": "2026-11-18T12:53:58+00:00",
+    "python": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "git_commit": "a3b9afd",
+    "git_dirty": true,
+    "pandas": "3.0.6",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "scikit-learn": "1.9.1",
+    "pyarrow": "25.0.1",
+    "torch": "2.11.0+cu128",
+    "transformers": "5.18.0"
+  }
+}

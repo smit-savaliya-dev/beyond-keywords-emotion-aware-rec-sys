@@ -1,4 +1,5 @@
-"""Plan v8 (docs/experiments_plan_v8.md, D105): improving the neural ranker + emotion. Valid only; dev is never read here.
+"""Plan v8 (docs/experiments_plan_v8.md, D105): improving the neural ranker + emotion. Every choice on valid; dev is read only by
+--final-dev (M7d once, approved by the student, frozen marker recorded first, D107).
 
 M7d: late fusion of each M6 seed with the personal match (M3 recipe), alpha cross-fitted over two user halves of valid.
 M7e: NRMS + trained personal-match head (fit-standardised input, emotion learning rate 1e-2). M7f: M7e + item-emotion projection.
@@ -11,6 +12,7 @@ Run:    python scripts/09_01_nrms_v8.py --fusion                # M7d and its pe
         python scripts/09_01_nrms_v8.py --train M7e M7f         # about one hour per variant (3 seeds), resumable
         python scripts/09_01_nrms_v8.py --ctrl M7e              # permuted-emotion control of a trained variant
         python scripts/09_01_nrms_v8.py --select
+        python scripts/09_01_nrms_v8.py --freeze-m7d, then --final-dev  # after the frozen marker is in docs/decisions.md
 """
 import argparse
 import json
@@ -21,12 +23,12 @@ import torch
 
 import _bootstrap  # noqa: F401
 from src.behaviour import personal_match, window_profiles
-from src.config import SEED, TABLES
+from src.config import RESULTS, SEED, TABLES
 from src.evaluate import evaluate, save_results
 from src.fusion import fuse, minmax_within
 from src.nrms import NRMS
 from src.nrms_runs import RUN_DIR, Tables, news_tables, part_data, personal_match_stats, score_part, train_run
-from src.run_registry import append_run
+from src.run_registry import append_run, check_final_dev, frozen_marker, save_frozen
 from src.subgroups import fast_metrics
 
 SEEDS = [42, 43, 44]
@@ -215,8 +217,54 @@ def select():
     print(json.dumps(sel, indent=2))
 
 
+# ------------------------------------------------------------------ M7d: freeze on valid, then one dev run (student approval, D107)
+def freeze_m7d():
+    t = pd.read_csv(SEEDS_TABLE)
+    s = t[t["model"] == "M7d"].set_index("seed")
+    cfg = {"base": "M6_nrms, best valid checkpoint of each seed", "seeds": SEEDS,
+           "alpha_per_seed": {str(k): float(s.loc[k, "alpha_all_valid"]) for k in SEEDS},
+           "emotion_score": "personal match, window_profiles(50, 0.9)",
+           "fusion": "alpha * minmax(M6 seed) + (1 - alpha) * minmax(personal match) within each impression; mean over seeds"}
+    doc = save_frozen(NAMES["M7d"], cfg, {"selection": "plan v8 Rule 8 (D106)", "valid_auc_crossfit": s["auc_crossfit"].round(6).to_dict()})
+    print(f"record '{frozen_marker(NAMES['M7d'], doc['config_hash'])}' in docs/decisions.md before --final-dev")
+
+
+def final_dev_m7d(reason=None):
+    frozen = check_final_dev(NAMES["M7d"], reason)
+    alpha = {int(k): v for k, v in frozen["config"]["alpha_per_seed"].items()}
+    dev = torch.device("cuda")
+    tokens, emb, emo, pct = news_tables()
+    fit_items = np.unique(np.concatenate(part_data("fit").cands))
+    data = part_data("dev")
+    tables = Tables(tokens, emo, pct, fit_items, dev)
+    truth, codes = data.ctx.truth, data.ctx.imp_codes
+    base = {}
+    for seed in SEEDS:                                       # the saved M6 checkpoints, scored on dev (no training)
+        run = RUN_DIR / f"M6_s{seed}"
+        best = max(json.loads((run / "log.json").read_text(encoding="utf-8")), key=lambda h: h["valid_auc"])["epoch"]
+        model = NRMS(emb, "none").to(dev)
+        model.load_state_dict(torch.load(run / f"epoch{best}.pt", map_location=dev, weights_only=False)["model"])
+        base[seed] = score_part(model, data, tables, dev)
+        del model
+    saved = truth[["imp_key", "news_id"]].merge(pd.read_parquet(RESULTS / "scores" / "M6_nrms__dev.parquet").astype({"imp_key": str, "news_id": str}),
+                                                on=["imp_key", "news_id"], how="left", validate="one_to_one")["score"].to_numpy()
+    gap = float(np.max(np.abs(np.mean([base[s] for s in SEEDS], axis=0) - saved)))
+    assert gap < 1e-4, f"re-scored M6 seeds do not reproduce the saved M6 dev scores (max gap {gap})"
+    prof, _ = window_profiles(data.ctx.hist_rows, data.ctx.vectors, 50, 0.9)
+    pm = minmax_within(codes, personal_match(data.ctx.groups, data.ctx.item_idx, prof, data.ctx.vectors))
+    fused = [fuse(minmax_within(codes, base[s]), pm, alpha[s]) for s in SEEDS]
+    out = truth[["imp_key", "news_id"]].assign(score=np.mean(fused, axis=0))
+    per, summ = evaluate(truth, out)
+    save_results(NAMES["M7d"], "dev", out, per, summ)
+    append_run(NAMES["M7d"], "dev", "final-dev", frozen["config"], summ, note=reason or "student approved one dev run (D107)")
+    print("M6 seeds reproduce the saved M6 dev scores, max gap", gap)
+    print(NAMES["M7d"], summ.round(4).to_dict(), flush=True)
+
+
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--freeze-m7d", action="store_true")
+    ap.add_argument("--final-dev", action="store_true", help="M7d once on dev; needs the frozen marker in docs/decisions.md")
     ap.add_argument("--fusion", action="store_true")
     ap.add_argument("--train", nargs="*", default=[])
     ap.add_argument("--ctrl", nargs="*", default=[])
@@ -230,6 +278,10 @@ def main():
         run_train(a.ctrl, control=True)
     if a.select:
         select()
+    if a.freeze_m7d:
+        freeze_m7d()
+    if a.final_dev:
+        final_dev_m7d()
 
 
 if __name__ == "__main__":
