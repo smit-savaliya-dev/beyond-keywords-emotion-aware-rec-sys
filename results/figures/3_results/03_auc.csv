@@ -1,0 +1,11 @@
+display_name,approach,emotion,value,label,gain_text,metric,axis_from
+Popularity,Baselines,False,0.589026170743246,0.589,,auc,0.5
+Keyword match (TF-IDF),Baselines,False,0.5744347298007846,0.574,,auc,0.5
+Meaning match (Sentence-BERT),Meaning,False,0.6253062896748289,0.625,emotion +0.0040,auc,0.5
+Meaning + emotion,Meaning,True,0.6293189572760478,0.629,emotion +0.0040,auc,0.5
+LightGBM ranker,LightGBM,False,0.6645411241510731,0.665,emotion +0.0051,auc,0.5
+LightGBM + emotion,LightGBM,True,0.6696058777315637,0.670,emotion +0.0051,auc,0.5
+Neural ranker (NRMS),Neural,False,0.6082259765886383,0.608,emotion +0.0053,auc,0.5
+Neural + emotion,Neural,True,0.6135707480340448,0.614,emotion +0.0053,auc,0.5
+Combined ranker,Combined,False,0.6628186992218149,0.663,emotion +0.0023,auc,0.5
+Combined + emotion,Combined,True,0.665143556511007,0.665,emotion +0.0023,auc,0.5

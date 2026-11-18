@@ -4,7 +4,7 @@ cat_div@10,Categories in the top 10,Meaning,M3_sbert_emotion,Meaning + emotion,T
 cat_div@10,Categories in the top 10,LightGBM,M4v6_R1,LightGBM ranker,False,5.052520778652668,5.05,-0.0530675853018372,True,True
 cat_div@10,Categories in the top 10,LightGBM,M5v6_R1,LightGBM + emotion,True,4.999453193350831,5.00,-0.0530675853018372,True,True
 cat_div@10,Categories in the top 10,Neural,M6_nrms,Neural ranker (NRMS),False,5.389381014873141,5.39,-0.0170056867891513,True,True
-cat_div@10,Categories in the top 10,Neural,M7b_nrms_emotion_gated,Neural + emotion,True,5.372375328083989,5.37,-0.0170056867891513,True,True
+cat_div@10,Categories in the top 10,Neural,M7b_nrms_emotion_gated,Neural + emotion (earlier version),True,5.372375328083989,5.37,-0.0170056867891513,True,True
 cat_div@10,Categories in the top 10,Combined,B0_R1,Combined ranker (LightGBM + neural),False,5.108254046369204,5.11,-0.048419728783902,True,True
 cat_div@10,Categories in the top 10,Combined,B1_R1_same_weight,Combined + emotion,True,5.0598343175853016,5.06,-0.048419728783902,True,True
 emo_div@10,Emotions in the top 10,Meaning,M2_sbert,Meaning match (Sentence-BERT),False,3.947697944006999,3.95,-0.0281468722659667,True,True
@@ -12,7 +12,7 @@ emo_div@10,Emotions in the top 10,Meaning,M3_sbert_emotion,Meaning + emotion,Tru
 emo_div@10,Emotions in the top 10,LightGBM,M4v6_R1,LightGBM ranker,False,4.031742125984252,4.03,0.0059465223097112,True,True
 emo_div@10,Emotions in the top 10,LightGBM,M5v6_R1,LightGBM + emotion,True,4.037688648293964,4.04,0.0059465223097112,True,True
 emo_div@10,Emotions in the top 10,Neural,M6_nrms,Neural ranker (NRMS),False,3.960247156605425,3.96,-0.0028023840769903,True,True
-emo_div@10,Emotions in the top 10,Neural,M7b_nrms_emotion_gated,Neural + emotion,True,3.957444772528434,3.96,-0.0028023840769903,True,True
+emo_div@10,Emotions in the top 10,Neural,M7b_nrms_emotion_gated,Neural + emotion (earlier version),True,3.957444772528434,3.96,-0.0028023840769903,True,True
 emo_div@10,Emotions in the top 10,Combined,B0_R1,Combined ranker (LightGBM + neural),False,3.992659120734908,3.99,-0.0102252843394575,True,True
 emo_div@10,Emotions in the top 10,Combined,B1_R1_same_weight,Combined + emotion,True,3.9824338363954506,3.98,-0.0102252843394575,True,True
 coverage@10,Catalogue coverage (% of articles),Meaning,M2_sbert,Meaning match (Sentence-BERT),False,60.19742968895512,60.2%,0.24213075060531003,False,False
@@ -20,6 +20,6 @@ coverage@10,Catalogue coverage (% of articles),Meaning,M3_sbert_emotion,Meaning 
 coverage@10,Catalogue coverage (% of articles),LightGBM,M4v6_R1,LightGBM ranker,False,62.28347923263178,62.3%,0.18625442354255,False,False
 coverage@10,Catalogue coverage (% of articles),LightGBM,M5v6_R1,LightGBM + emotion,True,62.469733656174334,62.5%,0.18625442354255,False,False
 coverage@10,Catalogue coverage (% of articles),Neural,M6_nrms,Neural ranker (NRMS),False,57.161482585211395,57.2%,-0.55876327062768,False,False
-coverage@10,Catalogue coverage (% of articles),Neural,M7b_nrms_emotion_gated,Neural + emotion,True,56.602719314583716,56.6%,-0.55876327062768,False,False
+coverage@10,Catalogue coverage (% of articles),Neural,M7b_nrms_emotion_gated,Neural + emotion (earlier version),True,56.602719314583716,56.6%,-0.55876327062768,False,False
 coverage@10,Catalogue coverage (% of articles),Combined,B0_R1,Combined ranker (LightGBM + neural),False,60.905196498416835,60.9%,0.65189048239895,False,False
 coverage@10,Catalogue coverage (% of articles),Combined,B1_R1_same_weight,Combined + emotion,True,61.55708698081579,61.6%,0.65189048239895,False,False

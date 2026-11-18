@@ -103,3 +103,22 @@ def test_week9_metrics_auc_equals_the_final_results_tables():
         assert r["gain"] == pytest.approx(m.loc[r["emotion_model"], r["metric"]] - m.loc[r["twin"], r["metric"]], abs=1e-12)
         assert r["ci_low"] <= r["gain"] <= r["ci_high"]
     assert not m["display_name"].str.contains(r"\bM\d|v6|_", regex=True).any()
+
+
+def test_week9_figures_write_every_file_with_names_not_codes(tmp_path):
+    sys.path.insert(0, str(ROOT / "scripts"))
+    mod = importlib.import_module("08_week9_figures")
+    created = mod.main(tmp_path)
+    assert len(created) == 13
+    for folder, name, takeaway, _ in created:
+        base = (tmp_path / folder / name) if folder else (tmp_path / name)
+        assert base.with_suffix(".png").stat().st_size > 10_000 and takeaway
+        d = pd.read_csv(base.with_suffix(".csv"))
+        assert not d.empty
+        for col in ("display_name", "model", "label"):
+            if col in d:
+                assert not d[col].astype(str).str.contains(r"\bM\d|v6|_R1|nrms_", regex=True).any(), (name, col)
+        assert (tmp_path / "week9" / f"{name}.png").exists()
+    text = (tmp_path / "week9" / "README.md").read_text(encoding="utf-8")
+    assert "## Names used" in text and "## Metric glossary" in text and "M7d_nrms_emotion_fusion" in text
+    assert "<!-- week9:start -->" in (tmp_path / "README.md").read_text(encoding="utf-8")

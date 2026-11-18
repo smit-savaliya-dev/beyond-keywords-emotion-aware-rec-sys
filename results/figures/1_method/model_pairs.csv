@@ -1,5 +1,6 @@
 row,left,left_code,right,right_code
-Meaning models,Meaning match (Sentence-BERT),M2,Meaning + emotion,M3
+Meaning models,Meaning match (Sentence-BERT),M2,Meaning + emotion,M3b+
 LightGBM rankers,LightGBM ranker,M4v6,LightGBM + emotion,M5v6
-Neural rankers,Neural ranker (NRMS),M6,Neural + emotion,M7
+Neural rankers,Neural ranker (NRMS),M6,Neural + emotion,M7d
+Combined rankers,Combined ranker,B0,Combined + emotion,B1 (same weight)
 Baselines,Popularity,M0,Keyword match (TF-IDF),M1

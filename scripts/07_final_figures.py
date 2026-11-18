@@ -151,20 +151,23 @@ def time_split(out):
 
 
 def model_pairs(out):
-    rows = [("Meaning models", "M2_sbert", "M3_sbert_emotion"), ("LightGBM rankers", "M4v6_R1", "M5v6_R1"),
-            ("Neural rankers", "M6_nrms", "M7b_nrms_emotion_gated"), ("Baselines", "M0_popularity", "M1_tfidf")]
-    d = ps.write_csv(pd.DataFrame([{"row": r, "left": DISPLAY[a], "left_code": CODE[a], "right": DISPLAY[b], "right_code": CODE[b]}
+    rows = [("Meaning models", "M2_sbert", "M3b_plus"), ("LightGBM rankers", "M4v6_R1", "M5v6_R1"),
+            ("Neural rankers", "M6_nrms", "M7d_nrms_emotion_fusion"), ("Combined rankers", "B0_R1", "B1_R1_same_weight"),
+            ("Baselines", "M0_popularity", "M1_tfidf")]                 # the final pairs (D109)
+    name = {**DISPLAY, "M3b_plus": "Meaning + emotion", "B0_R1": "Combined ranker"}
+    code = {**CODE, "B1_R1_same_weight": "B1 (same weight)"}
+    d = ps.write_csv(pd.DataFrame([{"row": r, "left": name[a], "left_code": code[a], "right": name[b], "right_code": code[b]}
                                    for r, a, b in rows]), out / "model_pairs.csv")
     fig = ps.figure("Every emotion model has a twin without emotion",
                     "Each pair differs only by the emotion part, so the gain of the orange model over its blue twin is the effect of emotion.")
     ax = fig.add_axes([0.03, 0.12, 0.94, 0.75])
     ax.set_xlim(0, 10)
-    ax.set_ylim(0, 4.4)
+    ax.set_ylim(0, 5.4)
     ax.axis("off")
-    ax.text(4.3, 4.15, "Without emotion", ha="center", fontsize=19, weight="bold", color=BLUE)
-    ax.text(8.15, 4.15, "With emotion", ha="center", fontsize=19, weight="bold", color=VERMILION)
+    ax.text(4.3, 5.15, "Without emotion", ha="center", fontsize=19, weight="bold", color=BLUE)
+    ax.text(8.15, 5.15, "With emotion", ha="center", fontsize=19, weight="bold", color=VERMILION)
     for i, r in d.iterrows():
-        y = 3.4 - i * 0.98
+        y = 4.4 - i * 0.98
         ax.text(0.05, y, r["row"], ha="left", va="center", fontsize=17, weight="bold")
         base = r["row"] == "Baselines"
         for x, name, code, face, edge in ((4.3, r["left"], r["left_code"], "#f2f2f2" if base else "#eef4fa", GREY if base else BLUE),
@@ -696,15 +699,16 @@ def controls(out):
                              ("clicks shuffled", sh.loc[code, "dev_auc_shuffled_labels"], "v7_dev_shuffled_controls.csv")):
             rows.append({"panel": "A", "model": code, "name": DISPLAY[code], "kind": kind, "emotion": code in ("M5v6_R1", "B1_R1"),
                          "auc": float(v), "label": f"{float(v):.3f}", "source": src})
-    for code, name, kind in (("M6_nrms", "Neural ranker (NRMS)", "no emotion"), ("M7b_nrms_emotion_gated", "Neural + emotion", "real emotion"),
+    for code, name, kind in (("M6_nrms", "Neural ranker (NRMS)", "no emotion"), ("M7b_nrms_emotion_gated", "Neural + emotion\n(earlier version)", "real emotion"),
                              ("M7ctrl_nrms_permuted", "Neural + shuffled emotion\n(control)", "shuffled emotion")):
         v = float(fm.loc[code, "auc"]) if code in fm.index else float(one(s, "summary.csv", model=code, part="dev")["auc"])
         rows.append({"panel": "B", "model": code, "name": name.replace("\n", " | "), "kind": kind, "emotion": code != "M6_nrms", "auc": v,
                      "label": f"{v:.4f}", "source": "final_all_metrics.csv" if code in fm.index else "summary.csv (dev)"})
     d = ps.write_csv(pd.DataFrame(rows), out / "controls.csv")
-    fig = ps.figure("Two checks: no information leak, and the neural ranker gains nothing from emotion",
+    fig = ps.figure("Two checks: no leak, and the earlier neural + emotion version gains nothing",
                     "A: final-test AUC of the standard-setting rankers, and the same scores with the clicks shuffled inside each list (must be "
-                    "0.50). B: the neural ranker with real and with shuffled article emotions scores the same.")
+                    "0.50). B: the earlier neural + emotion version scores the same with real and shuffled article emotions; the final Neural + "
+                    "emotion passed its shuffled-emotion check on validation (D106).")
     ax1, ax2 = fig.add_axes([0.07, 0.22, 0.5, 0.58]), fig.add_axes([0.66, 0.22, 0.31, 0.58])
     A = d[d["panel"] == "A"]
     names = list(dict.fromkeys(A["name"]))
@@ -718,7 +722,7 @@ def controls(out):
         for xx, (_, r) in zip(x, t.iterrows()):
             ax1.text(xx, r["auc"] + 0.003, r["label"], ha="center", va="bottom", fontsize=14, weight="bold")
     ax1.axhline(0.5, color=INK, ls="--", lw=1.5)
-    ax1.set_xticks(range(len(names)), [n.replace("Combined ranker (LightGBM + neural)", "Combined ranker").replace(" + ", "\n+ ") for n in names],
+    ax1.set_xticks(range(len(names)), [n.replace("Combined ranker (LightGBM + neural)", "Combined ranker").replace(" + ", "\n+ ").replace(" (own", "\n(own") for n in names],
                    fontsize=14)
     ax1.set_ylim(0.45, 0.72)
     ax1.set_ylabel("AUC (0.50 = random)")
@@ -735,7 +739,7 @@ def controls(out):
     ax2.set_xticks(range(3), [n.replace(" | ", "\n").replace(" (NRMS)", "").replace("Neural + ", "Neural +\n") for n in B["name"]], fontsize=13)
     ax2.set_ylim(0.6, 0.615)
     ax2.set_ylabel("AUC (axis zoomed)")
-    ax2.set_title("B. Neural ranker", fontsize=17, loc="left", weight="bold", pad=12)
+    ax2.set_title("B. Earlier neural + emotion version", fontsize=17, loc="left", weight="bold", pad=12)
     ps.save(fig, out / "controls.png")
     return d
 
@@ -886,18 +890,15 @@ CHARTS = [("1_method", "pipeline", "How it works", pipeline), ("1_method", "time
           ("1_method", "model_pairs", "Models", model_pairs), ("2_data", "dataset_overview", "Problem", dataset_overview),
           ("2_data", "neutral_fix", "Problem", neutral_fix), ("2_data", "emotion_validation", "How it works", emotion_validation),
           ("2_data", "emotion_match_signal", "Problem", emotion_match_signal),
-          ("3_results", "all_models_auc", "Result 1", all_models_auc),
-          ("3_results", "all_models_ndcg10", "Result 1", all_models_ndcg10),
           ("3_results", "all_models_auc_every_run", "Backup", all_models_auc_every_run),
-          ("3_results", "all_metrics_heatmap", "Result 1", all_metrics_heatmap),
-          ("3_results", "emotion_gain_all_metrics", "Result 1", emotion_gain_all_metrics),
-          ("3_results", "emotion_gain_auc", "Result 1", emotion_gain_auc), ("3_results", "two_settings", "Same-day check", two_settings),
           ("3_results", "two_settings_all_metrics", "Same-day check", two_settings_all_metrics),
           ("3_results", "same_day_check", "Same-day check", same_day_check), ("3_results", "fold_evidence", "Result 1", fold_evidence),
           ("3_results", "controls", "Backup", controls),
           ("4_analysis", "gain_by_consistency", "Result 2", gain_by_consistency), ("4_analysis", "gain_by_category", "Result 2", gain_by_category),
-          ("4_analysis", "not_topic", "Result 2", not_topic), ("4_analysis", "list_quality", "Result 2", list_quality),
-          ("", "overview", "Conclusion", overview)]
+          ("4_analysis", "not_topic", "Result 2", not_topic), ("4_analysis", "list_quality", "Result 2", list_quality)]
+# Superseded by the week-9 set (scripts/08_week9_figures.py, D110) and moved to archive/figures/week9_superseded/: all_models_auc,
+# all_models_ndcg10, all_metrics_heatmap, emotion_gain_all_metrics, emotion_gain_auc, two_settings, overview (their functions are kept
+# so the archived charts can be rebuilt with --out).
 REPORT = {"pipeline": "Methodology: system design", "time_split": "Methodology: evaluation design", "model_pairs": "Methodology: models",
           "dataset_overview": "Data: dataset description", "neutral_fix": "Methodology: emotion labelling",
           "emotion_validation": "Methodology: emotion labelling (validity)", "emotion_match_signal": "Data analysis: is there an emotion signal?",
@@ -979,7 +980,7 @@ def takeaways(data):
     if (d := data.get("controls")) is not None:
         a = d[(d["panel"] == "A") & (d["kind"] == "clicks shuffled")]["auc"]
         t["controls"] = (f"With clicks shuffled every ranker scores {a.min():.3f}-{a.max():.3f} (chance); shuffled emotion scores like real "
-                         "emotion in the neural ranker.")
+                         "emotion in the earlier neural + emotion version (the final one passed this check on validation).")
     if "all_metrics_heatmap" in data:
         t["all_metrics_heatmap"] = "MRR, nDCG, precision, recall and hit rate order the model families the same way as AUC."
     if (d := data.get("emotion_gain_all_metrics")) is not None:
@@ -1007,7 +1008,8 @@ def takeaways(data):
         c = d[(d["metric"] == "cat_div@10") & d["emotion"]]
         fall = c[(c["gain"] < 0) & c["significant"]]["family"].tolist()
         t["list_quality"] = ("Emotion changes the variety of the top 10 by about 1% or less"
-                             + (f"; category variety falls slightly but significantly for {', '.join(fall)}." if fall else "."))
+                             + (f"; category variety falls slightly but significantly for {', '.join(fall)}." if fall else ".")
+                             + " Uses the earlier emotion versions of the meaning (M3) and neural (M7b) models.")
     return t
 
 
@@ -1024,6 +1026,11 @@ def readme(out, data, skipped):
         if name in data:
             path = f"{folder}/{name}.png" if folder else f"{name}.png"
             lines.append(f"| `{path}` | {slide} | {REPORT[name]} | {tk.get(name, '')} | {SOURCES[name]} |")
+    old = (out / "README.md").read_text(encoding="utf-8") if (out / "README.md").exists() else ""
+    if "<!-- week9:start -->" in old:                       # written by scripts/08_week9_figures.py; kept above the other charts
+        block = "<!-- week9:start -->" + old.split("<!-- week9:start -->", 1)[1].split("<!-- week9:end -->", 1)[0] + "<!-- week9:end -->"
+        i = lines.index("| Chart | Slide | Report section | Takeaway | Source |")
+        lines[i:i] = block.split("\n") + ["", "## Other final charts", ""]
     if skipped:
         lines += ["", "## Not built", ""] + [f"- `{n}`: missing {why}" for n, why in skipped]
     lines += ["", "## EDA (kept as it is)", "",

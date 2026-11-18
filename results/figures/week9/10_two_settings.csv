@@ -1,0 +1,7 @@
+display_name,setting,emotion,auc,label,pair_gain_text
+LightGBM ranker,Standard,False,0.6645411241510731,0.6645,emotion +0.0051
+LightGBM + emotion,Standard,True,0.6696058777315637,0.6696,emotion +0.0051
+LightGBM ranker,Real-time,False,0.7110786790467049,0.7111,"emotion +0.0007
+(not significant)"
+LightGBM + emotion,Real-time,True,0.7118226505021256,0.7118,"emotion +0.0007
+(not significant)"

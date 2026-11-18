@@ -26,6 +26,7 @@ R1 STANDARD (primary, declared before results): previous days only. All other mo
 | M6 NRMS | both | no | 0.6407 | 0.6082 | - | - | - | - | reproduced, weaker than trees |
 | M7 (M7b, gated) | both | yes | 0.6410 | 0.6085 | M6 | +0.0002 | 0.33 | 0.004 | no effect |
 | M7ctrl (emotion permuted) | both | control | 0.6407 | 0.6091 | M7 | M7 - M7ctrl -0.0006 | 0.14 | -0.007 | no emotion information effect |
+| M7d = M6 + personal emotion match (late fusion, plan v8) | both | yes | 0.6468 (cross-fitted 0.6446) | **0.6136** | M6 | **+0.0053** | 2e-42 (clustered by user) | 0.051 | beats its twin; replaces M7b as the final Neural + emotion (D106-D108) |
 | B0 = M4v6 + M6 | R2 | no | 0.7287 | 0.7075 | M4v6 | -0.0036 | <0.001 | -0.034 | blending does not help |
 | B1 = M5v6 + M7 | R2 | yes | 0.7291 | **0.7120** | B0 | +0.0045 (same weight: +0.0008) | 6e-34 | 0.045 | best dev AUC; gain mostly a weight difference |
 | B0_R1 = M4v6_R1 + M6 | R1 | no | 0.6852 | 0.6628 | M4v6_R1 | -0.0017 | <0.001 | -0.013 | blending does not help |

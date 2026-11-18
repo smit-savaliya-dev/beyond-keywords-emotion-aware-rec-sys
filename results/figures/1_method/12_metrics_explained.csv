@@ -1,0 +1,7 @@
+metric,key,value,label,explanation,example_clicks
+AUC,auc,0.625,0.625,"Of the 2 x 8 = 16 (clicked, not clicked) pairs, how many have the clicked article higher? 0.50 = random, 1 = perfect.",positions 2 and 7 of 10
+MRR,mrr,0.3214285714285714,0.321,"1 / position of each click, averaged: (1/2 + 1/7) / 2. Rewards a click near the top.",positions 2 and 7 of 10
+nDCG@10,ndcg@10,0.5912352048230277,0.591,Quality of the top-10 order: clicks count more the higher they are (1 = both clicks at positions 1 and 2).,positions 2 and 7 of 10
+P@5,p@5,0.2,0.20,Share of the top 5 that was clicked: 1 click in 5 articles.,positions 2 and 7 of 10
+R@10,r@10,1.0,1.00,Share of the clicks found in the top 10: both clicks are there.,positions 2 and 7 of 10
+HR@10,hr@10,1.0,1.00,"Is there at least one click in the top 10? Yes = 1, no = 0; averaged over lists it is a share.",positions 2 and 7 of 10

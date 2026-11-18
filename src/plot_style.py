@@ -16,11 +16,11 @@ import pandas as pd
 DISPLAY = {"M0_popularity": "Popularity", "M1_tfidf": "Keyword match (TF-IDF)", "M2_sbert": "Meaning match (Sentence-BERT)",
            "M3_sbert_emotion": "Meaning + emotion", "M3b_plus": "Meaning + emotion, tuned profile",
            "M4v6_R1": "LightGBM ranker", "M5v6_R1": "LightGBM + emotion", "M4v6": "LightGBM ranker", "M5v6": "LightGBM + emotion",
-           "M6_nrms": "Neural ranker (NRMS)", "M7b_nrms_emotion_gated": "Neural + emotion",
-           "B0_R1": "Combined ranker (LightGBM + neural)", "B1_R1": "Combined + emotion", "B0": "Combined ranker (LightGBM + neural)",
+           "M6_nrms": "Neural ranker (NRMS)", "M7b_nrms_emotion_gated": "Neural + emotion (earlier version)", "M7d_nrms_emotion_fusion": "Neural + emotion",
+           "B0_R1": "Combined ranker (LightGBM + neural)", "B1_R1": "Combined + emotion (own blend weight)", "B0": "Combined ranker (LightGBM + neural)",
            "B1": "Combined + emotion", "B1_R1_same_weight": "Combined + emotion", "B1_same_weight": "Combined + emotion"}
 CODE = {"M0_popularity": "M0", "M1_tfidf": "M1", "M2_sbert": "M2", "M3_sbert_emotion": "M3", "M3b_plus": "M3b+", "M4v6_R1": "M4v6",
-        "M5v6_R1": "M5v6", "M4v6": "M4v6", "M5v6": "M5v6", "M6_nrms": "M6", "M7b_nrms_emotion_gated": "M7", "B0_R1": "B0",
+        "M5v6_R1": "M5v6", "M4v6": "M4v6", "M5v6": "M5v6", "M6_nrms": "M6", "M7b_nrms_emotion_gated": "M7b", "M7d_nrms_emotion_fusion": "M7d", "B0_R1": "B0",
         "B1_R1": "B1", "B0": "B0", "B1": "B1", "B1_R1_same_weight": "B1", "B1_same_weight": "B1"}
 SETTING = {"Standard": "Standard setting (previous days only)", "Real-time": "Real-time setting (with same-day clicks)"}
 SHORT_SETTING = {"Standard": "Standard (previous days only)", "Real-time": "Real-time (with same-day clicks)"}
@@ -95,3 +95,17 @@ def auc_txt(x):
 
 def holm_txt(p):
     return "Holm p < 0.001" if p < 0.001 else (f"Holm p = {p:.3f}" if p < 0.01 else f"Holm p = {p:.2f}")
+
+
+# ---------------------------------------------------------------------------------------------- week-9 scheme (scripts/08_week9_figures.py)
+# Each approach has one colour family: light shade = without emotion, dark shade = with emotion (still readable in black and white).
+# Dark shades checked with the dataviz palette validator (light surface): CVD worst pair 7.4 (purple/blue), normal-vision 19.4; every
+# bar also carries its full name and value, so colour is never the only cue.
+FAMILY_SHADES = {"Baselines": ("#a3a3a3", "#a3a3a3"), "Meaning": ("#dcb8d6", "#9e3d8f"), "LightGBM": ("#a9c9e8", "#1c6cb0"),
+                 "Neural": ("#a6d4b0", "#1f6b35"), "Combined": ("#fcd3a1", "#dd7a0c")}
+NS_GREY, LOSS_RED, GAIN_GREEN = "#c4c4c4", "#c0392b", "#2e8b57"
+TABLE_RAMP = ("#f4f8f8", "#7fbcbc")          # one hue, light -> darker = better (table cells keep dark text)
+
+
+def shade(family, emotion):
+    return FAMILY_SHADES[family][1 if emotion else 0]

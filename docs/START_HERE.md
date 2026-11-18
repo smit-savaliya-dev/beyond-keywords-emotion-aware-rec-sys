@@ -35,7 +35,7 @@ Step `01_05_download_semeval` downloads SemEval-2007 into `data/external/semeval
 | `src/` | all logic; `src/config.py` holds every constant |
 | `tests/` | one test file per module (small fakes only) |
 | `config/` | frozen emotion specifications (hash-locked by a test) |
-| `results/figures/` | **the final chart set** (method, data, results, analysis + `overview.png`), built by `scripts/07_final_figures.py`; see its `README.md` |
+| `results/figures/` | **the final chart set** (method, data, results, analysis); the week-9 main set (`00_week9_overview.png`, `3_results/01`-`11`, `1_method/12`, copies in `week9/`) is built by `scripts/08_week9_figures.py`, the rest by `scripts/07_final_figures.py`; see its `README.md` |
 | `results/tables/final_all_metrics.csv` | **every final model x every metric** (AUC, MRR, nDCG@5/10, P@5, R@10, HR@5/10, diversity, coverage), final test day |
 | `results/tables/final_twin_gains_all_metrics.csv` | **emotion model minus its twin, every metric**: gain, impression and user-level 95% CI, p, Holm p, dz |
 | `results/tables/` | the result tables code, docs and charts read; `summary.csv` holds model metrics, `runs_log.csv` every run |
