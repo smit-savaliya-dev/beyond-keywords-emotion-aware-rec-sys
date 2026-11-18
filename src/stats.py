@@ -68,3 +68,28 @@ def compare_models(per_a, per_b, metrics, name_a="A", name_b="B", alpha=0.05):
     out["p_wilcoxon_holm"] = holm(out["p_wilcoxon"].to_numpy())
     out["significant_holm"] = out["p_holm"] < alpha
     return out
+
+
+def clustered_paired_test(a, b, groups):
+    """b - a on paired values (NaN pairs dropped) with the uncertainty clustered by group (e.g. user): the mean difference is the plain
+    mean over all pairs (equal to the difference of the two table means); its standard error is the cluster-robust (CR1) one, so
+    pairs from the same user are not treated as independent. t-based 95% CI and two-sided p with (clusters - 1) df; dz = mean / SD
+    of the pair differences. With one pair per cluster this equals paired_test."""
+    a, b = np.asarray(a, dtype=np.float64), np.asarray(b, dtype=np.float64)
+    g = np.asarray(groups)
+    ok = ~(np.isnan(a) | np.isnan(b))
+    d, g = b[ok] - a[ok], g[ok]
+    n = len(d)
+    mean = float(d.mean())
+    codes, sizes = np.unique(g, return_inverse=True, return_counts=True)[1:]
+    sums = np.bincount(codes, weights=d)
+    k = len(sizes)
+    se = float(np.sqrt(k / (k - 1) * np.sum((sums - sizes * mean) ** 2)) / n) if k > 1 else np.nan
+    if k > 1 and se > 0:
+        half = float(st.t.ppf(0.975, k - 1) * se)
+        p = float(2 * st.t.sf(abs(mean / se), k - 1))
+    else:
+        half, p = 0.0, 1.0
+    sd = float(d.std(ddof=1)) if n > 1 else np.nan
+    return {"n": n, "clusters": k, "mean_a": float(a[ok].mean()), "mean_b": float(b[ok].mean()), "mean_diff": mean,
+            "se": se, "ci_low": mean - half, "ci_high": mean + half, "p": p, "dz": mean / sd if sd and sd > 0 else 0.0}

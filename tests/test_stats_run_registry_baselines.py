@@ -136,3 +136,18 @@ def test_dz_difference_matches_definition_and_is_scale_free():
     assert r["ci_low"] < r["dz_diff"] < r["ci_high"] and r["p"] < 0.01
     assert dz_difference(a * 50, b)["dz_diff"] == pytest.approx(r["dz_diff"])    # scale of a does not matter
     assert dz_difference(np.r_[a, np.nan], np.r_[b, 1.0])["n"] == 2000
+
+
+def test_clustered_paired_test_equals_paired_test_with_one_pair_per_cluster_and_widens_with_clusters():
+    from src.stats import clustered_paired_test
+    rng = np.random.default_rng(1)
+    a, b = rng.random(200), rng.random(200) + 0.05
+    one = clustered_paired_test(a, b, np.arange(200))
+    ref = paired_test(a, b)
+    for k in ("mean_diff", "ci_low", "ci_high", "p", "dz"):
+        assert one[k] == pytest.approx(ref[k], rel=1e-9), k
+    users = np.repeat(np.arange(20), 10)                       # 10 pairs per user with a shared user effect
+    b2 = a + 0.02 + np.repeat(rng.normal(0, 0.1, 20), 10)
+    cl, plain = clustered_paired_test(a, b2, users), paired_test(a, b2)
+    assert cl["mean_diff"] == pytest.approx(plain["mean_diff"]) and cl["clusters"] == 20
+    assert cl["ci_high"] - cl["ci_low"] > plain["ci_high"] - plain["ci_low"]

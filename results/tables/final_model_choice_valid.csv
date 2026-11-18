@@ -1,0 +1,9 @@
+approach,model,role,valid_auc,has_emotion_twin,has_test_predictions,eligible,rank_valid_auc,chosen,emotion_twin,twin_valid_auc
+Baselines,M1_tfidf,final,0.59,True,True,True,1,True,,
+Baselines,M0_popularity,final,0.574,True,True,True,2,True,,
+Meaning,M2_sbert,final,0.6468,True,True,True,1,True,M3b_plus,0.6503
+LightGBM,T1_M4cols,plan v7 comparison model,0.6767,False,False,False,1,False,,
+LightGBM,M4v6_R1,final,0.6762,True,True,True,2,True,M5v6_R1,0.6815
+LightGBM,M4_lightgbm,earlier version (week 4),0.6745,False,True,False,3,False,,
+Neural,M6_nrms,final,0.6407,True,True,True,1,True,M7d_nrms_emotion_fusion,0.6468
+Combined,B0_R1,final,0.6852,True,True,True,1,True,B1_R1_same_weight,0.6891754026524173

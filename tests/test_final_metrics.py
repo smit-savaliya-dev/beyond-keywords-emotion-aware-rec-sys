@@ -83,3 +83,23 @@ def test_final_figures_write_every_file(tmp_path):
         assert base.with_suffix(".png").stat().st_size > 10_000 and not pd.read_csv(base.with_suffix(".csv")).empty
     text = (tmp_path / "README.md").read_text(encoding="utf-8")
     assert "Names used in charts" in text and all(f"{n}.png" in text for _, n, _, _ in mod.CHARTS)
+
+
+def test_week9_metrics_auc_equals_the_final_results_tables():
+    """final_metrics_all_models.csv (scripts/08_04_week9_metrics.py): AUC equals the main summary (dev) for every saved model, the
+    same-weight blend equals the earlier final table, and the gains table repeats the two model values."""
+    m = pd.read_csv(TABLES / "final_metrics_all_models.csv").set_index("model")
+    s = pd.read_csv(TABLES / "summary.csv")
+    s = s[s["part"] == "dev"].set_index("model")
+    for code in m.index.drop("B1_R1_same_weight"):
+        for k in RANKING:
+            assert round(m.loc[code, k], 4) == pytest.approx(s.loc[code, k], abs=1e-9), (code, k)
+    old = pd.read_csv(TABLES / "final_all_metrics.csv").set_index("model")
+    assert m.loc["B1_R1_same_weight", "auc"] == pytest.approx(old.loc["B1_R1_same_weight", "auc"], abs=1e-12)
+    g = pd.read_csv(TABLES / "final_emotion_gains_all_metrics.csv")
+    assert len(g) == 5 * 8 and (g["holm_family"].str.startswith("standard")).sum() == 32
+    for _, r in g.iterrows():
+        assert r["twin_value"] == pytest.approx(m.loc[r["twin"], r["metric"]], abs=1e-12)
+        assert r["gain"] == pytest.approx(m.loc[r["emotion_model"], r["metric"]] - m.loc[r["twin"], r["metric"]], abs=1e-12)
+        assert r["ci_low"] <= r["gain"] <= r["ci_high"]
+    assert not m["display_name"].str.contains(r"\bM\d|v6|_", regex=True).any()

@@ -1,0 +1,42 @@
+model,display_name_if_shown,approach,setting,emotion,role,shown_in_figures,chosen_on_valid,valid_auc,valid_ndcg@10,valid_mrr,dev_auc,dev_ndcg@10,dev_mrr
+M4v6,LightGBM ranker,LightGBM,Real-time,False,real-time setting,True,False,0.7251,0.4415,0.3485,0.7111,0.4626,0.3611
+M5v6,LightGBM + emotion,LightGBM,Real-time,True,real-time setting,True,False,,,,0.7118,0.4611,0.3603
+M5v6_F1,,LightGBM,Real-time,True,plan v6 candidate,False,False,0.7261,0.4422,0.3494,,,
+M5v6_F2,,LightGBM,Real-time,True,plan v6 candidate,False,False,0.7256,0.4419,0.3487,,,
+M5v6_F3,,LightGBM,Real-time,True,plan v6 candidate,False,False,0.7265,0.4426,0.3494,,,
+M5v6_F4,,LightGBM,Real-time,True,plan v6 candidate,False,False,0.7274,0.4435,0.3501,,,
+M5v6_F5,,LightGBM,Real-time,True,plan v6 candidate,False,False,0.7259,0.4421,0.3491,,,
+M5v6_F6,,LightGBM,Real-time,True,plan v6 candidate,False,False,0.726,0.442,0.349,,,
+B0,,Combined,Real-time,False,real-time setting,False,False,0.7287,0.4459,0.3525,0.7075,0.458,0.3564
+B1,,Combined,Real-time,True,real-time setting,False,False,0.7291,0.4452,0.3517,0.712,0.4608,0.3592
+B1_same_weight,,Combined,Real-time,True,real-time setting,False,False,,,,0.7081536225193845,0.4569850186011041,0.3555354280972885
+M0_popularity,Popularity,Baselines,Standard,False,final,True,True,0.574,0.3026,0.2347,0.589,0.3506,0.2749
+M1_tfidf,Keyword match (TF-IDF),Baselines,Standard,False,final,True,True,0.59,0.3497,0.2765,0.5744,0.3554,0.2759
+M2_sbert,Meaning match (Sentence-BERT),Meaning,Standard,False,final,True,True,0.6468,0.3807,0.2998,0.6253,0.385,0.2979
+M3_sbert_emotion,,Meaning,Standard,True,earlier version,False,False,0.6499,0.3827,0.3008,0.6282,0.386,0.299
+M3b_plus,Meaning + emotion,Meaning,Standard,True,final,True,True,0.6503,0.3834,0.3013,0.6293,0.3865,0.2991
+M4_lightgbm,,LightGBM,Standard,False,earlier version (week 4),False,False,0.6745,0.4046,0.3173,0.6739,0.4182,0.3245
+M4v6_R1,LightGBM ranker,LightGBM,Standard,False,final,True,True,0.6762,0.4072,0.3203,0.6645,0.4164,0.3224
+T1_M4cols,,LightGBM,Standard,False,plan v7 comparison model,False,False,0.6767,0.4057,0.319,,,
+M5_all_lightgbm,,LightGBM,Standard,True,earlier variant,False,False,0.6881,0.414,0.3252,,,
+M5_congruence_only,,LightGBM,Standard,True,earlier variant,False,False,0.6766,0.4045,0.317,0.6709,0.4192,0.3243
+M5_item_only,,LightGBM,Standard,True,earlier variant,False,False,0.6877,0.4113,0.3232,,,
+M5_lightgbm_emotion,,LightGBM,Standard,True,earlier version (week 4),False,False,0.6887,0.4127,0.3244,0.6709,0.4172,0.3236
+M5_permuted_items,,LightGBM,Standard,True,control (shuffled emotion),False,False,0.6819,0.4091,0.3221,0.6666,0.4153,0.3217
+M5b_lightgbm_emotion,,LightGBM,Standard,True,earlier version,False,False,0.6838,0.4079,0.3192,0.6647,0.4141,0.3224
+M5v6_R1,LightGBM + emotion,LightGBM,Standard,True,final,True,True,,,,0.6696,0.4198,0.3248
+M5v6_R1_F2,,LightGBM,Standard,True,plan v7 candidate,False,False,0.6818,0.4116,0.3238,,,
+M5v6_R1_F3,,LightGBM,Standard,True,plan v7 candidate,False,False,0.6815,0.4113,0.3234,,,
+M5v6_R1_F6,,LightGBM,Standard,True,plan v7 candidate,False,False,0.6812,0.4111,0.3232,,,
+M6_nrms,Neural ranker (NRMS),Neural,Standard,False,final,True,True,0.6407,0.3671,0.286,0.6082,0.3658,0.2784
+M7a_nrms_emotion_item,,Neural,Standard,True,plan v6 candidate,False,False,0.6437,0.3673,0.2863,,,
+M7b_nrms_emotion_gated,,Neural,Standard,True,earlier version (plan v6),False,False,0.641,0.3676,0.2864,0.6085,0.3664,0.279
+M7c_nrms_emotion_both,,Neural,Standard,True,plan v6 candidate,False,False,0.6434,0.3668,0.2857,,,
+M7ctrl_nrms_permuted,,Neural,Standard,True,control (shuffled emotion),False,False,0.6407,0.3673,0.2862,0.6091,0.3664,0.2789
+M7d_ctrl_permuted,,Neural,Standard,True,control (shuffled emotion),False,False,0.6407,0.3666,0.2855,,,
+M7d_nrms_emotion_fusion,Neural + emotion,Neural,Standard,True,final,True,True,0.6468,0.3705,0.2882,0.6136,0.3687,0.2803
+M7e_nrms_emotion_personal_head,,Neural,Standard,True,plan v8 candidate,False,False,0.6431,0.3673,0.286,,,
+M7f_nrms_emotion_head_item,,Neural,Standard,True,plan v8 candidate,False,False,0.6084,0.3296,0.2556,,,
+B0_R1,Combined ranker,Combined,Standard,False,final,True,True,0.6852,0.4137,0.3247,0.6628,0.4159,0.3208
+B1_R1,,Combined,Standard,True,own blend weight (not the fair twin),False,False,0.6896,0.4184,0.3287,0.6689,0.4205,0.3247
+B1_R1_same_weight,Combined + emotion,Combined,Standard,True,final,True,True,,,,0.665143556511007,0.4176939831419762,0.3217742297127853
