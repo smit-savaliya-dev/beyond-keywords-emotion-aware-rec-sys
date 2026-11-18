@@ -2,7 +2,8 @@
 
 Copies of every figure made or updated by `python scripts/08_week9_figures.py` (originals in `3_results/`, `1_method/` and the
 figures root). Built only from saved tables (`scripts/08_04_week9_metrics.py`), test day = 15 Nov, standard setting unless
-stated. Models: one per approach, chosen on validation AUC (D109). Every PNG has a CSV with the plotted numbers.
+stated. Models: one per approach, chosen on validation AUC (D109). PNGs only here; the CSV with the plotted numbers sits next
+to each original.
 
 | Figure | Takeaway | Source CSV |
 |---|---|---|

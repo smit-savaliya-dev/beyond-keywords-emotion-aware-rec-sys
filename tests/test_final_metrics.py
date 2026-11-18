@@ -119,6 +119,7 @@ def test_week9_figures_write_every_file_with_names_not_codes(tmp_path):
             if col in d:
                 assert not d[col].astype(str).str.contains(r"\bM\d|v6|_R1|nrms_", regex=True).any(), (name, col)
         assert (tmp_path / "week9" / f"{name}.png").exists()
+    assert not list((tmp_path / "week9").glob("*.csv"))
     text = (tmp_path / "week9" / "README.md").read_text(encoding="utf-8")
     assert "## Names used" in text and "## Metric glossary" in text and "M7d_nrms_emotion_fusion" in text
     assert "<!-- week9:start -->" in (tmp_path / "README.md").read_text(encoding="utf-8")

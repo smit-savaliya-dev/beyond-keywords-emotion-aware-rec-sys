@@ -492,7 +492,8 @@ def readmes(out):
     lines = ["# Week-9 figures", "",
              "Copies of every figure made or updated by `python scripts/08_week9_figures.py` (originals in `3_results/`, `1_method/` and the",
              "figures root). Built only from saved tables (`scripts/08_04_week9_metrics.py`), test day = 15 Nov, standard setting unless",
-             "stated. Models: one per approach, chosen on validation AUC (D109). Every PNG has a CSV with the plotted numbers.", "",
+             "stated. Models: one per approach, chosen on validation AUC (D109). PNGs only here; the CSV with the plotted numbers sits next",
+             "to each original.", "",
              "| Figure | Takeaway | Source CSV |", "|---|---|---|"]
     lines += [f"| `{n}.png` | {tk} | {src} |" for _, n, tk, src in order]
     lines += ["", "## Names used", "", "| Display name | Internal code |", "|---|---|"] + [f"| {a} | {b} |" for a, b in NAMES_TABLE]
@@ -501,8 +502,9 @@ def readmes(out):
     wk = out / "week9"
     wk.mkdir(parents=True, exist_ok=True)
     for path, n, _, _ in rows:
-        for ext in (".png", ".csv"):
-            shutil.copyfile(out / path.replace(".png", ext), wk / f"{n}{ext}")
+        shutil.copyfile(out / path, wk / f"{n}.png")
+    for old in wk.glob("*.csv"):
+        old.unlink()
     (wk / "README.md").write_text("\n".join(lines), encoding="utf-8", newline="\n")
     block = ["<!-- week9:start -->", "## Week-9 figures (main set for the meeting and the report)", "",
              "Built by `python scripts/08_week9_figures.py` (D110); copies and the names / glossary tables in `week9/README.md`.", "",
